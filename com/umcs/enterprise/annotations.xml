@@ -1,0 +1,17 @@
+<root>
+    <item name='com.umcs.enterprise.GraphQLConfig$1 java.lang.Object parseLiteral(java.lang.Object)'>
+        <annotation name='NotNull'/>
+    </item>
+    <item name='com.umcs.enterprise.GraphQLConfig$1 java.lang.Object parseLiteral(java.lang.Object) 0'>
+        <annotation name='NotNull'/>
+    </item>
+    <item name='com.umcs.enterprise.GraphQLConfig$1 java.lang.Object parseValue(java.lang.Object)'>
+        <annotation name='NotNull'/>
+    </item>
+    <item name='com.umcs.enterprise.GraphQLConfig$1 java.lang.Object parseValue(java.lang.Object) 0'>
+        <annotation name='NotNull'/>
+    </item>
+    <item name='com.umcs.enterprise.GraphQLConfig$1 java.lang.Object serialize(java.lang.Object) 0'>
+        <annotation name='NotNull'/>
+    </item>
+</root>

@@ -1,0 +1,3 @@
+query HelloControllerTest_returnsHello {
+    hello
+}
