@@ -5,13 +5,14 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "playwright test",
+		"test": "npm run build && playwright test",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"lint": "npm run prettier -- --check . && eslint .",
 		"prettier": "prettier --plugin-search-dir . --cache --cache-strategy content",
-		"format": "prettier --plugin-search-dir . --write .",
-		"prepare": "husky install"
+		"format": "npm run prettier -- --write .",
+		"generate": "",
+		"prepare": "husky install && npm run generate"
 	},
 	"lint-staged": {
 		"*.*": "npm run prettier -- --write",
