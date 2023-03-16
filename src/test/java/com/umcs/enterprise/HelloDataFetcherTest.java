@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
-class HelloControllerTest {
+class HelloDataFetcherTest {
 
 	@Autowired
 	private GraphQlTester graphQlTester;

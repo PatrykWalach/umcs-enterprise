@@ -8,14 +8,14 @@ type BookCover {
 	height: Int
 }
 
-type Book implements Node {
+type Book implements Node @connection {
 	id: ID!
 	cover: BookCover
 	title: String
 	author: String
 	price: String
 	popularity: Int
-	createdAt: Date
+	createdAt: DateTime
 }
 
 union Viewer = User | Admin
@@ -23,7 +23,6 @@ union Viewer = User | Admin
 type User implements Node {
 	id: ID!
 	orders(first: Int, after: String, last: Int, before: String): OrderConnection
-	basket: Basket
 }
 
 type Admin implements Node {
@@ -35,47 +34,20 @@ enum OrderStatus {
 	COMPLETE
 }
 
-scalar Date
+scalar DateTime
 
-type Order implements Node {
+type Order implements Node @connection {
 	id: ID!
 	totalPrice: String
 	status: OrderStatus
-	createdAt: Date
+	createdAt: DateTime
 	user: User
 	books(first: Int, after: String, last: Int, before: String): BookConnection
 }
 
-type Basket implements Node {
-	id: ID!
+type Basket {
 	totalPrice: String
 	books(first: Int, after: String, last: Int, before: String): BookConnection
-}
-
-type OrderEdge {
-	node: Order
-	cursor: String
-}
-
-type OrderConnection {
-	edges: [OrderEdge]
-	pageInfo: PageInfo!
-}
-
-type BookEdge {
-	node: Book
-	cursor: String
-}
-type BookConnection {
-	edges: [BookEdge]
-	pageInfo: PageInfo!
-}
-
-type PageInfo {
-	hasNextPage: Boolean!
-	hasPreviousPage: Boolean!
-	startCursor: String
-	endCursor: String
 }
 
 enum Sort {
@@ -94,10 +66,11 @@ type Query {
 	hello: String
 	node(id: ID!): Node
 	books(first: Int, after: String, last: Int, before: String, sortBy: BookSortBy): BookConnection
-	orders(first: Int, after: String, last: Int, before: String): OrderConnection
 	viewer: Viewer
-	#    ?
-	search(query: String): BookConnection
+	#    3.5
+	basket: Basket
+	# 4
+	orders(first: Int, after: String, last: Int, before: String): OrderConnection
 }
 
 input UpdateStatusInput {
@@ -110,12 +83,9 @@ type CreateOrderResult {
 	order: Order
 }
 
-input CreateBookCoverInput {
-	url: String
-}
+scalar Upload
 
 input CreateBookInput {
-	cover: CreateBookCoverInput
 	title: String
 	author: String
 	price: Int
@@ -124,29 +94,31 @@ input CreateBookInput {
 type Mutation {
 	#    3
 	"""
-	requires Admin
+	requires role Admin
 	"""
-	createBook(input: CreateBookInput!): Book
+	createBook(input: CreateBookInput!, cover: Upload): Book @skipcodegen
 	"""
-	requires Admin
+	requires role Admin
 	"""
 	delete(id: ID!): Node
 	#    3.5
 	"""
-	requires User
+	requires role User
 	"""
 	basketBook(id: ID!): Basket
 	"""
-	requires User
+	requires role User
 	"""
 	unbasketBook(id: ID!): Basket
 	#    4
 	"""
-	requires User
+	requires role User
 	"""
 	makeOrder: CreateOrderResult
 	"""
-	requires Admin
+	requires role Admin
 	"""
 	updateStatus(input: UpdateStatusInput!): Order
 }
+
+directive @skipcodegen on FIELD_DEFINITION
