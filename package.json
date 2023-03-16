@@ -8,10 +8,11 @@
 		"test": "playwright test",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"lint": "npm run prettier -- --check . && eslint .",
 		"prettier": "prettier --plugin-search-dir . --cache --cache-strategy content",
-		"format": "prettier --plugin-search-dir . --write .",
-		"prepare": "husky install"
+		"format": "npm run prettier -- --write .",
+		"prepare": "husky install && npm run generate",
+		"generate": "graphql-codegen --config codegen.cts"
 	},
 	"lint-staged": {
 		"*.*": "npm run prettier -- --write",
@@ -19,6 +20,9 @@
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
+		"@graphql-codegen/cli": "3.2.2",
+		"@graphql-codegen/client-preset": "2.1.1",
+		"@graphql-codegen/schema-ast": "^3.0.1",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^2.0.0",
@@ -36,9 +40,14 @@
 		"prettier-plugin-svelte": "^2.8.1",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
+		"svelte2tsx": "^0.6.10",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3",
 		"vite": "^4.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"graphql": "^16.6.0",
+		"graphql-request": "^5.2.0"
+	}
 }

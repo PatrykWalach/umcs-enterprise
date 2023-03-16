@@ -37,20 +37,22 @@ public class Security {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http
+		http
 			.csrf()
 			.disable()
 			.authorizeHttpRequests()
 			.requestMatchers("/admin/**")
 			.hasRole("ADMIN")
 			.requestMatchers("/graphql*")
-			.anonymous()
-			.requestMatchers("/login*")
 			.permitAll()
+			.requestMatchers("/login*")
+			.anonymous()
 			.anyRequest()
 			.authenticated()
 			.and()
-			.build();
+			.formLogin();
+
+		return http.build();
 		// ...
 	}
 }
