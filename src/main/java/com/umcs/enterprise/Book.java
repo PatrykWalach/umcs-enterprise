@@ -1,9 +1,6 @@
 package com.umcs.enterprise;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;
 
@@ -16,8 +13,8 @@ public class Book implements Node {
     private String author;
     @Column
     private String title;
-    @Column
-    private Integer coverId;
+    @OneToOne(fetch = FetchType.LAZY)
+    private BookCover cover;
 
     @Column
     private int price;
@@ -54,14 +51,13 @@ public class Book implements Node {
         this.title = title;
     }
 
-    public Integer getCoverId() {
-        return coverId;
+    public BookCover getCover() {
+        return cover;
     }
 
-    public void setCoverId(Integer coverId) {
-        this.coverId = coverId;
+    public void setCover(BookCover bookCover) {
+        this.cover = bookCover;
     }
-
 
     public int getPrice() {
         return price;

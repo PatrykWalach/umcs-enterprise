@@ -102,7 +102,7 @@ type Mutation {
   """
   requires role Admin
   """
-  createBook(input: CreateBookInput!, cover: Upload!): Book @skipcodegen
+  createBook(input: CreateBookInput!, cover: Upload): Book @skipcodegen
   """
   requires role Admin
   """

@@ -7,9 +7,11 @@ import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -26,16 +28,12 @@ public class BookDataFetcher {
 
     @Autowired
     private BookRepository bookRepository;
-
+    @Autowired
+    private CoverRepository coverRepository;
 
     @DgsData(parentType = "Book")
     public DataFetcher<String> author() {
         return null;
-    }
-
-
-    public DataFetcher<Object> cover() {
-        return env -> env.<Book>getSource().getCoverId();
     }
 
 
@@ -47,21 +45,6 @@ public class BookDataFetcher {
     public DataFetcher<String> price() {
         return null;
     }
-
-
-//    @BatchMapping
-//    public Map<Book, Author> author(List<Book> books) {
-//
-//        var authors = this.authors.findAllById(books.stream().map(Book::getAuthorId).toList()).stream().collect(Collectors.toMap(
-//                Author::getId
-//                , Function.identity()));
-//
-//        return books.stream().collect(Collectors.toMap(Function.identity(),
-//                book -> authors.get(book.getAuthorId())
-//        ));
-//
-//
-//    }
 
     private void validateConnectionArgs(DataFetchingEnvironment env) {
         Integer first = env.getArgument("first");
@@ -116,24 +99,29 @@ public class BookDataFetcher {
 //        return new Connection<>(this.bookRepository::findAll, this.bookRepository::count, args);
     }
 
-
-    private String uploadCover(MultipartFile cover) throws IOException {
+    private BookCover uploadCover(MultipartFile file) throws IOException {
         Path uploadDir = Paths.get("covers");
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
-        String filename = UUID.randomUUID() + Objects.requireNonNull(cover.getOriginalFilename())
-                .substring(cover.getOriginalFilename().lastIndexOf("."));
+        String filename = UUID.randomUUID() + Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf("."));
         Path newFile = uploadDir.resolve(filename);
 
         try (OutputStream outputStream = Files.newOutputStream(newFile)) {
-            outputStream.write(cover.getBytes());
+            outputStream.write(file.getBytes());
         }
+        BufferedImage image = ImageIO.read(newFile.toFile());
 
-        return filename;
+
+        BookCover bookCover = new BookCover();
+        bookCover.setHeight(image.getHeight());
+        bookCover.setWidth(image.getWidth());
+
+        return coverRepository.save(bookCover);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @Secured("ADMIN")
     @DgsMutation
     public Book createBook(@InputArgument CreateBookInput input, @InputArgument MultipartFile cover) throws IOException {
         var book = new Book();
@@ -141,9 +129,11 @@ public class BookDataFetcher {
         book.setCreatedAt(ZonedDateTime.now());
         book.setPrice(input.getPrice());
 
+     
+        if (cover != null) {
+            book.setCover(uploadCover(cover));
+        }
 
-        String filename = uploadCover(cover);
-//        book.setCoverId();
 
         book.setTitle(input.getTitle());
         book.setPopularity(0);
