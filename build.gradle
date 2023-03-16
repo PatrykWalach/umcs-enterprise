@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.4'
     id 'io.spring.dependency-management' version '1.1.0'
+    id "com.netflix.dgs.codegen" version "5.7.0"
 }
 
 group = 'com.umcs'
@@ -20,18 +21,26 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-pagination'
+    implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
+    implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
+    implementation(platform('com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:6.0.1'))
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework:spring-webflux'
     testImplementation 'org.springframework.graphql:spring-graphql-test'
 }
 
+generateJava {
+    schemaPaths = ["${projectDir}/src/main/resources/schema"]
+    packageName = 'com.umcs.enterprise'
+    typeMapping = ["BookConnection" : "graphql.relay.SimpleListConnection<Book>",
+                   "OrderConnection": "graphql.relay.SimpleListConnection<Order>"]
+}
 
 tasks.named('test') {
     useJUnitPlatform()
