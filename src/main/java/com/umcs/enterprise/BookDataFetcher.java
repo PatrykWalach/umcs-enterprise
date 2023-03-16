@@ -6,7 +6,7 @@ import com.umcs.enterprise.types.CreateBookInput;
 import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +24,13 @@ import java.util.UUID;
 import static java.lang.String.format;
 
 @DgsComponent
+@RequiredArgsConstructor
 public class BookDataFetcher {
 
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private CoverRepository coverRepository;
+
+    private final BookRepository bookRepository;
+
+    private final CoverRepository coverRepository;
 
     @DgsData(parentType = "Book")
     public DataFetcher<String> author() {
@@ -129,7 +130,7 @@ public class BookDataFetcher {
         book.setCreatedAt(ZonedDateTime.now());
         book.setPrice(input.getPrice());
 
-     
+
         if (cover != null) {
             book.setCover(uploadCover(cover));
         }

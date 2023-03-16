@@ -44,8 +44,6 @@ public class Security {
                 .hasRole("ADMIN")
                 .requestMatchers("/graphql*")
                 .permitAll()
-                .requestMatchers("/graphiql*")
-                .permitAll()
                 .requestMatchers("/login*")
                 .anonymous()
                 .anyRequest()
