@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.4'
     id 'io.spring.dependency-management' version '1.1.0'
-    id "com.netflix.dgs.codegen" version "5.7.0"
 }
 
 group = 'com.umcs'
@@ -14,29 +13,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.netflix.graphql.dgs:graphql-dgs-pagination'
-    implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
-    implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
-    implementation(platform('com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:6.0.1'))
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.graphql:spring-graphql-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-generateJava {
-    schemaPaths = ["${projectDir}/src/main/resources/schema"]
-    packageName = 'com.umcs.enterprise'
-    generateClient = true
-    typeMapping = ['Book'           : 'com.umcs.enterprise.Book',
-//                   'Node'           : 'com.umcs.enterprise.Node',
-                   'Order'          : 'com.umcs.enterprise.Order',
-                   "BookConnection" : "graphql.relay.SimpleListConnection<Book>",
-                   "OrderConnection": "graphql.relay.SimpleListConnection<Order>",
-                   "User"           : "com.umcs.enterprise.User",
-                   "Admin"          : "org.umcs.enterprise.Admin"]
+    testImplementation 'org.springframework:spring-webflux'
+    testImplementation 'org.springframework.graphql:spring-graphql-test'
 }
 
 

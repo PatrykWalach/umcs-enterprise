@@ -1,0 +1,145 @@
+interface Node {
+    id: ID!
+}
+
+
+
+type BookCover {
+    url: String
+    width: Int
+    height: Int
+}
+
+type Book implements  Node {
+    id: ID!
+    cover: BookCover
+    title: String
+    author: String
+    price: String
+    popularity: Int
+    createdAt: Date
+}
+
+union Viewer = User | Admin
+
+type User implements  Node {
+    id: ID!
+    orders(first: Int, after: String, last: Int, before: String): OrderConnection
+    basket: Basket
+}
+
+type Admin implements  Node {
+    id: ID!
+}
+
+enum OrderStatus {
+    PENDING,
+    COMPLETE
+}
+
+scalar Date
+
+type Order implements  Node {
+    id: ID!
+    totalPrice: String
+    status: OrderStatus
+    createdAt: Date
+    user: User
+    books(first: Int, after: String, last: Int, before: String): BookConnection
+}
+
+
+type Basket implements  Node {
+    id: ID!
+    totalPrice: String
+    books(first: Int, after: String, last: Int, before: String): BookConnection
+}
+
+type OrderEdge {
+    node: Order
+    cursor: String
+}
+
+type OrderConnection {
+    edges: [OrderEdge]
+    pageInfo: PageInfo!
+}
+
+type BookEdge {
+    node: Book
+    cursor: String
+}
+type BookConnection {
+    edges: [BookEdge]
+    pageInfo: PageInfo!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
+}
+
+enum Sort {
+    DESC,
+    ASC
+}
+
+input BookSortBy {
+    price: Sort
+    popularity: Sort
+    createdAt: Sort
+}
+
+type Query {
+    #    3
+    hello: String
+    node(id: ID!): Node
+    books(first: Int, after: String, last: Int, before: String, sortBy: BookSortBy): BookConnection
+    orders(first: Int, after: String, last: Int, before: String): OrderConnection
+    viewer: Viewer
+    #    ?
+    search(query: String): BookConnection
+}
+
+
+input  UpdateStatusInput {
+    iD: ID!
+    status: OrderStatus
+}
+
+type CreateOrderResult {
+    basket: Basket
+    order: Order
+}
+
+input CreateBookCoverInput {
+    url: String
+}
+
+
+input CreateBookInput {
+    cover: CreateBookCoverInput
+    title: String
+    author: String
+    price: Int
+}
+
+type Mutation {
+    #    3
+    """requires Admin"""
+    createBook(input: CreateBookInput!): Book
+    """requires Admin"""
+    delete(id: ID!): Node
+    #    3.5
+    """requires User"""
+    basketBook(id: ID!): Basket
+    """requires User"""
+    unbasketBook(id: ID!): Basket
+    #    4
+    """requires User"""
+    makeOrder: CreateOrderResult
+    """requires Admin"""
+    updateStatus(input: UpdateStatusInput!): Order
+}
