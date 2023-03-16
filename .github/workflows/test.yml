@@ -1,0 +1,63 @@
+name: Test
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    name: E2E tests
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies 📦
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests 🧪
+        run: npm run test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report
+
+  eslint:
+    runs-on: ubuntu-latest
+    name: Eslint
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies 📦
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+  svelte-check:
+    runs-on: ubuntu-latest
+    name: Svelte check
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies 📦
+        run: npm ci
+
+      - name: Svelte Check
+        run: npm run check
