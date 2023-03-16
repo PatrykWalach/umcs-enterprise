@@ -1,6 +1,7 @@
 package com.umcs.enterprise;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.*;
 import org.springframework.stereotype.Controller;
 
@@ -9,17 +10,12 @@ import java.util.Collection;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class BookController {
 
     //    private final AuthorRepository authors;
     private final BookRepository books;
     private final BookService bookService;
-
-    public BookController(BookRepository books, BookService bookService) {
-
-        this.books = books;
-        this.bookService = bookService;
-    }
 
 //    @BatchMapping
 //    public Map<Book, Author> author(List<Book> books) {
