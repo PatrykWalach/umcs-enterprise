@@ -38,14 +38,8 @@ dependencies {
 generateJava {
     schemaPaths = ["${projectDir}/src/main/resources/schema"]
     packageName = 'com.umcs.enterprise'
-    generateClient = true
-    typeMapping = ['Book'           : 'com.umcs.enterprise.Book',
-//                   'Node'           : 'com.umcs.enterprise.Node',
-                   'Order'          : 'com.umcs.enterprise.Order',
-                   "BookConnection" : "graphql.relay.SimpleListConnection<Book>",
-                   "OrderConnection": "graphql.relay.SimpleListConnection<Order>",
-                   "User"           : "com.umcs.enterprise.User",
-                   "Admin"          : "org.umcs.enterprise.Admin"]
+    typeMapping = ["BookConnection" : "graphql.relay.SimpleListConnection<Book>",
+                   "OrderConnection": "graphql.relay.SimpleListConnection<Order>"]
 }
 
 tasks.named('test') {
