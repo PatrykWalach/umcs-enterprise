@@ -1,0 +1,130 @@
+interface Node {
+  id: ID!
+}
+
+type BookCover {
+  url: String
+  width: Int
+  height: Int
+}
+
+type Book implements Node @connection {
+  id: ID!
+  cover: BookCover
+  title: String
+  author: String
+  price: String
+  popularity: Int
+  createdAt: DateTime
+}
+
+union Viewer = User | Admin
+
+type User implements Node {
+  id: ID!
+  orders(first: Int, after: String, last: Int, before: String): OrderConnection
+}
+
+type Admin implements Node {
+  id: ID!
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETE
+}
+
+scalar DateTime
+
+type Order implements Node @connection {
+  id: ID!
+  totalPrice: String
+  status: OrderStatus
+  createdAt: DateTime
+  user: User
+  books(first: Int, after: String, last: Int, before: String): BookConnection
+}
+
+type Basket {
+  totalPrice: String
+  books(first: Int, after: String, last: Int, before: String): BookConnection
+}
+
+enum Sort {
+  DESC
+  ASC
+}
+
+input BookSortBy {
+  price: Sort
+  popularity: Sort
+  createdAt: Sort
+}
+
+type Query {
+  #    3
+  hello: String
+  node(id: ID!): Node
+  books(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    sortBy: BookSortBy
+  ): BookConnection
+  viewer: Viewer
+  #    3.5
+  basket: Basket
+  # 4
+  orders(first: Int, after: String, last: Int, before: String): OrderConnection
+}
+
+input UpdateStatusInput {
+  iD: ID!
+  status: OrderStatus
+}
+
+type CreateOrderResult {
+  basket: Basket
+  order: Order
+}
+
+scalar Upload
+
+input CreateBookInput {
+  title: String
+  author: String
+  price: Int
+}
+
+type Mutation {
+  #    3
+  """
+  requires role Admin
+  """
+  createBook(input: CreateBookInput!, cover: Upload!): Book @skipcodegen
+  """
+  requires role Admin
+  """
+  delete(id: ID!): Node
+  #    3.5
+  """
+  requires role User
+  """
+  basketBook(id: ID!): Basket
+  """
+  requires role User
+  """
+  unbasketBook(id: ID!): Basket
+  #    4
+  """
+  requires role User
+  """
+  makeOrder: CreateOrderResult
+  """
+  requires role Admin
+  """
+  updateStatus(input: UpdateStatusInput!): Order
+}
+
+directive @skipcodegen on FIELD_DEFINITION

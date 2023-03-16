@@ -6,5 +6,4 @@ public interface Node {
     default String getId() {
         return getClass().getSimpleName() + ":" + getDatabaseId();
     }
-
 }
