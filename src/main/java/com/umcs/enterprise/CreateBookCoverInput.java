@@ -1,4 +1,3 @@
 package com.umcs.enterprise;
 
-public record CreateBookCoverInput(String url) {
-}
+public record CreateBookCoverInput(String url) {}

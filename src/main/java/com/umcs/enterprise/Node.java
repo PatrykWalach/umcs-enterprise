@@ -1,10 +1,9 @@
 package com.umcs.enterprise;
 
 public interface Node {
-    Long getDatabaseId();
+	Long getDatabaseId();
 
-    default String getId() {
-        return getClass().getSimpleName() + ":" + getDatabaseId();
-    }
-
+	default String getId() {
+		return getClass().getSimpleName() + ":" + getDatabaseId();
+	}
 }

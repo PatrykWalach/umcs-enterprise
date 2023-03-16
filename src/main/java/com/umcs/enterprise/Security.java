@@ -13,40 +13,44 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 //@EnableMethodSecurity()
 public class Security {
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withUsername("user")
-                .password(passwordEncoder().encode("user"))
-                .roles("USER")
-                .build();
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-        UserDetails admin = User.withUsername("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
-    }
+	@Bean
+	public InMemoryUserDetailsManager userDetailsService() {
+		UserDetails user = User
+			.withUsername("user")
+			.password(passwordEncoder().encode("user"))
+			.roles("USER")
+			.build();
 
+		UserDetails admin = User
+			.withUsername("admin")
+			.password(passwordEncoder().encode("admin"))
+			.roles("ADMIN")
+			.build();
+		return new InMemoryUserDetailsManager(user, admin);
+	}
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf()
-                .disable().authorizeHttpRequests()
-                .requestMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .requestMatchers("/graphql*")
-                .anonymous()
-                .requestMatchers("/login*")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .build();
-        // ...
-    }
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		return http
+			.csrf()
+			.disable()
+			.authorizeHttpRequests()
+			.requestMatchers("/admin/**")
+			.hasRole("ADMIN")
+			.requestMatchers("/graphql*")
+			.anonymous()
+			.requestMatchers("/login*")
+			.permitAll()
+			.anyRequest()
+			.authenticated()
+			.and()
+			.build();
+		// ...
+	}
 }
