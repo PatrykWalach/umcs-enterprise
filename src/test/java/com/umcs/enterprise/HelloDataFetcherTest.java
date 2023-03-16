@@ -9,7 +9,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
-class HelloControllerTest {
+class HelloDataFetcherTest {
     @Autowired
     private GraphQlTester graphQlTester;
 
