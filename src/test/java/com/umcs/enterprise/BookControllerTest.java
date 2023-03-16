@@ -86,7 +86,7 @@ class BookControllerTest {
 
 
     @ParameterizedTest
-    @CsvSource({"10,5,,,true,true,6,13", "10,,,,true,false,0,9", "10,9,,,false,true,10,13", ",,10,,false,true,4,13", ",,10,10,true,false,0,9"})
+    @CsvSource({"10,5,,,true,true,6,13", "10,,,,true,false,0,9", "10,9,,,false,true,10,13", ",,10,,true,true,4,13", ",,10,10,true,false,0,9"})
     void books(Integer first, String after, Integer last, String before, boolean hasNextPage, boolean hasPreviousPage, String startCursor, String endCursor) throws JSONException {
 //        given
 
