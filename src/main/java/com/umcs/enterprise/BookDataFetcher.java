@@ -8,14 +8,12 @@ import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.CreateBookInput;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
@@ -46,11 +44,13 @@ public class BookDataFetcher {
 		return null;
 	}
 
-		@DgsData(parentType = "Book")
-		public CompletableFuture<BookCover> cover(DgsDataFetchingEnvironment  enf, DataFetchingEnvironment env) {
-			DataLoader<Long, BookCover> dataLoader = enf.getDataLoader(BookCoversDataLoader.class);
-			return dataLoader. load (env.<Book>getSource().getCoverId());
-
+	@DgsData(parentType = "Book")
+	public CompletableFuture<BookCover> cover(
+		DgsDataFetchingEnvironment enf,
+		DataFetchingEnvironment env
+	) {
+		DataLoader<Long, BookCover> dataLoader = enf.getDataLoader(BookCoversDataLoader.class);
+		return dataLoader.load(env.<Book>getSource().getCoverId());
 	}
 
 	private final ConnectionService connectionService;

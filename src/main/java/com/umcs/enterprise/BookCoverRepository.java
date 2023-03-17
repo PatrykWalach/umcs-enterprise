@@ -1,9 +1,8 @@
 package com.umcs.enterprise;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface CoverRepository extends JpaRepository<BookCover, Long> {
-    public List<BookCover> findAllByBookId(Iterable<Long> ids);
+	public List<BookCover> findAllByBookId(Iterable<Long> ids);
 }

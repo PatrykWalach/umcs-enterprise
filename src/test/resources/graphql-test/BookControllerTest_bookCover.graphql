@@ -1,12 +1,12 @@
-query BookControllerTest_bookCover($id: ID!){
-    node(id: $id){
-        id
-        ... on Book{
-            cover {
-                width
-                url
-                height
-            }
-        }
-    }
+query BookControllerTest_bookCover($id: ID!) {
+	node(id: $id) {
+		id
+		... on Book {
+			cover {
+				width
+				url
+				height
+			}
+		}
+	}
 }
