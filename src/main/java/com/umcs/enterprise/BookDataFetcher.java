@@ -22,10 +22,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.domain.Sort;
-
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -35,10 +34,10 @@ public class BookDataFetcher {
 
 	private final CoverRepository coverRepository;
 
-//	@DgsData(parentType = "Book")
-//	public DataFetcher<String> author() {
-//		return null;
-//	}
+	//	@DgsData(parentType = "Book")
+	//	public DataFetcher<String> author() {
+	//		return null;
+	//	}
 
 	@DgsData(parentType = "Book")
 	public DataFetcher<Integer> popularity() {
@@ -50,53 +49,67 @@ public class BookDataFetcher {
 
 		return null;
 	}
-//	@DgsData(parentType = "Book")
-//	public BookCover cover(DataFetchingEnvironment env) {
-//		return  env.<Book>getSource().getCover();
-//	}
+
+	//	@DgsData(parentType = "Book")
+	//	public BookCover cover(DataFetchingEnvironment env) {
+	//		return  env.<Book>getSource().getCover();
+	//	}
 
 	private final ConnectionService connectionService;
 
-	private <T> Sort getSort(List<T> sortBys, BiConsumer<HashMap<String, com.umcs.enterprise.types.Sort> , T> fn){
-		return  Sort.by(
-				Optional.ofNullable(sortBys).orElse(new ArrayList<>()).stream().map((sortBy)->{
+	private <T> Sort getSort(
+		List<T> sortBys,
+		BiConsumer<HashMap<String, com.umcs.enterprise.types.Sort>, T> fn
+	) {
+		return Sort.by(
+			Optional
+				.ofNullable(sortBys)
+				.orElse(new ArrayList<>())
+				.stream()
+				.map(sortBy -> {
 					HashMap<String, com.umcs.enterprise.types.Sort> fields = new HashMap<>();
 					fn.accept(fields, sortBy);
-					return  fields;
-				}).flatMap((fields) -> fields.entrySet().stream().filter(e->e.getValue() != null).map(e -> {
-					if (e.getValue() == com.umcs.enterprise.types.Sort.ASC) {
-						return Sort.Order.asc(e.getKey());
-					}
-					return Sort.Order.desc(e.getKey());
-				})).collect(Collectors.toList())
+					return fields;
+				})
+				.flatMap(fields ->
+					fields
+						.entrySet()
+						.stream()
+						.filter(e -> e.getValue() != null)
+						.map(e -> {
+							if (e.getValue() == com.umcs.enterprise.types.Sort.ASC) {
+								return Sort.Order.asc(e.getKey());
+							}
+							return Sort.Order.desc(e.getKey());
+						})
+				)
+				.collect(Collectors.toList())
 		);
 	}
 
 	@DgsQuery
-	public graphql.relay.Connection<Book> books(DataFetchingEnvironment env, @InputArgument List<BookSortBy> sortBy) {
-
-
-
-
-
-
-
-		return connectionService.getConnection(this.bookRepository.findAll(getSort(sortBy,
-
-				(fields, order) -> {
-
-		fields.put("price", order.getPrice());
-		fields.put("popularity", order.getPopularity());
-		fields.put("releasedAt", order.getReleasedAt());
-
-
-		}
-		)), env);
+	public graphql.relay.Connection<Book> books(
+		DataFetchingEnvironment env,
+		@InputArgument List<BookSortBy> sortBy
+	) {
+		return connectionService.getConnection(
+			this.bookRepository.findAll(
+					getSort(
+						sortBy,
+						(fields, order) -> {
+							fields.put("price", order.getPrice());
+							fields.put("popularity", order.getPopularity());
+							fields.put("releasedAt", order.getReleasedAt());
+						}
+					)
+				),
+			env
+		);
 	}
 
 	private final BookCoverService bookCoverService;
 
-		@Secured("ADMIN")
+	@Secured("ADMIN")
 	@DgsMutation
 	public Book createBook(@InputArgument CreateBookInput input) throws IOException {
 		var book = new Book();

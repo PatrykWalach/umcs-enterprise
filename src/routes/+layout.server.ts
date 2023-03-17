@@ -6,7 +6,7 @@ export const load: ServerLoad = ({ locals }) => {
 		graphql(/* GraphQL */ `
 			query NavbarQuery {
 				basket {
-          totalPrice
+					totalPrice
 					books(first: 10) {
 						edges {
 							cursor

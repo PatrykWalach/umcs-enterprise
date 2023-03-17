@@ -2,7 +2,6 @@ package com.umcs.enterprise;
 
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,5 +37,5 @@ public class Book implements Node {
 	private int popularity;
 
 	@Column
-	private  ZonedDateTime releasedAt;
+	private ZonedDateTime releasedAt;
 }
