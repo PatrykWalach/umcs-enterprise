@@ -3,8 +3,8 @@ package com.umcs.enterprise;
 import static java.lang.String.format;
 
 import com.netflix.graphql.dgs.*;
-import com.umcs.enterprise.types.BookCover;
 import com.umcs.enterprise.types.BookSortBy;
+import com.umcs.enterprise.types.Cover;
 import com.umcs.enterprise.types.CreateBookInput;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -45,11 +45,11 @@ public class BookDataFetcher {
 	}
 
 	@DgsData(parentType = "Book")
-	public CompletableFuture<BookCover> cover(
+	public CompletableFuture<Cover> cover(
 		DgsDataFetchingEnvironment enf,
 		DataFetchingEnvironment env
 	) {
-		DataLoader<Long, BookCover> dataLoader = enf.getDataLoader(BookCoversDataLoader.class);
+		DataLoader<Long, Cover> dataLoader = enf.getDataLoader(CoversDataLoader.class);
 		return dataLoader.load(env.<Book>getSource().getCoverId());
 	}
 
@@ -105,7 +105,7 @@ public class BookDataFetcher {
 		);
 	}
 
-	private final BookCoverService bookCoverService;
+	private final CoverService coverService;
 
 	@Secured("ADMIN")
 	@DgsMutation
@@ -118,7 +118,7 @@ public class BookDataFetcher {
 		MultipartFile cover = input.getCover();
 
 		if (cover != null) {
-			book.setCoverId(bookCoverService.uploadCover(cover).getDatabaseId());
+			book.setCoverId(coverService.uploadCover(cover).getDatabaseId());
 		}
 
 		book.setTitle(input.getTitle());

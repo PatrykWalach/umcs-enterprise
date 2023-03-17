@@ -2,7 +2,7 @@ interface Node {
 	id: ID!
 }
 
-type BookCover {
+type Cover {
 	url: String
 	width: Int
 	height: Int
@@ -10,7 +10,7 @@ type BookCover {
 
 type Book implements Node @connection {
 	id: ID!
-	cover: BookCover
+	cover: Cover
 	title: String
 	author: String
 	price: String

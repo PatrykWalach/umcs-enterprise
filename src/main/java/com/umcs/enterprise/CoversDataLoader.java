@@ -1,6 +1,5 @@
 package com.umcs.enterprise;
 
-import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsDataLoader;
 import java.util.Map;
 import java.util.Set;
@@ -13,17 +12,17 @@ import org.dataloader.MappedBatchLoader;
 
 @DgsDataLoader(name = "bookCovers")
 @RequiredArgsConstructor
-public class BookCoversDataLoader implements MappedBatchLoader<Long, BookCover> {
+public class CoversDataLoader implements MappedBatchLoader<Long, Cover> {
 
 	private final CoverRepository coverRepository;
 
 	@Override
-	public CompletionStage<Map<Long, BookCover>> load(Set<Long> keys) {
+	public CompletionStage<Map<Long, Cover>> load(Set<Long> keys) {
 		return CompletableFuture.supplyAsync(() ->
 			coverRepository
 				.findAllById(keys)
 				.stream()
-				.collect(Collectors.toMap(BookCover::getDatabaseId, Function.identity()))
+				.collect(Collectors.toMap(Cover::getDatabaseId, Function.identity()))
 		);
 	}
 }

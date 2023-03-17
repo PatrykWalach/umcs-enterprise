@@ -1,18 +1,13 @@
 package com.umcs.enterprise;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -25,7 +20,7 @@ public class Seed {
 
 	private final CoverRepository coverRepository;
 
-	private BookCover getCover(String filename) throws IOException {
+	private Long getCover(String filename) throws IOException {
 		Path uploadDir = Paths.get("static/covers");
 		if (!Files.exists(uploadDir)) {
 			Files.createDirectories(uploadDir);
@@ -40,16 +35,16 @@ public class Seed {
 			return null;
 		}
 
-		BookCover bookCover = new BookCover();
-		bookCover.setFilename(filename);
-		bookCover.setHeight(image.getHeight());
-		bookCover.setWidth(image.getWidth());
+		Cover cover = new Cover();
+		cover.setFilename(filename);
+		cover.setHeight(image.getHeight());
+		cover.setWidth(image.getWidth());
 
-		return coverRepository.save(bookCover);
+		return coverRepository.save(cover).getDatabaseId();
 	}
 
 	@Bean
-	CommandLineRunner initDatabase(BookRepository repository, BookCoverService coverService) {
+	CommandLineRunner initDatabase(BookRepository repository, CoverService coverService) {
 		return args -> {
 			ZonedDateTime date = ZonedDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneId.of("Europe/Paris"));
 

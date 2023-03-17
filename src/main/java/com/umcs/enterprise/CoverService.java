@@ -15,11 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class BookCoverService {
+public class CoverService {
 
 	private final CoverRepository coverRepository;
 
-	public BookCover uploadCover(MultipartFile file) throws IOException {
+	public Cover uploadCover(MultipartFile file) throws IOException {
 		Path uploadDir = Paths.get("static/covers");
 		if (!Files.exists(uploadDir)) {
 			Files.createDirectories(uploadDir);
@@ -36,11 +36,11 @@ public class BookCoverService {
 		}
 		BufferedImage image = ImageIO.read(newFile.toFile());
 
-		BookCover bookCover = new BookCover();
-		bookCover.setFilename(filename);
-		bookCover.setHeight(image.getHeight());
-		bookCover.setWidth(image.getWidth());
+		Cover cover = new Cover();
+		cover.setFilename(filename);
+		cover.setHeight(image.getHeight());
+		cover.setWidth(image.getWidth());
 
-		return coverRepository.save(bookCover);
+		return coverRepository.save(cover);
 	}
 }
