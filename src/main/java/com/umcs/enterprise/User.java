@@ -12,7 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class User {
-    @Id
-    @GeneratedValue
-    private Long databaseId;
+
+	@Id
+	@GeneratedValue
+	private Long databaseId;
 }

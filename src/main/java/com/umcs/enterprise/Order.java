@@ -12,9 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Order implements Node {
-    @Id
-    @GeneratedValue
-    private Long databaseId;
 
-
+	@Id
+	@GeneratedValue
+	private Long databaseId;
 }

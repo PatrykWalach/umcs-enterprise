@@ -1,6 +1,22 @@
-query BookControllerTest_books($after: String, $before: String, $first: Int, $last: Int) {
-    books(first: $first, last: $last,before: $before, after: $after){
-        edges { node { id } }
-        pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
-    }
+query BookControllerTest_books(
+	$after: String
+	$before: String
+	$first: Int
+	$last: Int
+	$sortBy: [BookSortBy]
+) {
+	books(first: $first, last: $last, before: $before, after: $after, sortBy: $sortBy) {
+		edges {
+			node {
+				id
+				title
+			}
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		}
+	}
 }

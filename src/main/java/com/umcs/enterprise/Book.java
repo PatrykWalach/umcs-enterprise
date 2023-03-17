@@ -1,33 +1,43 @@
 package com.umcs.enterprise;
 
 import jakarta.persistence.*;
+import java.time.ZonedDateTime;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.ZonedDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Book implements Node {
-    @Id
-    @GeneratedValue
-    private Long databaseId;
-    @Column
-    private String author;
-    @Column
-    private String title;
-    @OneToOne(fetch = FetchType.LAZY)
-    private BookCover cover;
 
-    @Column
-    private int price;
-    @Column
-    private ZonedDateTime createdAt;
-    @Column
-    private int popularity;
+	@Id
+	@GeneratedValue
+	private Long databaseId;
 
+	@Column
+	private String author;
 
+	@Column
+	private String title;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
+	private List<BookCover> covers;
+
+	@Column
+	private int price;
+
+	@Column
+	private ZonedDateTime createdAt;
+
+	@Column
+	private int popularity;
+
+	@Column
+	private ZonedDateTime releasedAt;
 }
