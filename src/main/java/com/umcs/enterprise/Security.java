@@ -46,12 +46,12 @@ public class Security {
 			.authorizeHttpRequests()
 			.requestMatchers("/admin/**")
 			.hasRole("ADMIN")
-			.requestMatchers("/graphql*")
+			.requestMatchers("/graphql*", "/graphiql*", "/covers/*")
 			.permitAll()
 			.requestMatchers("/login*")
 			.anonymous()
 			.anyRequest()
-			.authenticated()
+			.permitAll()
 			.and()
 			.formLogin();
 

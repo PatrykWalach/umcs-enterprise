@@ -89,6 +89,7 @@ input CreateBookInput {
 	title: String
 	author: String
 	price: Int
+	cover: Upload
 }
 
 type Mutation {
@@ -96,7 +97,7 @@ type Mutation {
 	"""
 	requires role Admin
 	"""
-	createBook(input: CreateBookInput!, cover: Upload): Book @skipcodegen
+	createBook(input: CreateBookInput!): Book
 	"""
 	requires role Admin
 	"""
@@ -120,5 +121,3 @@ type Mutation {
 	"""
 	updateStatus(input: UpdateStatusInput!): Order
 }
-
-directive @skipcodegen on FIELD_DEFINITION

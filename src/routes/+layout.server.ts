@@ -1,5 +1,5 @@
 import { graphql } from '$lib/gql';
-import type { Actions, ServerLoad } from '@sveltejs/kit';
+import type { ServerLoad } from '@sveltejs/kit';
 
 export const load: ServerLoad = ({ locals }) => {
 	return locals.client.request(
@@ -10,6 +10,11 @@ export const load: ServerLoad = ({ locals }) => {
 						node {
 							id
 							title
+							cover {
+								url
+								width
+								height
+							}
 						}
 					}
 				}

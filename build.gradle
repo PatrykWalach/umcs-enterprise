@@ -39,7 +39,8 @@ generateJava {
     schemaPaths = ["${projectDir}/src/main/resources/schema"]
     packageName = 'com.umcs.enterprise'
     typeMapping = ["BookConnection" : "graphql.relay.SimpleListConnection<Book>",
-                   "OrderConnection": "graphql.relay.SimpleListConnection<Order>"]
+                   "OrderConnection": "graphql.relay.SimpleListConnection<Order>",
+                    "Upload": "org.springframework.web.multipart.MultipartFile"]
 }
 
 tasks.named('test') {

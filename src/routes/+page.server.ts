@@ -4,25 +4,29 @@ import type { Actions } from '@sveltejs/kit';
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const data = await request.formData();
-
-		console.log(data);
+		const { cover, author, price, title } = Object.fromEntries(data);
 
 		await locals.client.request(
 			graphql(`
-				mutation AddBook($input: CreateBookInput!, $cover: Upload) {
-					createBook(input: $input, cover: $cover) {
+				mutation AddBook($input: CreateBookInput!) {
+					createBook(input: $input) {
 						id
 					}
 				}
 			`),
 			{
 				input: {
-					title: String(data.get('title')),
-					author: String(data.get('author')),
-					price: Number(data.get('price'))
-				},
-				cover: data.get('cover')
+					title: String(title),
+					author: String(author),
+					price: Number(price),
+					cover: cover instanceof File ? cover : undefined
+				}
+			},
+			{
+				'graphql-require-preflight': ''
 			}
 		);
+
+		return {};
 	}
 };

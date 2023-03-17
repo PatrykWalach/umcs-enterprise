@@ -22,5 +22,8 @@ public class BookCover {
 	private int width;
 
 	@Column
+	private String filename;
+
+	@Column
 	private int height;
 }
