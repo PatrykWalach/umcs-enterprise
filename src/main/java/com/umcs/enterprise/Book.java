@@ -24,8 +24,8 @@ public class Book implements Node {
 	@Column
 	private String title;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	private BookCover cover;
+	@Column
+	private Long coverId;
 
 	@Column
 	private int price;

@@ -1,7 +1,10 @@
 package com.umcs.enterprise;
 
+import static com.netflix.graphql.types.errors.ErrorType.BAD_REQUEST;
+import static com.netflix.graphql.types.errors.ErrorType.PERMISSION_DENIED;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import com.umcs.enterprise.BookCover;
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.CreateBookInput;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +16,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import graphql.ErrorClassification;
+import graphql.ErrorType;
+import kotlin.io.AccessDeniedException;
 import org.hibernate.internal.util.ZonedDateTimeComparator;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
@@ -89,7 +96,7 @@ class BookDataFetcherTest {
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> true)
+			.expect(e -> e.getErrorType() == PERMISSION_DENIED)
 			.verify()
 			.path("createBook")
 			.valueIsNull();
@@ -283,5 +290,29 @@ class BookDataFetcherTest {
 			.valueIsNull()
 			.path("books.pageInfo.endCursor")
 			.valueIsNull();
+	}
+
+	@Autowired
+	private CoverRepository coverRepository;
+	@Test
+	void bookCover() throws JSONException {
+		BookCover  bookCover = coverRepository.save(new BookCover(null, 12,"file.jpg",15));
+		Book book = new Book();
+		book.setCoverId(bookCover.getDatabaseId());
+		book = bookRepository.save(book);
+		//        given
+
+		this.graphQlTester.documentName("BookControllerTest_bookCover")
+				.variable("id", book.getId())
+				//        when
+				.execute()
+				//                then
+				.errors()
+				.verify()
+				.path("node.cover.width")
+				.entity(Integer.class)
+				.isEqualTo(bookCover.getWidth())
+				.path("node.cover.height")
+				.entity(Integer.class)		.isEqualTo(bookCover.getHeight());
 	}
 }

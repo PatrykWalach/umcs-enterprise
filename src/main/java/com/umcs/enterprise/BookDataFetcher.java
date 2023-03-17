@@ -3,25 +3,21 @@ package com.umcs.enterprise;
 import static java.lang.String.format;
 
 import com.netflix.graphql.dgs.*;
+import com.umcs.enterprise.types.BookCover;
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.CreateBookInput;
-import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import java.awt.image.BufferedImage;
+
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
+
 import lombok.RequiredArgsConstructor;
+import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,10 +46,12 @@ public class BookDataFetcher {
 		return null;
 	}
 
-	//	@DgsData(parentType = "Book")
-	//	public BookCover cover(DataFetchingEnvironment env) {
-	//		return  env.<Book>getSource().getCover();
-	//	}
+		@DgsData(parentType = "Book")
+		public CompletableFuture<BookCover> cover(DgsDataFetchingEnvironment  enf, DataFetchingEnvironment env) {
+			DataLoader<Long, BookCover> dataLoader = enf.getDataLoader(BookCoversDataLoader.class);
+			return dataLoader. load (env.<Book>getSource().getCoverId());
+
+	}
 
 	private final ConnectionService connectionService;
 
@@ -120,7 +118,7 @@ public class BookDataFetcher {
 		MultipartFile cover = input.getCover();
 
 		if (cover != null) {
-			book.setCover(bookCoverService.uploadCover(cover));
+			book.setCoverId(bookCoverService.uploadCover(cover).getDatabaseId());
 		}
 
 		book.setTitle(input.getTitle());
