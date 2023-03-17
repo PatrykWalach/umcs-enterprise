@@ -1,28 +1,17 @@
 package com.umcs.enterprise;
 
-import static com.netflix.graphql.types.errors.ErrorType.BAD_REQUEST;
 import static com.netflix.graphql.types.errors.ErrorType.PERMISSION_DENIED;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-import com.umcs.enterprise.BookCover;
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.CreateBookInput;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import graphql.ErrorClassification;
-import graphql.ErrorType;
-import kotlin.io.AccessDeniedException;
-import org.hibernate.internal.util.ZonedDateTimeComparator;
 import org.json.JSONException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -30,7 +19,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.util.Assert;
 
@@ -45,6 +33,7 @@ class BookDataFetcherTest {
 
 	@BeforeEach
 	void beforeEach() {
+		bookCoverRepository.deleteAll();
 		bookRepository.deleteAll();
 	}
 
@@ -293,13 +282,15 @@ class BookDataFetcherTest {
 	}
 
 	@Autowired
-	private CoverRepository coverRepository;
+	private BookCoverRepository bookCoverRepository;
 	@Test
 	void bookCover() throws JSONException {
-		BookCover  bookCover = coverRepository.save(new BookCover(null, 12,"file.jpg",15));
 		Book book = new Book();
-		book.setCoverId(bookCover.getDatabaseId());
 		book = bookRepository.save(book);
+
+		BookCover  bookCover = bookCoverRepository.save(new BookCover(null, 12,book, "file.jpg",15));
+
+
 		//        given
 
 		this.graphQlTester.documentName("BookControllerTest_bookCover")

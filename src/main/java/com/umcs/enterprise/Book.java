@@ -2,6 +2,8 @@ package com.umcs.enterprise;
 
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +26,8 @@ public class Book implements Node {
 	@Column
 	private String title;
 
-	@Column
-	private Long coverId;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
+	private List<BookCover> covers;
 
 	@Column
 	private int price;

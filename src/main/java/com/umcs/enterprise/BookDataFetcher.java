@@ -28,7 +28,7 @@ public class BookDataFetcher {
 
 	private final BookRepository bookRepository;
 
-	private final CoverRepository coverRepository;
+	private final BookCoverRepository bookCoverRepository;
 
 	//	@DgsData(parentType = "Book")
 	//	public DataFetcher<String> author() {
@@ -49,7 +49,7 @@ public class BookDataFetcher {
 		@DgsData(parentType = "Book")
 		public CompletableFuture<BookCover> cover(DgsDataFetchingEnvironment  enf, DataFetchingEnvironment env) {
 			DataLoader<Long, BookCover> dataLoader = enf.getDataLoader(BookCoversDataLoader.class);
-			return dataLoader. load (env.<Book>getSource().getCoverId());
+			return dataLoader. load (env.<Book>getSource().getDatabaseId());
 
 	}
 
@@ -118,7 +118,7 @@ public class BookDataFetcher {
 		MultipartFile cover = input.getCover();
 
 		if (cover != null) {
-			book.setCoverId(bookCoverService.uploadCover(cover).getDatabaseId());
+			book.setCovers(Collections.singletonList(bookCoverService.uploadCover(cover)));
 		}
 
 		book.setTitle(input.getTitle());

@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class BookCoverService {
 
-	private final CoverRepository coverRepository;
+	private final BookCoverRepository bookCoverRepository;
 
 	public BookCover uploadCover(MultipartFile file) throws IOException {
 		Path uploadDir = Paths.get("static/covers");
@@ -41,6 +41,6 @@ public class BookCoverService {
 		bookCover.setHeight(image.getHeight());
 		bookCover.setWidth(image.getWidth());
 
-		return coverRepository.save(bookCover);
+		return bookCoverRepository.save(bookCover);
 	}
 }

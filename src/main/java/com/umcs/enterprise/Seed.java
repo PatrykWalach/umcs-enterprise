@@ -1,18 +1,13 @@
 package com.umcs.enterprise;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -23,9 +18,9 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class Seed {
 
-	private final CoverRepository coverRepository;
+	private final BookCoverRepository bookCoverRepository;
 
-	private BookCover getCover(String filename) throws IOException {
+	private List<BookCover> getCover(String filename) throws IOException {
 		Path uploadDir = Paths.get("static/covers");
 		if (!Files.exists(uploadDir)) {
 			Files.createDirectories(uploadDir);
@@ -45,7 +40,7 @@ public class Seed {
 		bookCover.setHeight(image.getHeight());
 		bookCover.setWidth(image.getWidth());
 
-		return coverRepository.save(bookCover);
+		return Collections.singletonList(bookCoverRepository.save(bookCover));
 	}
 
 	@Bean
