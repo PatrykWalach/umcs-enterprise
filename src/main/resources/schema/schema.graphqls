@@ -15,7 +15,7 @@ type Book implements Node @connection {
 	author: String
 	price: String
 	popularity: Int
-	createdAt: DateTime
+	releasedAt: DateTime
 }
 
 union Viewer = User | Admin
@@ -58,14 +58,14 @@ enum Sort {
 input BookSortBy {
 	price: Sort
 	popularity: Sort
-	createdAt: Sort
+	releasedAt: Sort
 }
 
 type Query {
 	#    3
 	hello: String
 	node(id: ID!): Node
-	books(first: Int, after: String, last: Int, before: String, sortBy: BookSortBy): BookConnection
+	books(first: Int, after: String, last: Int, before: String, sortBy: [BookSortBy]): BookConnection
 	viewer: Viewer
 	#    3.5
 	basket: Basket
@@ -90,6 +90,7 @@ input CreateBookInput {
 	author: String
 	price: Int
 	cover: Upload
+	releasedAt: DateTime
 }
 
 type Mutation {

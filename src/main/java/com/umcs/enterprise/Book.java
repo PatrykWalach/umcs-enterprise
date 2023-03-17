@@ -2,6 +2,8 @@ package com.umcs.enterprise;
 
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Book implements Node {
 
 	@Id
@@ -33,4 +36,7 @@ public class Book implements Node {
 
 	@Column
 	private int popularity;
+
+	@Column
+	private  ZonedDateTime releasedAt;
 }

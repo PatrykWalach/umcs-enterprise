@@ -3,11 +3,11 @@ import graphqlrc from './.graphqlrc.json';
 
 const config: CodegenConfig = {
 	...graphqlrc,
+	schema: 'http://localhost:8080/graphql',
 	generates: {
-		// schema: 'http://localhost:8080/graphql',
-		// 'schema.graphql': {
-		// 	plugins: ['schema-ast']
-		// },
+		'schema.graphql': {
+			plugins: ['schema-ast']
+		},
 		'src/lib/gql/': {
 			preset: 'client',
 			plugins: [],

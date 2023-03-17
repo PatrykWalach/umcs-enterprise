@@ -1,32 +1,27 @@
 import { graphql } from '$lib/gql';
-import type { Actions } from '@sveltejs/kit';
+import type { ServerLoad } from '@sveltejs/kit';
 
-export const actions: Actions = {
-	default: async ({ request, locals }) => {
-		const data = await request.formData();
-		const { cover, author, price, title } = Object.fromEntries(data);
-
-		await locals.client.request(
-			graphql(`
-				mutation AddBook($input: CreateBookInput!) {
-					createBook(input: $input) {
-						id
+export const load: ServerLoad = ({ locals }) => {
+	return locals.client.request(
+		graphql(/* GraphQL */ `
+			query LayoutQuery {
+				popular: books(first: 10, sortBy: { popularity: DESC }) {
+					edges {
+						node {
+							id
+							...Book_book
+						}
 					}
 				}
-			`),
-			{
-				input: {
-					title: String(title),
-					author: String(author),
-					price: Number(price),
-					cover: cover instanceof File ? cover : undefined
+				new: books(first: 10, sortBy: { releasedAt: DESC }) {
+					edges {
+						node {
+							id
+							...Book_book
+						}
+					}
 				}
-			},
-			{
-				'graphql-require-preflight': ''
 			}
-		);
-
-		return {};
-	}
+		`)
+	);
 };

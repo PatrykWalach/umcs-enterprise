@@ -1,12 +1,32 @@
-<script>
-	import { enhance } from '$app/forms';
+<script lang="ts">
+	import type { PageData } from './$types';
+	import Book from './Book.svelte';
+
+	export let data: PageData;
 </script>
 
-<form method="post" enctype="multipart/form-data" use:enhance>
-	<label>Cover<input type="file" name="cover" accept="image/*" /></label>
-	<label>Title<input type="text" name="title" /></label>
-	<label>Author<input type="text" name="author" /></label>
-	<label>Price<input type="number" name="price" /></label>
+<div class="bg-base-200">
+	<!-- <pre>{JSON.stringify(data)}</pre> -->
+	<h2 class="text-3xl p-8">Popular</h2>
+	<ol class="grid grid-cols-5 p-8 gap-8">
+		{#each data.popular?.edges ?? [] as book (book?.node?.id)}
+			{#if book?.node}
+				<li class="contents">
+					<Book book={book.node} />
+				</li>
+			{/if}
+		{/each}
+	</ol>
+	<h2 class="text-3xl p-8">New</h2>
+	<ol class="grid grid-cols-5 p-8 gap-8">
+		{#each data.new?.edges ?? [] as book (book?.node?.id)}
+			{#if book?.node}
+				<li class="contents">
+					<Book book={book.node} />
+				</li>
+			{/if}
+		{/each}
+	</ol>
+</div>
 
-	<button type="submit">Submit</button>
-</form>
+<slot />
