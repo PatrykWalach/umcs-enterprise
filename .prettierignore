@@ -14,5 +14,7 @@ yarn.lock
 # 
 *.gradle
 .prettierignore
+.eslintignore
 .gitignore
 *.properties
+/src/lib/gql/
