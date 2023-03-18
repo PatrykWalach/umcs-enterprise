@@ -12,7 +12,7 @@
 
 <div class="bg-base-200 p-8">
 	<div class="card card-side bg-base-100 shadow-xl">
-		<div class="card-body grid grid-cols-3 p-16 gap-16 justify-between">
+		<div class="card-body grid grid-cols-3 justify-between gap-16 p-16">
 			{#if data.node?.cover}
 				<figure>
 					<img
@@ -25,9 +25,9 @@
 					/>
 				</figure>
 			{/if}
-      <div>
-        {data.node.synopsis}
-      </div>
+			<div>
+				{data.node.synopsis}
+			</div>
 			<div>
 				<div class="card-title line-clamp-2" title={data.node?.title}>
 					<a href="/book/{data.node.id}" class="link-hover link">{data.node?.title}</a>
@@ -37,16 +37,15 @@
 						{data.node.author}
 					</div>
 				{/if}
-        <div>
-          <!-- <div class="">
+				<div>
+					<!-- <div class="">
             {data?.price}
           </div> -->
-          <form method="post" use:enhance>
-            <button type="submit" class="btn-primary btn w-full">do koszyka</button>
-          </form>
-        </div>
+					<form method="post" use:enhance>
+						<button type="submit" class="btn-primary btn w-full">do koszyka</button>
+					</form>
+				</div>
 			</div>
-
 		</div>
 	</div>
 

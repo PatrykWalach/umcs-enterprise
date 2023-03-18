@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -154,37 +153,73 @@ class BookDataFetcherTest {
 	}
 
 	@Autowired
-	private  OrderRepository orderRepository;
+	private OrderRepository orderRepository;
 
-@Test
-	void recommended(){
+	@Test
+	void recommended() {
 		//        given
 
-		Book book   = bookRepository.save(Book.newBuilder().build());
-		bookRepository.saveAll(IntStream.range(0,10).mapToObj((i)-> Book.newBuilder().title(""+i).build()).collect(Collectors.toList()));
-		var recommended   = bookRepository.saveAll(IntStream.range(0,7).mapToObj((i)-> Book.newBuilder().title(""+(10+i)).build()).collect(Collectors.toList()));
+		Book book = bookRepository.save(Book.newBuilder().build());
+		bookRepository.saveAll(
+			IntStream
+				.range(0, 10)
+				.mapToObj(i -> Book.newBuilder().title("" + i).build())
+				.collect(Collectors.toList())
+		);
+		var recommended = bookRepository.saveAll(
+			IntStream
+				.range(0, 7)
+				.mapToObj(i -> Book.newBuilder().title("" + (10 + i)).build())
+				.collect(Collectors.toList())
+		);
 
-		orderRepository.saveAll(List.of(
-				Order.newBuilder().books(Stream.concat(recommended.subList(0, 5).stream(), Stream.of(book)).collect(Collectors.toSet())).build(),
-				Order.newBuilder().books(Stream.concat(recommended.subList(2, 4).stream(), Stream.of(book)).collect(Collectors.toSet())).build(),
-				Order.newBuilder().books(Stream.concat(recommended.subList(3, 7).stream(), Stream.of(book)).collect(Collectors.toSet())).build(),
-				Order.newBuilder().books(Stream.concat(recommended.subList(1, 6).stream(), Stream.of(book)).collect(Collectors.toSet())).build()
-		));
+		orderRepository.saveAll(
+			List.of(
+				Order
+					.newBuilder()
+					.books(
+						Stream
+							.concat(recommended.subList(0, 5).stream(), Stream.of(book))
+							.collect(Collectors.toSet())
+					)
+					.build(),
+				Order
+					.newBuilder()
+					.books(
+						Stream
+							.concat(recommended.subList(2, 4).stream(), Stream.of(book))
+							.collect(Collectors.toSet())
+					)
+					.build(),
+				Order
+					.newBuilder()
+					.books(
+						Stream
+							.concat(recommended.subList(3, 7).stream(), Stream.of(book))
+							.collect(Collectors.toSet())
+					)
+					.build(),
+				Order
+					.newBuilder()
+					.books(
+						Stream
+							.concat(recommended.subList(1, 6).stream(), Stream.of(book))
+							.collect(Collectors.toSet())
+					)
+					.build()
+			)
+		);
 
-
-
-
-
-	this.graphQlTester.documentName("BookControllerTest_recommended")
-				.variable("id", book.getId())
-				//        when
-				.execute()
-				//                then
-				.errors()
-				.verify()
-				.path("node.recommended.edges[*].node.title")
-				.entity(List.class)
-				.isEqualTo(List.of("13","12","14", "11","15" ,"10","16"));
+		this.graphQlTester.documentName("BookControllerTest_recommended")
+			.variable("id", book.getId())
+			//        when
+			.execute()
+			//                then
+			.errors()
+			.verify()
+			.path("node.recommended.edges[*].node.title")
+			.entity(List.class)
+			.isEqualTo(List.of("13", "12", "14", "11", "15", "10", "16"));
 	}
 
 	@ParameterizedTest
@@ -326,9 +361,10 @@ class BookDataFetcherTest {
 	@Test
 	void cover() throws JSONException {
 		//        given
-		Cover cover = coverRepository.save(Cover.newBuilder().width( 12).height(15).filename( "file.jpg").build() );
-		Book book   = bookRepository.save(Book.newBuilder().cover(cover).build());
-
+		Cover cover = coverRepository.save(
+			Cover.newBuilder().width(12).height(15).filename("file.jpg").build()
+		);
+		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
 
 		this.graphQlTester.documentName("BookControllerTest_bookCover")
 			.variable("id", book.getId())

@@ -1,15 +1,13 @@
 package com.umcs.enterprise;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
-import java.util.List;
-
 @Entity(name = "BookUser")
-
 @Getter
 @Setter
-@Builder(builderMethodName ="newBuilder")
+@Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -18,9 +16,6 @@ public class User {
 	@GeneratedValue
 	private Long databaseId;
 
-
-	@OneToMany(fetch= FetchType.LAZY, mappedBy="user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Order> orders;
-
-
 }

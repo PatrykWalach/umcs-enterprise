@@ -11,12 +11,12 @@ export const load: ServerLoad = async ({ locals, request, url, params }) => {
 					... on Book {
 						author
 						cover {
-              height
-              url
-              width
-            }
+							height
+							url
+							width
+						}
 						price
-            recommended(first: 5) {
+						recommended(first: 5) {
 							edges {
 								node {
 									...Book_book

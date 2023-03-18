@@ -36,8 +36,8 @@
 	{/if}
 	<div class="card-body justify-between gap-4">
 		<div>
-			<div class="card-title line-clamp-2" title="{data?.title}">
-				<a href="/book/{data.id}" class="link link-hover">{data?.title}</a>
+			<div class="card-title line-clamp-2" title={data?.title}>
+				<a href="/book/{data.id}" class="link-hover link">{data?.title}</a>
 			</div>
 			{#if data?.author}
 				<div class="truncate">

@@ -1,18 +1,17 @@
 package com.umcs.enterprise;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.Hibernate;
-
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 @Entity
 @Table(name = "\"order\"")
 @Getter
 @Setter
-@Builder(builderMethodName ="newBuilder")
+@Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order implements Node {
@@ -21,23 +20,17 @@ public class Order implements Node {
 	@GeneratedValue
 	private Long databaseId;
 
-
-
-
-
-
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	@ManyToMany
-	@JoinTable(name = "books_orders",
-			joinColumns = @JoinColumn(name = "order_id"),
-			inverseJoinColumns = @JoinColumn(name = "book_id"))
-
+	@JoinTable(
+		name = "books_orders",
+		joinColumns = @JoinColumn(name = "order_id"),
+		inverseJoinColumns = @JoinColumn(name = "book_id")
+	)
 	private Set<Book> books = new LinkedHashSet<>();
-
-
 
 	@Override
 	public boolean equals(Object o) {

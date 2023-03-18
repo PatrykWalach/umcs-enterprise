@@ -8,14 +8,13 @@ import com.umcs.enterprise.types.Cover;
 import com.umcs.enterprise.types.CreateBookInput;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.persistence.EntityManager;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
@@ -52,7 +51,11 @@ public class BookDataFetcher {
 		DataFetchingEnvironment env
 	) {
 		DataLoader<Long, Cover> dataLoader = enf.getDataLoader(CoversDataLoader.class);
-		return Optional.ofNullable(env.<Book>getSource().getCover()).map(com.umcs.enterprise.Cover::getDatabaseId).map( dataLoader::load).orElse(null);
+		return Optional
+			.ofNullable(env.<Book>getSource().getCover())
+			.map(com.umcs.enterprise.Cover::getDatabaseId)
+			.map(dataLoader::load)
+			.orElse(null);
 	}
 
 	private final ConnectionService connectionService;
@@ -92,10 +95,7 @@ public class BookDataFetcher {
 		DataFetchingEnvironment env,
 		@InputArgument List<BookSortBy> sortBy
 	) {
-
 		return connectionService.getConnection(
-
-
 			this.bookRepository.findAll(
 					getSort(
 						sortBy,
@@ -105,8 +105,7 @@ public class BookDataFetcher {
 							fields.put("releasedAt", order.getReleasedAt());
 						}
 					)
-				)
-				,
+				),
 			env
 		);
 	}
@@ -114,16 +113,10 @@ public class BookDataFetcher {
 	private final EntityManager manager;
 
 	@DgsData(parentType = "Book")
-	public graphql.relay.Connection<Book> recommended(
-			DataFetchingEnvironment env
-	) {
-
+	public graphql.relay.Connection<Book> recommended(DataFetchingEnvironment env) {
 		return connectionService.getConnection(
-
-			 	this.bookRepository.findByOrdersBooksDatabaseId(
-					env.<Book>getSource().getDatabaseId())
-,
-				env
+			this.bookRepository.findByOrdersBooksDatabaseId(env.<Book>getSource().getDatabaseId()),
+			env
 		);
 	}
 

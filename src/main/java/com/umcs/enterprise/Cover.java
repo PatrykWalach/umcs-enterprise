@@ -6,7 +6,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@Builder(builderMethodName ="newBuilder")
+@Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cover {
@@ -15,16 +15,12 @@ public class Cover {
 	@GeneratedValue
 	private Long databaseId;
 
-	
 	private int width;
 
-	
-	@OneToOne(mappedBy="cover")
+	@OneToOne(mappedBy = "cover")
 	private Book book;
 
-	
 	private String filename;
 
-	
 	private int height;
 }

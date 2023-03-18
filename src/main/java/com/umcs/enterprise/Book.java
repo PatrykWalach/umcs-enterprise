@@ -1,58 +1,42 @@
 package com.umcs.enterprise;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.Hibernate;
-
 import java.time.ZonedDateTime;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 @Entity
-@Builder(builderMethodName ="newBuilder")
+@Builder(builderMethodName = "newBuilder")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book implements Node {
 
-
-
-
 	@Id
 	@GeneratedValue
 	private Long databaseId;
 
-	
 	private String author;
 
-	
 	private String title;
 
 	@Column(length = 2_000)
 	private String synopsis;
 
-
-
-	@OneToOne(fetch=FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cover_id")
 	private Cover cover;
 
-
-
-	
 	private int price;
 
-	
 	private ZonedDateTime createdAt;
 
-
-
-	
 	private ZonedDateTime releasedAt;
 
-	
 	private Long popularity;
 
 	@ManyToMany(mappedBy = "books")
