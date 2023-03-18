@@ -1,4 +1,4 @@
-query NodeControllerTest_returnsNode($id: ID!) {
+query NodeControllerTestNode($id: ID!) {
 	node(id: $id) {
 		__typename
 		id

@@ -1,16 +1,16 @@
-mutation BookControllerTest_createBook($input: CreateBookInput!) {
+mutation BookControllerTestCreateBook($input: CreateBookInput!) {
 	createBook(input: $input) {
-		id
-		title
 		author
 		cover {
 			height
 			url
 			width
 		}
-		title
-		createdAt
+		id
 		popularity
 		price
+		releasedAt
+
+		title
 	}
 }

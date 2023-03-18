@@ -1,7 +1,11 @@
 import { graphql } from '$lib/gql';
 import type { ServerLoad } from '@sveltejs/kit';
 
-export const load: ServerLoad = async ({ locals, request, url, params }) => {
+export const load: ServerLoad = async ({ locals, params }) => {
+	if (!params.id) {
+		throw new Error('No id');
+	}
+
 	const data = await locals.client.request(
 		graphql(/* GraphQL */ `
 			query BookQuery($id: ID!) {

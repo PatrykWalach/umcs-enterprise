@@ -6,7 +6,6 @@ export const load: ServerLoad = ({ locals }) => {
 		graphql(/* GraphQL */ `
 			query NavbarQuery {
 				basket {
-					totalPrice
 					books(first: 10) {
 						edges {
 							cursor
@@ -15,6 +14,7 @@ export const load: ServerLoad = ({ locals }) => {
 							hasNextPage
 						}
 					}
+					totalPrice
 				}
 			}
 		`)

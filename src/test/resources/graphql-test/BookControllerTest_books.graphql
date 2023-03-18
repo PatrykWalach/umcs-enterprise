@@ -1,11 +1,11 @@
-query BookControllerTest_books(
+query BookControllerTestBooks(
 	$after: String
 	$before: String
 	$first: Int
 	$last: Int
 	$sortBy: [BookSortBy]
 ) {
-	books(first: $first, last: $last, before: $before, after: $after, sortBy: $sortBy) {
+	books(after: $after, before: $before, first: $first, last: $last, sortBy: $sortBy) {
 		edges {
 			node {
 				id
@@ -13,10 +13,10 @@ query BookControllerTest_books(
 			}
 		}
 		pageInfo {
+			endCursor
 			hasNextPage
 			hasPreviousPage
 			startCursor
-			endCursor
 		}
 	}
 }

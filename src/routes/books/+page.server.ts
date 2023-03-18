@@ -1,20 +1,8 @@
 import { graphql } from '$lib/gql';
 import { Sort } from '$lib/gql/graphql';
-import { type ServerLoad } from '@sveltejs/kit';
+import type { ServerLoad } from '@sveltejs/kit';
 
-export const load: ServerLoad = ({ locals, request, url }) => {
-	// 	<select name="by" id="" class="select">
-	// 	<option value="" selected>Data dodania</option>
-	// 	<option value="realease_date">Data wydania</option>
-	// 	<option value="popularity">Popularność</option>
-	// 	<option value="price">Cena</option>
-	// </select>
-
-	// <select name="order" id="" class="select">
-	// 	<option value="asc">Rosnąco</option>
-	// 	<option value="desc" selected>Malejąco</option>
-	// </select>
-
+export const load: ServerLoad = ({ locals, url }) => {
 	const order = {
 		asc: Sort.Asc,
 		desc: Sort.Desc
