@@ -1,6 +1,6 @@
 HELP.md
 .gradle
-build/
+/build
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -49,6 +49,5 @@ node_modules
 .output
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-**/src/lib/gql/
-
-postgres-data/
+/src/lib/gql
+/postgres-data
