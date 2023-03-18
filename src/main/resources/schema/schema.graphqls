@@ -7,8 +7,15 @@ type Cover {
 	width: Int
 	height: Int
 }
-
-type Book implements Node @connection {
+type BookConnection {
+	edges: [BookEdge]
+	pageInfo: PageInfo
+}
+type BookEdge {
+	cursor: String
+	node: Book
+}
+type Book implements Node {
 	id: ID!
 	cover: Cover
 	title: String
@@ -37,8 +44,23 @@ enum OrderStatus {
 }
 
 scalar DateTime
+type OrderConnection {
+	edges: [OrderEdge]
+	pageInfo: PageInfo
+}
 
-type Order implements Node @connection {
+type PageInfo {
+	hasNextPage: Boolean!
+	hasPreviousPage: Boolean!
+	startCursor: String
+	endCursor: String
+}
+
+type OrderEdge {
+	cursor: String
+	node: Order
+}
+type Order implements Node {
 	id: ID!
 	totalPrice: String
 	status: OrderStatus
