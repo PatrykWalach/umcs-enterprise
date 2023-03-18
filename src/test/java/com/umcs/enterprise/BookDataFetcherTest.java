@@ -10,9 +10,13 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 import org.json.JSONException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -34,6 +38,7 @@ class BookDataFetcherTest {
 
 	@BeforeEach
 	void beforeEach() {
+		orderRepository.deleteAll();
 		bookRepository.deleteAll();
 	}
 
@@ -148,6 +153,40 @@ class BookDataFetcherTest {
 			: Base64.getEncoder().encodeToString(("simple-cursor" + c).getBytes(StandardCharsets.UTF_8));
 	}
 
+	@Autowired
+	private  OrderRepository orderRepository;
+
+@Test
+	void recommended(){
+		//        given
+
+		Book book   = bookRepository.save(Book.newBuilder().build());
+		bookRepository.saveAll(IntStream.range(0,10).mapToObj((i)-> Book.newBuilder().title(""+i).build()).collect(Collectors.toList()));
+		var recommended   = bookRepository.saveAll(IntStream.range(0,7).mapToObj((i)-> Book.newBuilder().title(""+(10+i)).build()).collect(Collectors.toList()));
+
+		orderRepository.saveAll(List.of(
+				Order.newBuilder().books(Stream.concat(recommended.subList(0, 5).stream(), Stream.of(book)).collect(Collectors.toSet())).build(),
+				Order.newBuilder().books(Stream.concat(recommended.subList(2, 4).stream(), Stream.of(book)).collect(Collectors.toSet())).build(),
+				Order.newBuilder().books(Stream.concat(recommended.subList(3, 7).stream(), Stream.of(book)).collect(Collectors.toSet())).build(),
+				Order.newBuilder().books(Stream.concat(recommended.subList(1, 6).stream(), Stream.of(book)).collect(Collectors.toSet())).build()
+		));
+
+
+
+
+
+	this.graphQlTester.documentName("BookControllerTest_recommended")
+				.variable("id", book.getId())
+				//        when
+				.execute()
+				//                then
+				.errors()
+				.verify()
+				.path("node.recommended.edges[*].node.title")
+				.entity(List.class)
+				.isEqualTo(List.of("13","12","14", "11","15" ,"10","16"));
+	}
+
 	@ParameterizedTest
 	@CsvSource(
 		{
@@ -203,10 +242,10 @@ class BookDataFetcherTest {
 		book1.setReleasedAt(ZonedDateTime.now().plusDays(2));
 		book0.setReleasedAt(ZonedDateTime.now().plusDays(3));
 
-		book2.setPopularity(20);
-		book1.setPopularity(25);
-		book3.setPopularity(30);
-		book0.setPopularity(35);
+		book2.setPopularity(20L);
+		book1.setPopularity(25L);
+		book3.setPopularity(30L);
+		book0.setPopularity(35L);
 
 		book3.setPrice(50);
 		book0.setPrice(60);
@@ -285,12 +324,11 @@ class BookDataFetcherTest {
 	private CoverRepository coverRepository;
 
 	@Test
-	void bookCover() throws JSONException {
-		Cover cover = coverRepository.save(new Cover(null, 12, "file.jpg", 15));
-		Book book = new Book();
-		book.setCoverId(cover.getDatabaseId());
-		book = bookRepository.save(book);
+	void cover() throws JSONException {
 		//        given
+		Cover cover = coverRepository.save(Cover.newBuilder().width( 12).height(15).filename( "file.jpg").build() );
+		Book book   = bookRepository.save(Book.newBuilder().cover(cover).build());
+
 
 		this.graphQlTester.documentName("BookControllerTest_bookCover")
 			.variable("id", book.getId())

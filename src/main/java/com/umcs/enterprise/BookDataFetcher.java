@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
@@ -50,7 +52,7 @@ public class BookDataFetcher {
 		DataFetchingEnvironment env
 	) {
 		DataLoader<Long, Cover> dataLoader = enf.getDataLoader(CoversDataLoader.class);
-		return dataLoader.load(env.<Book>getSource().getCoverId());
+		return Optional.ofNullable(env.<Book>getSource().getCover()).map(com.umcs.enterprise.Cover::getDatabaseId).map( dataLoader::load).orElse(null);
 	}
 
 	private final ConnectionService connectionService;
@@ -90,7 +92,10 @@ public class BookDataFetcher {
 		DataFetchingEnvironment env,
 		@InputArgument List<BookSortBy> sortBy
 	) {
+
 		return connectionService.getConnection(
+
+
 			this.bookRepository.findAll(
 					getSort(
 						sortBy,
@@ -100,8 +105,25 @@ public class BookDataFetcher {
 							fields.put("releasedAt", order.getReleasedAt());
 						}
 					)
-				),
+				)
+				,
 			env
+		);
+	}
+
+	private final EntityManager manager;
+
+	@DgsData(parentType = "Book")
+	public graphql.relay.Connection<Book> recommended(
+			DataFetchingEnvironment env
+	) {
+
+		return connectionService.getConnection(
+
+			 	this.bookRepository.findByOrdersBooksDatabaseId(
+					env.<Book>getSource().getDatabaseId())
+,
+				env
 		);
 	}
 
@@ -118,11 +140,11 @@ public class BookDataFetcher {
 		MultipartFile cover = input.getCover();
 
 		if (cover != null) {
-			book.setCoverId(coverService.uploadCover(cover).getDatabaseId());
+			book.setCover(coverService.uploadCover(cover));
 		}
 
 		book.setTitle(input.getTitle());
-		book.setPopularity(0);
+		book.setPopularity(0L);
 		book.setCreatedAt(ZonedDateTime.now());
 
 		return bookRepository.save(book);

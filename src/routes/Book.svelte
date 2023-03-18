@@ -21,28 +21,37 @@
 	$: data = useFragment(Book_book, book);
 </script>
 
-<div class="flex flex-col justify-end gap-4">
+<div class="card bg-base-100 shadow-xl">
 	{#if data?.cover}
-		<img
-			class="h-20 w-20"
-			src={data.cover?.url}
-			width={data.cover?.width}
-			height={data.cover?.height}
-			alt=""
-		/>
+		<figure>
+			<img
+				loading="lazy"
+				class="h-auto w-full mix-blend-darken"
+				src={data.cover?.url}
+				width={data.cover?.width}
+				height={data.cover?.height}
+				alt=""
+			/>
+		</figure>
 	{/if}
-	<div class="text-xl">
-		{data?.title}
-	</div>
-	{#if data?.author}
-		<div class="truncate">
-			{data.author}
+	<div class="card-body justify-between gap-4">
+		<div>
+			<div class="card-title line-clamp-2" title="{data?.title}">
+				<a href="/book/{data.id}" class="link link-hover">{data?.title}</a>
+			</div>
+			{#if data?.author}
+				<div class="truncate">
+					{data.author}
+				</div>
+			{/if}
 		</div>
-	{/if}
-	<div class="">
-		{data?.price}
+		<div>
+			<!-- <div class="">
+				{data?.price}
+			</div> -->
+			<form method="post" use:enhance>
+				<button type="submit" class="btn-primary btn w-full">do koszyka</button>
+			</form>
+		</div>
 	</div>
-	<form method="post" use:enhance>
-		<button type="submit" class="btn-primary btn w-full">do koszyka</button>
-	</form>
 </div>

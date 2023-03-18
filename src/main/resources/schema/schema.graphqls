@@ -15,7 +15,9 @@ type Book implements Node @connection {
 	author: String
 	price: String
 	popularity: Int
+	synopsis: String
 	releasedAt: DateTime
+	recommended(first: Int, after: String, last: Int, before: String): BookConnection
 }
 
 union Viewer = User | Admin

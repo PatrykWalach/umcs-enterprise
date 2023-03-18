@@ -12,6 +12,7 @@
 		"prettier": "prettier --plugin-search-dir . --cache --cache-strategy content",
 		"format": "npm run prettier -- --write .",
 		"prepare": "husky install && npm run generate",
+		"docker": "docker-compose up -d",
 		"generate": "graphql-codegen --config codegen.cts"
 	},
 	"lint-staged": {
@@ -52,6 +53,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@tailwindcss/line-clamp": "^0.4.2",
 		"daisyui": "^2.51.4",
 		"graphql": "^16.6.0",
 		"graphql-request": "^5.2.0"

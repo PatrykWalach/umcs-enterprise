@@ -1,17 +1,12 @@
 package com.umcs.enterprise;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder(builderMethodName ="newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cover {
@@ -20,12 +15,16 @@ public class Cover {
 	@GeneratedValue
 	private Long databaseId;
 
-	@Column
+	
 	private int width;
 
-	@Column
+	
+	@OneToOne(mappedBy="cover")
+	private Book book;
+
+	
 	private String filename;
 
-	@Column
+	
 	private int height;
 }
