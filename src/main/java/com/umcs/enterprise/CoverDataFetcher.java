@@ -9,6 +9,6 @@ public class CoverDataFetcher {
 
 	@DgsData(parentType = "Cover")
 	public String url(DataFetchingEnvironment env) {
-		return "http://localhost:8080/covers/" + env.<Cover>getSource().getFilename();
+		return "http://192.168.1.103:8080/covers/" + env.<Cover>getSource().getFilename();
 	}
 }

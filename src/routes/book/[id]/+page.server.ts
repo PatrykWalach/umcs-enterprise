@@ -1,5 +1,7 @@
+import BasketBook from '$lib/BasketBook';
 import { graphql } from '$lib/gql';
 import type { ServerLoad } from '@sveltejs/kit';
+import type { Actions } from './$types';
 
 export const load: ServerLoad = async ({ locals, params }) => {
 	if (!params.id) {
@@ -20,7 +22,7 @@ export const load: ServerLoad = async ({ locals, params }) => {
 							width
 						}
 						price
-						recommended(first: 5) {
+						recommended(first: 6) {
 							edges {
 								node {
 									...Book_book
@@ -47,4 +49,16 @@ export const load: ServerLoad = async ({ locals, params }) => {
 		...data,
 		node: data.node
 	};
+};
+
+export const actions: Actions = {
+	default: async ({ locals, params }) => {
+		await locals.client.request(BasketBook, {
+			input: {
+				id: params.id
+			}
+		});
+
+		return {};
+	}
 };

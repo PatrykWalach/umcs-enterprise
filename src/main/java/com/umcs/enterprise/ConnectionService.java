@@ -2,7 +2,6 @@ package com.umcs.enterprise;
 
 import static java.lang.String.format;
 
-import com.netflix.graphql.dgs.DgsQuery;
 import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.List;

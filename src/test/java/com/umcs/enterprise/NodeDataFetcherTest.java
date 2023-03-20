@@ -2,6 +2,7 @@ package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import java.math.BigDecimal;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,9 @@ class NodeDataFetcherTest {
 	private GraphQlTester graphQlTester;
 
 	@Test
-	void returnsNode() throws JSONException {
+	void returnsNode() {
 		//        given
-		var book = new Book();
-		book.setTitle("Book title");
-		bookRepository.save(book);
+		var book = bookRepository.save(Book.newBuilder().title("Book title").build());
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", book.getId())

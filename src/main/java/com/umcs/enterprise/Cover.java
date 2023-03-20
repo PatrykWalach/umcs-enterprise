@@ -9,7 +9,7 @@ import lombok.*;
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cover {
+public class Cover implements Node {
 
 	@Id
 	@GeneratedValue
@@ -17,7 +17,7 @@ public class Cover {
 
 	private int width;
 
-	@OneToOne(mappedBy = "cover")
+	@OneToOne(fetch = FetchType.LAZY)
 	private Book book;
 
 	private String filename;

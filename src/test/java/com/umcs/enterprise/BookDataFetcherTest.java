@@ -5,17 +5,15 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.CreateBookInput;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.assertj.core.util.Streams;
 import org.json.JSONException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -23,6 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.util.Assert;
 
@@ -37,18 +36,19 @@ class BookDataFetcherTest {
 
 	@BeforeEach
 	void beforeEach() {
+		bookOrderRepository.deleteAll();
 		orderRepository.deleteAll();
 		bookRepository.deleteAll();
 	}
 
 	@Test
 	@Disabled("TODO: implement JWT")
-	void createBook_admin() throws JSONException {
+	void createBook_admin() {
 		//        given
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
-			.price(100)
+			.price(100.0)
 			.build();
 
 		this.graphQlTester.documentName("BookControllerTest_createBook")
@@ -75,12 +75,12 @@ class BookDataFetcherTest {
 	}
 
 	@Test
-	void createBook_user() throws JSONException {
+	void createBook_user() {
 		//        given
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
-			.price(100)
+			.price(100.0)
 			.build();
 
 		this.graphQlTester.documentName("BookControllerTest_createBook")
@@ -116,7 +116,7 @@ class BookDataFetcherTest {
 		boolean hasPreviousPage,
 		String startCursor,
 		String endCursor
-	) throws JSONException {
+	) {
 		//        given
 		bookRepository.saveAll(
 			IntStream.range(0, 14).mapToObj(i -> new Book()).collect(Collectors.toList())
@@ -173,41 +173,24 @@ class BookDataFetcherTest {
 				.collect(Collectors.toList())
 		);
 
-		orderRepository.saveAll(
-			List.of(
-				Order
-					.newBuilder()
-					.books(
-						Stream
-							.concat(recommended.subList(0, 5).stream(), Stream.of(book))
-							.collect(Collectors.toSet())
-					)
-					.build(),
-				Order
-					.newBuilder()
-					.books(
-						Stream
-							.concat(recommended.subList(2, 4).stream(), Stream.of(book))
-							.collect(Collectors.toSet())
-					)
-					.build(),
-				Order
-					.newBuilder()
-					.books(
-						Stream
-							.concat(recommended.subList(3, 7).stream(), Stream.of(book))
-							.collect(Collectors.toSet())
-					)
-					.build(),
-				Order
-					.newBuilder()
-					.books(
-						Stream
-							.concat(recommended.subList(1, 6).stream(), Stream.of(book))
-							.collect(Collectors.toSet())
-					)
-					.build()
-			)
+		List<Order> orders = orderRepository.saveAll(Stream.generate(Order::new).limit(4).toList());
+
+		ArrayList<List<Book>> slices = new ArrayList<>();
+		slices.add(recommended.subList(0, 5));
+		slices.add(recommended.subList(2, 4));
+		slices.add(recommended.subList(3, 7));
+		slices.add(recommended.subList(1, 6));
+
+		bookOrderRepository.saveAll(
+			IntStream
+				.range(0, slices.size())
+				.boxed()
+				.flatMap(i ->
+					Stream
+						.concat(slices.get(i).stream(), Stream.of(book))
+						.map(book1 -> BookOrder.newBuilder().book(book1).order(orders.get(i)).build())
+				)
+				.toList()
 		);
 
 		this.graphQlTester.documentName("BookControllerTest_recommended")
@@ -222,10 +205,13 @@ class BookDataFetcherTest {
 			.isEqualTo(List.of("13", "12", "14", "11", "15", "10", "16"));
 	}
 
+	@Autowired
+	private BookOrderRepository bookOrderRepository;
+
 	@ParameterizedTest
 	@CsvSource(
 		{
-			",Book:0,Book:1,Book:2,Book:3",
+			",Book:2,Book:3,Book:1,Book:0",
 			"price_ASC,Book:3,Book:0,Book:1,Book:2",
 			"price_DESC,Book:2,Book:1,Book:0,Book:3",
 			"popularity_ASC,Book:2,Book:1,Book:3,Book:0",
@@ -234,8 +220,7 @@ class BookDataFetcherTest {
 			"releasedAt_DESC,Book:0,Book:1,Book:3,Book:2"
 		}
 	)
-	void books_sort(String order, String out0, String out1, String out2, String out3)
-		throws JSONException { //        given
+	void books_sort(String order, String out0, String out1, String out2, String out3) { //        given
 		HashMap<String, BookSortBy> sort = new HashMap<>();
 		sort.put(
 			"price_ASC",
@@ -277,17 +262,41 @@ class BookDataFetcherTest {
 		book1.setReleasedAt(ZonedDateTime.now().plusDays(2));
 		book0.setReleasedAt(ZonedDateTime.now().plusDays(3));
 
-		book2.setPopularity(20L);
-		book1.setPopularity(25L);
-		book3.setPopularity(30L);
-		book0.setPopularity(35L);
-
-		book3.setPrice(50);
-		book0.setPrice(60);
-		book1.setPrice(75);
-		book2.setPrice(120);
+		book3.setPrice(BigDecimal.valueOf(50));
+		book0.setPrice(BigDecimal.valueOf(60));
+		book1.setPrice(BigDecimal.valueOf(75));
+		book2.setPrice(BigDecimal.valueOf(120));
 
 		bookRepository.saveAll(Arrays.asList(book0, book1, book2, book3));
+
+		bookOrderRepository.saveAll(
+			orderRepository
+				.saveAll(Stream.generate(Order::new).limit(20).collect(Collectors.toList()))
+				.stream()
+				.map(o -> BookOrder.newBuilder().book(book2).order(o).build())
+				.toList()
+		);
+		bookOrderRepository.saveAll(
+			orderRepository
+				.saveAll(Stream.generate(Order::new).limit(25).collect(Collectors.toList()))
+				.stream()
+				.map(o -> BookOrder.newBuilder().book(book1).order(o).build())
+				.toList()
+		);
+		bookOrderRepository.saveAll(
+			orderRepository
+				.saveAll(Stream.generate(Order::new).limit(30).collect(Collectors.toList()))
+				.stream()
+				.map(o -> BookOrder.newBuilder().book(book3).order(o).build())
+				.toList()
+		);
+		bookOrderRepository.saveAll(
+			orderRepository
+				.saveAll(Stream.generate(Order::new).limit(35).collect(Collectors.toList()))
+				.stream()
+				.map(o -> BookOrder.newBuilder().book(book0).order(o).build())
+				.toList()
+		);
 
 		this.graphQlTester.documentName("BookControllerTest_books")
 			.variable("first", 4)
@@ -297,24 +306,14 @@ class BookDataFetcherTest {
 			//                then
 			.errors()
 			.verify()
-			.path("books.edges[0].node.title")
-			.entity(String.class)
-			.isEqualTo(out0)
-			.path("books.edges[1].node.title")
-			.entity(String.class)
-			.isEqualTo(out1)
-			.path("books.edges[2].node.title")
-			.entity(String.class)
-			.isEqualTo(out2)
-			.path("books.edges[3].node.title")
-			.entity(String.class)
-			.isEqualTo(out3);
+			.path("books.edges[*].node.title")
+			.entity(List.class)
+			.isEqualTo(List.of(out0, out1, out2, out3));
 	}
 
 	@ParameterizedTest
 	@CsvSource({ "-1,,,", ",,-1,", "10,,10,", ",10,,10", "10,,10,", ",10,10,", "0,,,", ",,0," })
-	void books_variables(Integer first, String after, Integer last, String before)
-		throws JSONException {
+	void books_variables(Integer first, String after, Integer last, String before) {
 		//        given
 
 		this.graphQlTester.documentName("BookControllerTest_books")
@@ -333,7 +332,7 @@ class BookDataFetcherTest {
 	}
 
 	@Test
-	void books_empty() throws JSONException {
+	void books_empty() {
 		//        given
 
 		this.graphQlTester.documentName("BookControllerTest_books")
@@ -359,7 +358,7 @@ class BookDataFetcherTest {
 	private CoverRepository coverRepository;
 
 	@Test
-	void cover() throws JSONException {
+	void cover() {
 		//        given
 		Cover cover = coverRepository.save(
 			Cover.newBuilder().width(12).height(15).filename("file.jpg").build()

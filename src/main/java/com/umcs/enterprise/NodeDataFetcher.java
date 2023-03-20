@@ -27,18 +27,13 @@ public class NodeDataFetcher {
 
 	@DgsQuery
 	public Node node(@InputArgument String id) {
-		String[] split = id.split(":");
-		if (split.length < 2) {
-			throw new GraphQLException("Invalid id");
-		}
-		String className = split[0];
-		Long databaseId = Long.parseLong(split[1]);
-		var loader = loaders.get(className);
+		GlobalId globalId = GlobalId.from(id);
+		var loader = loaders.get(globalId.getClassName());
 
 		if (loader == null) {
 			return null;
 		}
 
-		return loader.apply(databaseId).orElse(null);
+		return loader.apply(globalId.getDatabaseId()).orElse(null);
 	}
 }

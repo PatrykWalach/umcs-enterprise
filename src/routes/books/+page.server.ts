@@ -42,7 +42,7 @@ export const load: ServerLoad = ({ locals, url }) => {
 		{
 			after: url.searchParams.get('after'),
 			before: url.searchParams.get('before'),
-			[url.searchParams.get('before') ? 'last' : 'first']: 50,
+			[url.searchParams.get('before') ? 'last' : 'first']: 60,
 			sortBy
 		}
 	);

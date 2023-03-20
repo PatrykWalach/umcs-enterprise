@@ -11,6 +11,22 @@ module.exports = {
 			processor: '@graphql-eslint/graphql'
 		},
 		{
+			files: ['*.graphqls'],
+			extends: ['plugin:@graphql-eslint/schema-all', 'plugin:@graphql-eslint/relay'],
+			rules: {
+				'@graphql-eslint/require-description': 'off',
+				'@graphql-eslint/strict-id-in-types': [
+					'error',
+					{
+						exceptions: {
+							suffixes: ['Connection', 'Edge', 'Result'],
+							types: ['PageInfo', 'Basket']
+						}
+					}
+				]
+			}
+		},
+		{
 			files: ['*.graphql', '*.gql'],
 			extends: ['plugin:@graphql-eslint/operations-all'],
 			rules: {

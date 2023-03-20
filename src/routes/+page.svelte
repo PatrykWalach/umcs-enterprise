@@ -5,12 +5,12 @@
 	export let data: PageData;
 </script>
 
-<div class="bg-base-200">
+<div class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
 	<!-- <pre>{JSON.stringify(data)}</pre> -->
-	<h2 class="p-8 text-3xl">
-		<a href="/books?by=popularity&order=desc" class="link-hover link">Popular</a>
+	<h2 class="mt-4 text-3xl">
+		<a href="/books?by=popularity&order=desc" class="link-hover link">Bestsellery</a>
 	</h2>
-	<ol class="grid grid-cols-5 gap-8 p-8">
+	<ol class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 sm:gap-4">
 		{#each data.popular?.edges ?? [] as book (book?.node?.id)}
 			{#if book?.node}
 				<li class="contents">
@@ -19,10 +19,10 @@
 			{/if}
 		{/each}
 	</ol>
-	<h2 class="p-8 text-3xl">
-		<a href="/books?by=realease_date&order=desc" class="link-hover link">New</a>
+	<h2 class="mt-4 text-3xl">
+		<a href="/books?by=realease_date&order=desc" class="link-hover link">Nowości</a>
 	</h2>
-	<ol class="grid grid-cols-5 gap-8 p-8">
+	<ol class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 sm:gap-4">
 		{#each data.new?.edges ?? [] as book (book?.node?.id)}
 			{#if book?.node}
 				<li class="contents">

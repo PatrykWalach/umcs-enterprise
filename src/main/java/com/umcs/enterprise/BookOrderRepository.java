@@ -2,4 +2,4 @@ package com.umcs.enterprise;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CoverRepository extends JpaRepository<Cover, Long> {}
+public interface BookOrderRepository extends JpaRepository<BookOrder, Long> {}

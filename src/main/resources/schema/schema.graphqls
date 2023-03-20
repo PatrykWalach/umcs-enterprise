@@ -2,36 +2,37 @@ interface Node {
 	id: ID!
 }
 
-type Cover {
+type Cover implements Node {
+	height: Int
+	id: ID!
 	url: String
 	width: Int
-	height: Int
 }
 type BookConnection {
 	edges: [BookEdge]
-	pageInfo: PageInfo
+	pageInfo: PageInfo!
 }
 type BookEdge {
 	cursor: String
 	node: Book
 }
 type Book implements Node {
-	id: ID!
-	cover: Cover
-	title: String
 	author: String
-	price: String
+	cover: Cover
+	id: ID!
 	popularity: Int
-	synopsis: String
+	price: String
+	recommended(after: String, before: String, first: Int, last: Int): BookConnection
 	releasedAt: DateTime
-	recommended(first: Int, after: String, last: Int, before: String): BookConnection
+	synopsis: String
+	title: String
 }
 
 union Viewer = User | Admin
 
 type User implements Node {
 	id: ID!
-	orders(first: Int, after: String, last: Int, before: String): OrderConnection
+	orders(after: String, before: String, first: Int, last: Int): OrderConnection
 }
 
 type Admin implements Node {
@@ -39,21 +40,21 @@ type Admin implements Node {
 }
 
 enum OrderStatus {
-	PENDING
 	COMPLETE
+	PENDING
 }
 
 scalar DateTime
 type OrderConnection {
 	edges: [OrderEdge]
-	pageInfo: PageInfo
+	pageInfo: PageInfo!
 }
 
 type PageInfo {
+	endCursor: String
 	hasNextPage: Boolean!
 	hasPreviousPage: Boolean!
 	startCursor: String
-	endCursor: String
 }
 
 type OrderEdge {
@@ -61,40 +62,51 @@ type OrderEdge {
 	node: Order
 }
 type Order implements Node {
-	id: ID!
-	totalPrice: String
-	status: OrderStatus
+	books(after: String, before: String, first: Int, last: Int): BookConnection
 	createdAt: DateTime
+	id: ID!
+	status: OrderStatus
+	totalPrice: String
 	user: User
-	books(first: Int, after: String, last: Int, before: String): BookConnection
+}
+
+type BasketBooksEdge {
+	cursor: String
+	node: Book
+	quantity: Int
+}
+
+type BasketBooksConnection {
+	edges: [BasketBooksEdge]
+	pageInfo: PageInfo!
 }
 
 type Basket {
+	books(after: String, before: String, first: Int, last: Int): BasketBooksConnection
 	totalPrice: String
-	books(first: Int, after: String, last: Int, before: String): BookConnection
 }
 
 enum Sort {
-	DESC
 	ASC
+	DESC
 }
 
 input BookSortBy {
-	price: Sort
 	popularity: Sort
+	price: Sort
 	releasedAt: Sort
 }
 
 type Query {
+	#    3.5
+	basket: Basket
+	books(after: String, before: String, first: Int, last: Int, sortBy: [BookSortBy]): BookConnection
 	#    3
 	hello: String
 	node(id: ID!): Node
-	books(first: Int, after: String, last: Int, before: String, sortBy: [BookSortBy]): BookConnection
-	viewer: Viewer
-	#    3.5
-	basket: Basket
 	# 4
-	orders(first: Int, after: String, last: Int, before: String): OrderConnection
+	orders(after: String, before: String, first: Int, last: Int): OrderConnection
+	viewer: Viewer
 }
 
 input UpdateStatusInput {
@@ -102,7 +114,7 @@ input UpdateStatusInput {
 	status: OrderStatus
 }
 
-type CreateOrderResult {
+type MakeOrderResult {
 	basket: Basket
 	order: Order
 }
@@ -110,14 +122,38 @@ type CreateOrderResult {
 scalar Upload
 
 input CreateBookInput {
-	title: String
 	author: String
-	price: Int
 	cover: Upload
+	price: Float
 	releasedAt: DateTime
+	title: String
+}
+
+type BasketBookResult {
+	basket: Basket
+}
+
+type UnbasketBookResult {
+	basket: Basket
+}
+
+type UpdateStatusResult {
+	order: Order
+}
+input BasketBookInput {
+	id: ID!
+}
+
+input UnbasketBookInput {
+	id: ID!
 }
 
 type Mutation {
+	#    3.5
+	"""
+	requires role User
+	"""
+	basketBook(input: BasketBookInput): BasketBookResult
 	#    3
 	"""
 	requires role Admin
@@ -127,22 +163,22 @@ type Mutation {
 	requires role Admin
 	"""
 	delete(id: ID!): Node
-	#    3.5
-	"""
-	requires role User
-	"""
-	basketBook(id: ID!): Basket
-	"""
-	requires role User
-	"""
-	unbasketBook(id: ID!): Basket
 	#    4
 	"""
 	requires role User
 	"""
-	makeOrder: CreateOrderResult
+	makeOrder: MakeOrderResult
+	"""
+	requires role User
+	"""
+	unbasketBook(input: UnbasketBookInput): UnbasketBookResult
 	"""
 	requires role Admin
 	"""
-	updateStatus(input: UpdateStatusInput!): Order
+	updateStatus(input: UpdateStatusInput!): UpdateStatusResult
+}
+
+schema {
+	query: Query
+	mutation: Mutation
 }

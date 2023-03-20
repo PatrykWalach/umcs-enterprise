@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 import lombok.*;
 
-@Entity(name = "BookUser")
+@Entity(name = "\"user\"")
 @Getter
 @Setter
 @Builder(builderMethodName = "newBuilder")

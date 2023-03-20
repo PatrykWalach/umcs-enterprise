@@ -2,6 +2,7 @@ package com.umcs.enterprise;
 
 import jakarta.persistence.*;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import lombok.*;
@@ -24,13 +25,8 @@ public class Order implements Node {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToMany
-	@JoinTable(
-		name = "books_orders",
-		joinColumns = @JoinColumn(name = "order_id"),
-		inverseJoinColumns = @JoinColumn(name = "book_id")
-	)
-	private Set<Book> books = new LinkedHashSet<>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+	private List<BookOrder> books;
 
 	@Override
 	public boolean equals(Object o) {

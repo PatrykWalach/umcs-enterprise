@@ -3,13 +3,15 @@
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
+
+	const pluralRules = new Intl.PluralRules();
 </script>
 
 <div class="container mx-auto">
 	<div class="shadow-xl">
 		<nav class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
-				<a class="btn-ghost btn text-3xl normal-case" href="/">Books</a>
+				<a class="btn-ghost btn text-3xl normal-case" href="/">Księgarnia</a>
 			</div>
 			<div class="flex-none">
 				<div class="dropdown-end dropdown">
@@ -40,11 +42,16 @@
 					>
 						<div class="card-body">
 							<span class="text-lg font-bold">
-								{data.basket?.books?.edges?.length || 'No'} Items
+								{data.basket?.books?.edges?.length || 'Brak'}
+								{(() => ({
+									one: 'Książka',
+									many: 'Książek',
+									few: 'Książki'
+								}))()[pluralRules.select(data.basket?.books?.edges?.length || 0)] ?? 'Książek'}
 							</span>
-							<span class="text-info">Subtotal: ${data.basket?.totalPrice ?? 0}</span>
+							<span class="text-info">W sumie: {data.basket?.totalPrice ?? 0}</span>
 							<div class="card-actions">
-								<button class="btn-primary btn-block btn">View cart</button>
+								<button class="btn-primary btn-block btn">Do koszyka</button>
 							</div>
 						</div>
 					</div>

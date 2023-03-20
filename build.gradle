@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.0.4'
     id 'io.spring.dependency-management' version '1.1.0'
     id "com.netflix.dgs.codegen" version "5.7.0"
+    id 'com.github.node-gradle.node' version '3.5.1'
 }
 
 group = 'com.umcs'
@@ -40,7 +41,8 @@ generateJava {
     packageName = 'com.umcs.enterprise'
     typeMapping = ["BookConnection" : "graphql.relay.SimpleListConnection<Book>",
                    "OrderConnection": "graphql.relay.SimpleListConnection<Order>",
-                    "Upload": "org.springframework.web.multipart.MultipartFile"]
+                    "Upload": "org.springframework.web.multipart.MultipartFile",
+                   "Query": "Object"]
 }
 
 tasks.named('test') {
