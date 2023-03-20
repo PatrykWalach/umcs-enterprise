@@ -6,6 +6,7 @@
 		fragment Book_book on Book {
 			id
 			cover {
+				id
 				height
 				url
 				width
@@ -21,7 +22,7 @@
 	$: data = useFragment(Book_book, book);
 </script>
 
-<div class="card card-compact bg-base-100 shadow xl:shadow-lg">
+<div class="card-compact card bg-base-100 shadow xl:shadow-lg">
 	{#if data?.cover}
 		<figure>
 			<img

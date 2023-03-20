@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.MappedBatchLoader;
 
-@DgsDataLoader(name = "bookCovers")
+@DgsDataLoader(name = "books")
 @RequiredArgsConstructor
 public class BookDataLoader implements MappedBatchLoader<Long, Book> {
 

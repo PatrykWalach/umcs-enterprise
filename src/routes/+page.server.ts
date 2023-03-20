@@ -4,28 +4,30 @@ import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const load: ServerLoad = ({ locals }) => {
-	return locals.client.request(
-		graphql(/* GraphQL */ `
-			query LayoutQuery {
-				new: books(first: 12, sortBy: { releasedAt: DESC }) {
-					edges {
-						node {
-							...Book_book
-							id
+	return {
+		HomeQuery: locals.client.request(
+			graphql(/* GraphQL */ `
+				query HomeQuery {
+					new: books(first: 12, sortBy: { releasedAt: DESC }) {
+						edges {
+							node {
+								...Book_book
+								id
+							}
+						}
+					}
+					popular: books(first: 12, sortBy: { popularity: DESC }) {
+						edges {
+							node {
+								...Book_book
+								id
+							}
 						}
 					}
 				}
-				popular: books(first: 12, sortBy: { popularity: DESC }) {
-					edges {
-						node {
-							...Book_book
-							id
-						}
-					}
-				}
-			}
-		`)
-	);
+			`)
+		)
+	};
 };
 
 export const actions: Actions = {
@@ -36,13 +38,11 @@ export const actions: Actions = {
 			throw new Error('No book id');
 		}
 
-		const result = await locals.client.request(BasketBook, {
+		await locals.client.request(BasketBook, {
 			input: {
 				id
 			}
 		});
-
-		console.log(result);
 
 		return {};
 	}

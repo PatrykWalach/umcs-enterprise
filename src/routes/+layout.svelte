@@ -5,6 +5,10 @@
 	export let data: LayoutData;
 
 	const pluralRules = new Intl.PluralRules();
+
+	$: quantity = data.NavbarQuery.basket?.books?.edges
+		?.flatMap((edge) => (edge?.quantity ? [edge.quantity] : []))
+		?.reduce((a, b) => a + b, 0);
 </script>
 
 <div class="container mx-auto">
@@ -32,7 +36,7 @@
 								/>
 							</svg>
 							<span class="badge badge-sm indicator-item">
-								{data.basket?.books?.edges?.length ?? 0}
+								{quantity ?? 0}{data.NavbarQuery.basket?.books?.pageInfo?.hasNextPage ? '+' : ''}
 							</span>
 						</div>
 					</button>
@@ -41,17 +45,20 @@
 						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow"
 					>
 						<div class="card-body">
-							<span class="text-lg font-bold">
-								{data.basket?.books?.edges?.length || 'Brak'}
+							<span class="text-xl font-bold">
+								{data.NavbarQuery.basket?.books?.pageInfo?.hasNextPage ? 'Ponad ' : ''}{quantity ||
+									'Brak'}
 								{(() => ({
 									one: 'Książka',
 									many: 'Książek',
 									few: 'Książki'
-								}))()[pluralRules.select(data.basket?.books?.edges?.length || 0)] ?? 'Książek'}
+								}))()[pluralRules.select(quantity ?? 0)] ?? 'Książek'}
 							</span>
-							<span class="text-info">W sumie: {data.basket?.totalPrice ?? 0}</span>
+							<span class="text-lg font-semibold text-info">
+								W sumie: {data.NavbarQuery.basket?.totalPrice ?? 0}
+							</span>
 							<div class="card-actions">
-								<button class="btn-primary btn-block btn">Do koszyka</button>
+								<a href="/basket" class="btn-primary btn-block btn">do kasy</a>
 							</div>
 						</div>
 					</div>

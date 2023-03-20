@@ -3,17 +3,21 @@ import graphqlrc from './.graphqlrc.json';
 
 const config: CodegenConfig = {
 	...graphqlrc,
+	config: {
+		useTypeImports: true,
+		avoidOptionals: true,
+		skipTypename: true,
+		immutableTypes: true
+	},
 	generates: {
 		'src/lib/gql/': {
 			preset: 'client',
 			plugins: [],
 			config: {
-				useTypeImports: true,
 				scalars: {
 					DateTime: 'string',
 					Upload: 'File'
-				},
-				avoidOptionals: true
+				}
 			}
 		}
 	}

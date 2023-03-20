@@ -29,20 +29,26 @@ public class BasketDataFetcher {
 
 	private final BookRepository bookRepository;
 
-	@DgsQuery
-	public List<Long> basket(@CookieValue(required = false) String basket)
-		throws JsonProcessingException {
+	private Map<Long, Integer> getBasket(String basket) throws JsonProcessingException {
 		if (basket == null) {
-			return new ArrayList<>();
+			return new HashMap<>();
 		}
 
-		Map<Long, Integer> books = new ObjectMapper()
-			.readValue(
-				new String(Base64.getDecoder().decode(basket.getBytes()), StandardCharsets.UTF_8),
-				new TypeReference<Map<Long, Integer>>() {}
-			);
+		try {
+			return new ObjectMapper()
+				.readValue(
+					new String(Base64.getDecoder().decode(basket.getBytes()), StandardCharsets.UTF_8),
+					new TypeReference<Map<Long, Integer>>() {}
+				);
+		} catch (IllegalArgumentException e) {
+			return new HashMap<>();
+		}
+	}
 
-		return books.keySet().stream().toList();
+	@DgsQuery
+	public Map<Long, Integer> basket(@CookieValue(required = false) String basket)
+		throws JsonProcessingException {
+		return getBasket(basket);
 	}
 
 	@DgsData(parentType = "Basket")
@@ -53,10 +59,18 @@ public class BasketDataFetcher {
 		DataLoader<Long, Book> dataLoader = enf.getDataLoader(BookDataLoader.class);
 		Locale poland = new Locale("pl", "PL");
 
+		Map<Long, Integer> basket = env.<Map<Long, Integer>>getSource();
+
 		return dataLoader
-			.loadMany(env.<List<Long>>getSource())
+			.loadMany(basket.keySet().stream().toList())
 			.thenApply(books ->
-				books.stream().map(Book::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add)
+				books
+					.stream()
+					.filter(Objects::nonNull)
+					.map(book ->
+						book.getPrice().multiply(BigDecimal.valueOf(basket.get(book.getDatabaseId())))
+					)
+					.reduce(BigDecimal.ZERO, BigDecimal::add)
 			)
 			.thenApply(NumberFormat.getCurrencyInstance(poland)::format);
 	}
@@ -71,7 +85,7 @@ public class BasketDataFetcher {
 		DataLoader<Long, Book> dataLoader = enf.getDataLoader(BookDataLoader.class);
 
 		return dataLoader
-			.loadMany(env.<List<Long>>getSource())
+			.loadMany(env.<Map<Long, Integer>>getSource().keySet().stream().toList())
 			.thenApply(books -> connectionService.getConnection(books, env));
 	}
 
@@ -80,17 +94,7 @@ public class BasketDataFetcher {
 		@CookieValue(required = false) String basket,
 		DataFetchingEnvironment env
 	) throws JsonProcessingException {
-		if (basket == null) {
-			return null;
-		}
-
-		Map<Long, Integer> books = new ObjectMapper()
-			.readValue(
-				new String(Base64.getDecoder().decode(basket.getBytes()), StandardCharsets.UTF_8),
-				new TypeReference<Map<Long, Integer>>() {}
-			);
-
-		return books.get(env.<DefaultEdge<Book>>getSource().getNode().getDatabaseId());
+		return getBasket(basket).get(env.<DefaultEdge<Book>>getSource().getNode().getDatabaseId());
 	}
 
 	private void addCookie(DgsDataFetchingEnvironment dfe, Cookie cookie) {
@@ -104,22 +108,16 @@ public class BasketDataFetcher {
 	}
 
 	@DgsMutation
-	public List<Long> basketBook(
+	public Map<Long, Integer> basketBook(
 		@InputArgument BasketBookInput input,
 		@CookieValue(required = false) String basket,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		Map<Long, Integer> books = basket == null
-			? new HashMap<>()
-			: new ObjectMapper()
-				.readValue(
-					new String(Base64.getDecoder().decode(basket.getBytes()), StandardCharsets.UTF_8),
-					new TypeReference<Map<Long, Integer>>() {}
-				);
+		Map<Long, Integer> books = getBasket(basket);
 
 		GlobalId globalId = GlobalId.from(input.getId());
 		assert Objects.equals(globalId.getClassName(), "Book");
-		books.merge(globalId.getDatabaseId(), 1, (k, v) -> v + 1);
+		books.merge(globalId.getDatabaseId(), 1, Integer::sum);
 
 		Cookie cookie = new Cookie(
 			"basket",
@@ -132,31 +130,23 @@ public class BasketDataFetcher {
 		cookie.setPath("/");
 		addCookie(dfe, cookie);
 
-		return books.keySet().stream().toList();
+		return books;
 	}
 
 	@DgsData.List(
 		{ @DgsData(parentType = "UnbasketBookResult"), @DgsData(parentType = "BasketBookResult") }
 	)
-	public List<Long> basket(DataFetchingEnvironment env) {
-		return env.<List<Long>>getRoot();
+	public Map<Long, Integer> basket(DataFetchingEnvironment env) {
+		return env.<Map<Long, Integer>>getRoot();
 	}
 
 	@DgsMutation
-	public List<Long> unbasketBook(
+	public Map<Long, Integer> unbasketBook(
 		@InputArgument UnbasketBookInput input,
 		@CookieValue(required = false) String basket,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		if (basket == null) {
-			return new ArrayList<>();
-		}
-
-		Map<Long, Integer> books = new ObjectMapper()
-			.readValue(
-				new String(Base64.getDecoder().decode(basket.getBytes()), StandardCharsets.UTF_8),
-				new TypeReference<Map<Long, Integer>>() {}
-			);
+		Map<Long, Integer> books = getBasket(basket);
 
 		GlobalId globalId = GlobalId.from(input.getId());
 		assert Objects.equals(globalId.getClassName(), "Book");
@@ -182,6 +172,6 @@ public class BasketDataFetcher {
 		cookie.setPath("/");
 		addCookie(dfe, cookie);
 
-		return books.keySet().stream().toList();
+		return books;
 	}
 }

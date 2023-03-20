@@ -11,7 +11,7 @@
 		<a href="/books?by=popularity&order=desc" class="link-hover link">Bestsellery</a>
 	</h2>
 	<ol class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 sm:gap-4">
-		{#each data.popular?.edges ?? [] as book (book?.node?.id)}
+		{#each data.HomeQuery.popular?.edges ?? [] as book (book?.node?.id)}
 			{#if book?.node}
 				<li class="contents">
 					<Book book={book.node} />
@@ -23,7 +23,7 @@
 		<a href="/books?by=realease_date&order=desc" class="link-hover link">Nowości</a>
 	</h2>
 	<ol class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 sm:gap-4">
-		{#each data.new?.edges ?? [] as book (book?.node?.id)}
+		{#each data.HomeQuery.new?.edges ?? [] as book (book?.node?.id)}
 			{#if book?.node}
 				<li class="contents">
 					<Book book={book.node} />
