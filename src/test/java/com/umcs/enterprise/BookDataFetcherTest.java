@@ -211,7 +211,7 @@ class BookDataFetcherTest {
 	@ParameterizedTest
 	@CsvSource(
 		{
-			",Book:2,Book:3,Book:1,Book:0",
+			",Book:0,Book:1,Book:2,Book:3",
 			"price_ASC,Book:3,Book:0,Book:1,Book:2",
 			"price_DESC,Book:2,Book:1,Book:0,Book:3",
 			"popularity_ASC,Book:2,Book:1,Book:3,Book:0",
@@ -269,13 +269,7 @@ class BookDataFetcherTest {
 
 		bookRepository.saveAll(Arrays.asList(book0, book1, book2, book3));
 
-		bookOrderRepository.saveAll(
-			orderRepository
-				.saveAll(Stream.generate(Order::new).limit(20).collect(Collectors.toList()))
-				.stream()
-				.map(o -> BookOrder.newBuilder().book(book2).order(o).build())
-				.toList()
-		);
+		//		book2.popularity=null
 		bookOrderRepository.saveAll(
 			orderRepository
 				.saveAll(Stream.generate(Order::new).limit(25).collect(Collectors.toList()))

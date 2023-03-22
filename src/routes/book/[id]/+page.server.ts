@@ -18,6 +18,7 @@ export const load: ServerLoad = async ({ locals, params }) => {
 						author
 						cover {
 							height
+							id
 							url
 							width
 						}

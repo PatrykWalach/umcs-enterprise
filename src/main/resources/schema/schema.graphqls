@@ -98,14 +98,29 @@ input BookSortBy {
 }
 
 type Query {
-	#    3.5
+	"""
+	3.5
+	"""
 	basket: Basket
+	"""
+	3
+	"""
 	books(after: String, before: String, first: Int, last: Int, sortBy: [BookSortBy]): BookConnection
-	#    3
+	"""
+	3
+	"""
 	hello: String
+	"""
+	3
+	"""
 	node(id: ID!): Node
-	# 4
+	"""
+	4
+	"""
 	orders(after: String, before: String, first: Int, last: Int): OrderConnection
+	"""
+	3
+	"""
 	viewer: Viewer
 }
 
@@ -149,31 +164,28 @@ input UnbasketBookInput {
 }
 
 type Mutation {
-	#    3.5
 	"""
-	requires role User
+	3.5 requires role User
 	"""
 	basketBook(input: BasketBookInput): BasketBookResult
-	#    3
 	"""
-	requires role Admin
+	3 requires role Admin
 	"""
 	createBook(input: CreateBookInput!): Book
 	"""
-	requires role Admin
+	3 requires role Admin
 	"""
 	delete(id: ID!): Node
-	#    4
 	"""
-	requires role User
+	4 requires role User
 	"""
 	makeOrder: MakeOrderResult
 	"""
-	requires role User
+	3.5 requires role User
 	"""
 	unbasketBook(input: UnbasketBookInput): UnbasketBookResult
 	"""
-	requires role Admin
+	4 requires role Admin
 	"""
 	updateStatus(input: UpdateStatusInput!): UpdateStatusResult
 }

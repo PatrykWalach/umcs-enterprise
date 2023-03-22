@@ -4,6 +4,7 @@ query BookControllerTestCover($id: ID!) {
 		... on Book {
 			cover {
 				height
+				id
 				url
 				width
 			}

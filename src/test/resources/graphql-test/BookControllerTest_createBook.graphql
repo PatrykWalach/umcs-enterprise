@@ -3,6 +3,7 @@ mutation BookControllerTestCreateBook($input: CreateBookInput!) {
 		author
 		cover {
 			height
+			id
 			url
 			width
 		}

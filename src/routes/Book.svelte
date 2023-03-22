@@ -22,7 +22,7 @@
 	$: data = useFragment(Book_book, book);
 </script>
 
-<div class="card-compact card bg-base-100 shadow xl:shadow-lg">
+<article class="card card-compact bg-base-100 shadow xl:shadow-lg">
 	{#if data?.cover}
 		<figure>
 			<img
@@ -37,9 +37,9 @@
 	{/if}
 	<div class="card-body justify-between gap-4">
 		<div>
-			<div class="card-title line-clamp-3 xl:line-clamp-2" title={data?.title}>
+			<h3 class="card-title line-clamp-3 xl:line-clamp-2" title={data?.title}>
 				<a href="/book/{data.id}" class="link-hover link">{data?.title}</a>
-			</div>
+			</h3>
 			{#if data?.author}
 				<div class="truncate">
 					{data.author}
@@ -72,4 +72,4 @@
 			</form>
 		</div>
 	</div>
-</div>
+</article>
