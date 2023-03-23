@@ -12,6 +12,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Optional;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,8 +46,10 @@ public class UserDataFetcher {
 	}
 
 	@DgsQuery
-	public User viewer() {
-		return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public Optional<User> viewer() {
+		return userRepository.findByUsername(
+			SecurityContextHolder.getContext().getAuthentication().getName()
+		);
 	}
 
 	@DgsData(parentType = "User")

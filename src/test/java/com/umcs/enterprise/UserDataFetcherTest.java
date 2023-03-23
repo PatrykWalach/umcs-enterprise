@@ -155,7 +155,6 @@ class UserDataFetcherTest {
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> true)
 			.verify()
 			.path("viewer")
 			.valueIsNull();
