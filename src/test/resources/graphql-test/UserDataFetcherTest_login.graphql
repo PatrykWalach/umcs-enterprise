@@ -1,0 +1,5 @@
+mutation UserDataFetcherTest_login($input: LoginInput!) {
+	login(input: $input) {
+		token
+	}
+}

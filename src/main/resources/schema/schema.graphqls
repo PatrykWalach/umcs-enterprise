@@ -28,14 +28,17 @@ type Book implements Node {
 	title: String
 }
 
-union Viewer = User | Admin
-
-type User implements Node {
+interface Viewer implements Node {
 	id: ID!
+}
+
+type User implements Viewer & Node {
+	id: ID!
+	name: String
 	orders(after: String, before: String, first: Int, last: Int): OrderConnection
 }
 
-type Admin implements Node {
+type Admin implements Viewer & Node {
 	id: ID!
 }
 
@@ -172,6 +175,16 @@ type Mutation {
 	3 requires role Admin
 	"""
 	createBook(input: CreateBookInput!): Book
+
+	"""
+	3
+	"""
+	login(input: LoginInput!): LoginResult
+	"""
+	3
+	"""
+	register(input: RegisterInput!): RegisterResult
+
 	"""
 	3 requires role Admin
 	"""
@@ -188,6 +201,23 @@ type Mutation {
 	4 requires role Admin
 	"""
 	updateStatus(input: UpdateStatusInput!): UpdateStatusResult
+}
+
+type LoginResult {
+	token: String
+}
+
+input LoginInput {
+	username: String
+	password: String
+}
+type RegisterResult {
+	token: String
+}
+
+input RegisterInput {
+	username: String
+	password: String
 }
 
 schema {

@@ -1,0 +1,5 @@
+mutation UserDataFetcherTest_register($input: RegisterInput!) {
+	register(input: $input) {
+		token
+	}
+}

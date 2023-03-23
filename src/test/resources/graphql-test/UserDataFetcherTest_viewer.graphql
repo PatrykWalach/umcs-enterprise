@@ -1,0 +1,10 @@
+query UserDataFetcherTest_viewer {
+	viewer {
+		__typename
+
+		... on User {
+			id
+			name
+		}
+	}
+}

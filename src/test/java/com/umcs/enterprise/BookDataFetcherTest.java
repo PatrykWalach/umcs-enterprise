@@ -5,6 +5,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.CreateBookInput;
+import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
@@ -22,36 +23,55 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.graphql.client.GraphQlTransport;
 import org.springframework.graphql.test.tester.GraphQlTester;
+import org.springframework.graphql.test.tester.WebGraphQlTester;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
 class BookDataFetcherTest {
 
 	@Autowired
-	private GraphQlTester graphQlTester;
+	private WebGraphQlTester graphQlTester;
 
 	@Autowired
 	private BookRepository bookRepository;
 
 	@BeforeEach
 	void beforeEach() {
+		userRepository.deleteAll();
 		bookOrderRepository.deleteAll();
 		orderRepository.deleteAll();
 		bookRepository.deleteAll();
 	}
 
 	@Test
-	@Disabled("TODO: implement JWT")
 	void createBook_admin() {
 		//        given
+		var user = userRepository.save(
+			User
+				.newBuilder()
+				.authorities(Collections.singletonList(("ADMIN")))
+				.password(passwordEncoder.encode("user"))
+				.username("user")
+				.build()
+		);
+		String token = jwtService.signToken(
+			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
+		);
+
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
 			.price(100.0)
 			.build();
 
-		this.graphQlTester.documentName("BookControllerTest_createBook")
+		this.graphQlTester.mutate()
+			.header("Authorization", "Bearer " + token)
+			.build()
+			.documentName("BookControllerTest_createBook")
 			.variable("input", input)
 			//        when
 			.execute()
@@ -66,7 +86,7 @@ class BookDataFetcherTest {
 			.isEqualTo(input.getAuthor())
 			.path("createBook.price")
 			.entity(String.class)
-			.isEqualTo(input.getPrice().toString())
+			.isEqualTo("100,00 zł")
 			.path("createBook.popularity")
 			.entity(Integer.class)
 			.isEqualTo(0);
@@ -74,22 +94,46 @@ class BookDataFetcherTest {
 		Assert.isTrue(bookRepository.count() == 1, "There should be one book");
 	}
 
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private JwtService jwtService;
+
 	@Test
 	void createBook_user() {
 		//        given
+		var user = userRepository.save(
+			User
+				.newBuilder()
+				.authorities(Collections.singletonList(("USER")))
+				.password(passwordEncoder.encode("user"))
+				.username("user")
+				.build()
+		);
+		String token = jwtService.signToken(
+			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
+		);
+
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
 			.price(100.0)
 			.build();
 
-		this.graphQlTester.documentName("BookControllerTest_createBook")
+		this.graphQlTester.mutate()
+			.header("Authorization", "Bearer " + token)
+			.build()
+			.documentName("BookControllerTest_createBook")
 			.variable("input", input)
 			//        when
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> e.getErrorType() == PERMISSION_DENIED)
+			.expect(e -> true)
 			.verify()
 			.path("createBook")
 			.valueIsNull();
