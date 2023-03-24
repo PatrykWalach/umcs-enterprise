@@ -1,9 +1,7 @@
 package com.umcs.enterprise;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-import com.umcs.enterprise.types.CreateBookInput;
 import com.umcs.enterprise.types.LoginInput;
 import com.umcs.enterprise.types.RegisterInput;
 import io.jsonwebtoken.Jwts;
@@ -41,7 +39,7 @@ class UserDataFetcherTest {
 			.verify()
 			.path("login.token")
 			.entity(String.class)
-			.isNotEqualTo("");
+			.matches(s -> !s.isBlank());
 	}
 
 	@Test
@@ -81,6 +79,7 @@ class UserDataFetcherTest {
 			.verify()
 			.path("register")
 			.valueIsNull();
+		//		Assertions.assertEquals(1L, userRepository.count());
 	}
 
 	@Test
@@ -97,7 +96,8 @@ class UserDataFetcherTest {
 			.verify()
 			.path("register.token")
 			.entity(String.class)
-			.isNotEqualTo("");
+			.matches(s -> !s.isBlank());
+		//		Assertions.assertEquals(1L, userRepository.count());
 	}
 
 	@Autowired

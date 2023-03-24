@@ -4,7 +4,6 @@ import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
-import graphql.GraphQLException;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +27,12 @@ public class NodeDataFetcher {
 	@DgsQuery
 	public Node node(@InputArgument String id) {
 		GlobalId globalId = GlobalId.from(id);
-		var loader = loaders.get(globalId.getClassName());
+		var loader = loaders.get(globalId.className());
 
 		if (loader == null) {
 			return null;
 		}
 
-		return loader.apply(globalId.getDatabaseId()).orElse(null);
+		return loader.apply(globalId.databaseId()).orElse(null);
 	}
 }

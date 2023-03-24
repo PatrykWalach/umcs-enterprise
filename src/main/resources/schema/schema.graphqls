@@ -166,6 +166,18 @@ input UnbasketBookInput {
 	id: ID!
 }
 
+input DeleteInput {
+	id: ID
+}
+
+type CreateBookResult {
+	book: Book
+}
+
+type DeleteResult {
+	node: Node
+}
+
 type Mutation {
 	"""
 	3.5 requires role User
@@ -174,25 +186,25 @@ type Mutation {
 	"""
 	3 requires role Admin
 	"""
-	createBook(input: CreateBookInput!): Book
-
-	"""
-	3
-	"""
-	login(input: LoginInput!): LoginResult
-	"""
-	3
-	"""
-	register(input: RegisterInput!): RegisterResult
+	createBook(input: CreateBookInput!): CreateBookResult
 
 	"""
 	3 requires role Admin
 	"""
-	delete(id: ID!): Node
+	delete(input: DeleteInput): DeleteResult
+	"""
+	3
+	"""
+	login(input: LoginInput!): LoginResult
+
 	"""
 	4 requires role User
 	"""
 	makeOrder: MakeOrderResult
+	"""
+	3
+	"""
+	register(input: RegisterInput!): RegisterResult
 	"""
 	3.5 requires role User
 	"""
@@ -208,16 +220,16 @@ type LoginResult {
 }
 
 input LoginInput {
-	username: String
 	password: String
+	username: String
 }
 type RegisterResult {
 	token: String
 }
 
 input RegisterInput {
-	username: String
 	password: String
+	username: String
 }
 
 schema {

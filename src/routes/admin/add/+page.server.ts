@@ -10,7 +10,7 @@ export const actions: Actions = {
 			graphql(`
 				mutation AddBook($input: CreateBookInput!) {
 					createBook(input: $input) {
-						id
+						__typename
 					}
 				}
 			`),
@@ -19,7 +19,7 @@ export const actions: Actions = {
 					title: String(title),
 					author: String(author),
 					price: Number(price),
-					cover: cover instanceof File ? cover : undefined
+					cover: cover instanceof File ? cover : null
 				}
 			},
 			{

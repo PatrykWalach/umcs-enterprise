@@ -51,7 +51,10 @@
 								{(() => ({
 									one: 'Książka',
 									many: 'Książek',
-									few: 'Książki'
+									few: 'Książki',
+									other: null,
+									zero: 'Książek',
+									two: 'Książki'
 								}))()[pluralRules.select(quantity ?? 0)] ?? 'Książek'}
 							</span>
 							<span class="text-lg font-semibold text-info">

@@ -1,8 +1,5 @@
 package com.umcs.enterprise;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 public interface Node {
 	Long getDatabaseId();
 

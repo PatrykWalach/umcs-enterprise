@@ -4,12 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.*;
-import com.netflix.graphql.dgs.internal.DgsRequestData;
 import com.netflix.graphql.dgs.internal.DgsWebMvcRequestData;
 import com.umcs.enterprise.types.*;
 import graphql.relay.Connection;
 import graphql.relay.DefaultEdge;
-import graphql.relay.SimpleListConnection;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.servlet.http.Cookie;
 import java.math.BigDecimal;
@@ -17,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -38,7 +35,7 @@ public class BasketDataFetcher {
 			return new ObjectMapper()
 				.readValue(
 					new String(Base64.getDecoder().decode(basket.getBytes()), StandardCharsets.UTF_8),
-					new TypeReference<Map<Long, Integer>>() {}
+					new TypeReference<>() {}
 				);
 		} catch (IllegalArgumentException e) {
 			return new HashMap<>();
@@ -116,8 +113,8 @@ public class BasketDataFetcher {
 		Map<Long, Integer> books = getBasket(basket);
 
 		GlobalId globalId = GlobalId.from(input.getId());
-		assert Objects.equals(globalId.getClassName(), "Book");
-		books.merge(globalId.getDatabaseId(), 1, Integer::sum);
+		assert Objects.equals(globalId.className(), "Book");
+		books.merge(globalId.databaseId(), 1, Integer::sum);
 
 		Cookie cookie = new Cookie(
 			"basket",
@@ -149,10 +146,10 @@ public class BasketDataFetcher {
 		Map<Long, Integer> books = getBasket(basket);
 
 		GlobalId globalId = GlobalId.from(input.getId());
-		assert Objects.equals(globalId.getClassName(), "Book");
+		assert Objects.equals(globalId.className(), "Book");
 
 		books.computeIfPresent(
-			globalId.getDatabaseId(),
+			globalId.databaseId(),
 			(k, v) -> {
 				if (v < 2) {
 					return null;

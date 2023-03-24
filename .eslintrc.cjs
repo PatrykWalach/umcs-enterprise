@@ -15,6 +15,7 @@ module.exports = {
 			extends: ['plugin:@graphql-eslint/schema-all', 'plugin:@graphql-eslint/relay'],
 			rules: {
 				'@graphql-eslint/require-description': 'off',
+				'@graphql-eslint/require-field-of-type-query-in-mutation-result': 'off',
 				'@graphql-eslint/strict-id-in-types': [
 					'error',
 					{

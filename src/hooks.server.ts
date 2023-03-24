@@ -13,10 +13,15 @@ export const handle: Handle = ({ event, resolve }) => {
 };
 
 import type { HandleFetch } from '@sveltejs/kit';
-import cookie from 'cookie';
+import cookielib from 'cookie';
+
+const cookies = ['basket'];
 
 export const handleFetch = (async ({ event, request, fetch }) => {
-	request.headers.set('cookie', cookie.serialize('basket', event.cookies.get('basket')));
+	cookies
+		.map((cookie) => event.cookies.get(cookie))
+		.flatMap((cookie) => (cookie ? [cookie] : []))
+		.forEach((cookie) => request.headers.set('cookie', cookielib.serialize('basket', cookie)));
 
 	const response = await fetch(request);
 	const setCookie = response.headers.get('set-cookie');
@@ -24,15 +29,15 @@ export const handleFetch = (async ({ event, request, fetch }) => {
 	if (!setCookie) {
 		return response;
 	}
-	const { Path, basket } = cookie.parse(setCookie);
+	const { Path, ...rest } = cookielib.parse(setCookie);
 
-	if (!basket) {
-		return response;
-	}
-
-	event.cookies.set('basket', basket, {
-		path: Path
-	});
+	cookies
+		.flatMap((cookie): [string, string][] => (rest[cookie] ? [[cookie, rest[cookie]]] : []))
+		.forEach(([key, cookie]) => {
+			event.cookies.set(key, cookie, {
+				path: Path
+			});
+		});
 
 	return response;
 }) satisfies HandleFetch;

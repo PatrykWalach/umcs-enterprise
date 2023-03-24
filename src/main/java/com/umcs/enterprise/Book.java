@@ -3,10 +3,8 @@ package com.umcs.enterprise;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -16,13 +14,6 @@ import org.hibernate.Hibernate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SecondaryTable(
-	name = "book_summary",
-	pkJoinColumns = {
-		@PrimaryKeyJoinColumn(name = "database_id", referencedColumnName = "databaseId")
-	},
-	foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-)
 public class Book implements Node {
 
 	@Id
@@ -47,11 +38,10 @@ public class Book implements Node {
 
 	private ZonedDateTime releasedAt;
 
-	@Column(table = "book_summary")
-	private Integer popularity;
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
 	private List<BookOrder> orders;
+
+	private Long popularity;
 
 	@Override
 	public boolean equals(Object o) {

@@ -5,7 +5,7 @@ const config: CodegenConfig = {
 	...graphqlrc,
 	config: {
 		useTypeImports: true,
-		avoidOptionals: true,
+		avoidOptionals: { field: true, inputValue: false },
 		skipTypename: true,
 		immutableTypes: true
 	},

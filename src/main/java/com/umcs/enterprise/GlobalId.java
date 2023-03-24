@@ -2,28 +2,11 @@ package com.umcs.enterprise;
 
 import java.nio.charset.StandardCharsets;
 
-public class GlobalId {
-
-	private final String className;
-	private final Long databaseId;
-
-	public String getClassName() {
-		return className;
-	}
-
-	public Long getDatabaseId() {
-		return databaseId;
-	}
-
+public record GlobalId(String className, Long databaseId) {
 	public String encode() {
 		return java.util.Base64
 			.getEncoder()
 			.encodeToString((className + ":" + databaseId).getBytes(StandardCharsets.UTF_8));
-	}
-
-	public GlobalId(String className, Long databaseId) {
-		this.className = className;
-		this.databaseId = databaseId;
 	}
 
 	public static GlobalId from(String c) {

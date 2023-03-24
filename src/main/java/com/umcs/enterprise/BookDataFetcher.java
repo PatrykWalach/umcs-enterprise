@@ -4,7 +4,6 @@ import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.Cover;
 import com.umcs.enterprise.types.CreateBookInput;
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.dataloader.BatchLoader;
 import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
@@ -31,11 +29,6 @@ public class BookDataFetcher {
 	private final CoverRepository coverRepository;
 
 	private final OrderRepository orderRepository;
-
-	//	@DgsData(parentType = "Book")
-	//	public Long popularity(DataFetchingEnvironment env) {
-	//		return orderRepository.countByBooks_DatabaseId(env.<Book>getSource().getDatabaseId());
-	//	}
 
 	@DgsData(parentType = "Book")
 	public String price(DataFetchingEnvironment env) {
@@ -127,6 +120,11 @@ public class BookDataFetcher {
 
 	private final CoverService coverService;
 
+	@DgsData(parentType = "CreateBookResult")
+	public Book book(DataFetchingEnvironment env) {
+		return env.<Book>getSource();
+	}
+
 	@Secured("ADMIN")
 	@DgsMutation
 	public Book createBook(@InputArgument CreateBookInput input) throws IOException {
@@ -140,7 +138,7 @@ public class BookDataFetcher {
 		if (cover != null) {
 			book.setCover(coverService.uploadCover(cover));
 		}
-
+		book.setPopularity(0L);
 		book.setTitle(input.getTitle());
 		book.setCreatedAt(ZonedDateTime.now());
 

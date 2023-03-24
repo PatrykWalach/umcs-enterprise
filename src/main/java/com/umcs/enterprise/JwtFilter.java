@@ -1,9 +1,7 @@
 package com.umcs.enterprise;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
@@ -11,7 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
