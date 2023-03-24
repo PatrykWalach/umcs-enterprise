@@ -61,7 +61,7 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Run E2E tests 🧪
-        run: npm exec start-server-and-test "./gradlew bootRun" http://localhost:8080 test
+        run: npm exec start-server-and-test "./gradlew bootRun" http://localhost:8080/graphql test
 
       - name: Upload test results
         if: always()
