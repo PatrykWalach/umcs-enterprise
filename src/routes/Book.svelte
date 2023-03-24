@@ -22,7 +22,7 @@
 	$: data = useFragment(Book_book, book);
 </script>
 
-<article class="card card-compact bg-base-100 shadow xl:shadow-lg">
+<article class="card-compact card bg-base-100 shadow xl:shadow-lg">
 	{#if data?.cover}
 		<figure>
 			<img
