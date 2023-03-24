@@ -1,6 +1,6 @@
 HELP.md
 .gradle
-build/
+/build
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -35,3 +35,18 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# SvelteKit
+.DS_Store
+node_modules
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+.vercel
+.output
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+/src/lib/gql
+/postgres-data

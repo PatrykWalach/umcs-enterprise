@@ -1,0 +1,15 @@
+query BookControllerTestRecommended($id: ID!) {
+	node(id: $id) {
+		id
+		... on Book {
+			recommended(first: 10) {
+				edges {
+					node {
+						id
+						title
+					}
+				}
+			}
+		}
+	}
+}

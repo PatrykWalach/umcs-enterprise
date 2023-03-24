@@ -1,0 +1,13 @@
+query BookControllerTestCover($id: ID!) {
+	node(id: $id) {
+		id
+		... on Book {
+			cover {
+				height
+				id
+				url
+				width
+			}
+		}
+	}
+}
