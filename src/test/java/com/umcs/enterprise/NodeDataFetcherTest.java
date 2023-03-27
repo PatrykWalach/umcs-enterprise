@@ -2,6 +2,8 @@ package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

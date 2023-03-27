@@ -10,63 +10,89 @@
 	$: url = new URL($page.url);
 </script>
 
-<div class="bg-base-200 p-8">
-	<div class="grid grid-cols-3 gap-2">
-		<div class="overflow-hidden rounded-3xl bg-base-100 shadow-xl">
-			{#if data.node?.cover}
-				<figure class="contents">
+<div
+	class="grid grid-cols-1 gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4 md:grid-cols-3 xl:grid-cols-[22.5rem_1fr]"
+>
+	<!-- <SupportingPane> -->
+
+	<!-- <div class="card glass flex-1">
+		
+				</div> -->
+	<section class="grid grid-cols-2 items-end gap-2 sm:gap-4 md:row-span-2 md:grid-cols-1">
+		<div class="card bg-base-100">
+			{#if data.BookQuery.node?.cover}
+				<figure class="">
 					<img
 						loading="lazy"
-						class="h-full w-full object-cover mix-blend-darken"
-						src={data.node.cover?.url}
-						width={data.node.cover?.width}
-						height={data.node.cover?.height}
+						class="h-auto w-full mix-blend-darken"
+						src={data.BookQuery.node.cover?.url}
+						width={data.BookQuery.node.cover?.width}
+						height={data.BookQuery.node.cover?.height}
 						alt=""
 					/>
 				</figure>
 			{/if}
 		</div>
 
-		<div class="card flex-1 rounded-3xl bg-base-100 shadow-xl">
+		<div class="grid gap-2 md:gap-4">
+			<form method="post" class="contents" use:enhance>
+				<button type="submit" class="btn-secondary btn-lg btn">To cart</button>
+			</form>
+			<form method="post" class="contents" use:enhance>
+				<button type="submit" class="btn-primary btn-lg btn">Buy now</button>
+			</form>
+		</div>
+	</section>
+
+	<section class="md:col-span-2">
+		<div class="card flex-1 bg-base-100 max-sm:card-compact xl:p-6">
 			<div class="card-body">
-				<div class="card-title text-5xl" title={data.node?.title}>
-					<a href="/book/{data.node.id}" class="link-hover link">{data.node?.title}</a>
-				</div>
-				{#if data.node?.author}
-					<div class="text-xl">
-						{data.node.author}
+				<h1 class="card-title text-8xl">
+					{data.BookQuery.node?.title}
+				</h1>
+				{#if data.BookQuery.node?.author}
+					<div class="font-medium text-2xl">
+						{data.BookQuery.node.author}
 					</div>
 				{/if}
+			</div>
+		</div>
+	</section>
+	<!-- </SupportingPane>
 
+	<SupportingPane> -->
+
+	<section class="md:col-span-2 md:col-start-2 md:row-span-2">
+		<!-- {#if data.BookQuery.node.synopsis} -->
+		<div class="card mt-2 bg-base-100">
+			<div class="card-body">
 				<div>
-					{data.node.synopsis}
-				</div>
-				<div>
-					<div class="grid grid-cols-2">
-						<form method="post" class="contents" use:enhance>
-							<button type="submit" class="btn-ghost btn">Dodaj do koszyka</button>
-						</form>
-						<form method="post" class="contents" use:enhance>
-							<button type="submit" class="btn-primary btn">Kup teraz</button>
-						</form>
-					</div>
+					{data.BookQuery.node.synopsis}
 				</div>
 			</div>
 		</div>
-	</div>
+		<!-- {/if} -->
+	</section>
 
-	{#if data?.node.recommended?.edges?.length}
-		<h2 class="p-2 text-3xl sm:p-4">Inni kupowali też</h2>
-		<ol class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 p-2 sm:gap-4 sm:p-4">
-			{#each data.node.recommended.edges ?? [] as book (book?.node?.id)}
-				{#if book?.node}
-					<li class="contents">
-						<Book book={book.node} />
-					</li>
-				{/if}
-			{/each}
-		</ol>
-	{/if}
+	<section class="flex flex-col gap-2 sm:gap-4 md:col-span-3">
+		{#if data?.BookQuery.node.recommended?.edges?.length}
+			<h2 class="ml-4 text-2xl">Frequently bought together</h2>
+			<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
+				{#each data.BookQuery.node.recommended.edges
+					.slice()
+					.concat(data.BookQuery.node.recommended.edges)
+					.concat(data.BookQuery.node.recommended.edges) ?? [] as book (book?.node?.id)}
+					{#if book?.node}
+						<li class="contents">
+							<Book book={book.node} />
+						</li>
+					{/if}
+				{/each}
+			</ol>
+		{/if}
+	</section>
+
+	<!-- </SupportingPane> -->
 </div>
 
 <slot />

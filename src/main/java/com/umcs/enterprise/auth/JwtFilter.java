@@ -1,4 +1,4 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.auth;
 
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import javax.crypto.SecretKey;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Value("${spring.security.authentication.jwt.secret}")
 	private String secret;
 
+	@NonNull
 	private final UserDetailsService userDetailsService;
 
 	@Override

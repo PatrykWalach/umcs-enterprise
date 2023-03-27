@@ -1,5 +1,7 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.order;
 
+import com.umcs.enterprise.node.Node;
+import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +18,8 @@ import org.hibernate.Hibernate;
 public class Order implements Node {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "database_id", nullable = false)
 	private Long databaseId;
 
 	@ManyToOne(fetch = FetchType.LAZY)

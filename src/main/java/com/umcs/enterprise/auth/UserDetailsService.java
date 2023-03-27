@@ -1,5 +1,7 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.auth;
 
+import com.umcs.enterprise.user.UserRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserDetailsService
 	implements org.springframework.security.core.userdetails.UserDetailsService {
 
+	@NonNull
 	private final UserRepository userRepository;
 
 	@Override

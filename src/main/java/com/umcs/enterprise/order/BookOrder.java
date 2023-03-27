@@ -1,5 +1,7 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.order;
 
+import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.order.Order;
 import jakarta.persistence.*;
 import lombok.*;
 

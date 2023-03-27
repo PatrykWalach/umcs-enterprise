@@ -13,7 +13,7 @@ export const load: ServerLoad = ({ locals, url }) => {
 	const sortBy = {
 		realease_date: { releasedAt: order },
 		popularity: { popularity: order },
-		price: { price: order }
+		price: { price: { raw: order } }
 	}[url.searchParams.get('by') ?? ''] ?? { releasedAt: Sort.Desc };
 
 	return {

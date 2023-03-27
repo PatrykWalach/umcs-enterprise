@@ -2,8 +2,11 @@ package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.types.LoginInput;
 import com.umcs.enterprise.types.RegisterInput;
+import com.umcs.enterprise.user.User;
+import com.umcs.enterprise.user.UserRepository;
 import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;

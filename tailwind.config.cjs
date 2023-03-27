@@ -7,5 +7,13 @@ module.exports = {
 	daisyui: {
 		themes: ['retro']
 	},
-	plugins: [require('@tailwindcss/line-clamp'), require('daisyui')]
+	corePlugins: {
+		fontSize: false
+		// ...
+	},
+	plugins: [
+		require('@tailwindcss/line-clamp'),
+		require('daisyui'),
+		require('tailwindcss-fluid-type')
+	]
 };

@@ -2,8 +2,21 @@ package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import com.umcs.enterprise.auth.JwtService;
+import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.cover.Cover;
+import com.umcs.enterprise.cover.CoverRepository;
+import com.umcs.enterprise.order.BookOrder;
+import com.umcs.enterprise.order.BookOrderRepository;
+import com.umcs.enterprise.order.Order;
+import com.umcs.enterprise.order.OrderRepository;
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.CreateBookInput;
+import com.umcs.enterprise.types.CreatePriceInput;
+import com.umcs.enterprise.types.PirceSortBy;
+import com.umcs.enterprise.user.User;
+import com.umcs.enterprise.user.UserRepository;
 import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -57,7 +70,7 @@ class BookDataFetcherTest {
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
-			.price(100.0)
+			.price(CreatePriceInput.newBuilder().raw(100.0).build())
 			.build();
 
 		this.graphQlTester.mutate()
@@ -76,7 +89,10 @@ class BookDataFetcherTest {
 			.path("createBook.book.author")
 			.entity(String.class)
 			.isEqualTo(input.getAuthor())
-			.path("createBook.book.price")
+			.path("createBook.book.price.raw")
+			.entity(BigDecimal.class)
+			.isEqualTo(BigDecimal.valueOf(input.getPrice().getRaw()))
+			.path("createBook.book.price.formatted")
 			.entity(String.class)
 			.matches(s -> s.contains("100,00"))
 			.path("createBook.book.popularity")
@@ -112,7 +128,7 @@ class BookDataFetcherTest {
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
-			.price(100.0)
+			.price(CreatePriceInput.newBuilder().raw(100.0).build())
 			.build();
 
 		this.graphQlTester.mutate()
@@ -240,6 +256,40 @@ class BookDataFetcherTest {
 			.isEqualTo(List.of("13", "12", "14", "11", "15", "10", "16"));
 	}
 
+	@Test
+	void recommended_2() {
+		//        given
+
+		var recommended = bookRepository.saveAll(
+			IntStream
+				.range(0, 2)
+				.mapToObj(i -> Book.newBuilder().title("" + (i)).build())
+				.collect(Collectors.toList())
+		);
+
+		Book book = bookRepository.save(Book.newBuilder().build());
+
+		Order order = orderRepository.save(new Order());
+
+		bookOrderRepository.saveAll(
+			Stream
+				.concat(recommended.stream(), Stream.of(book))
+				.map(book1 -> BookOrder.newBuilder().book(book1).order(order).build())
+				.toList()
+		);
+
+		this.graphQlTester.documentName("BookControllerTest_recommended")
+			.variable("id", book.getId())
+			//        when
+			.execute()
+			//                then
+			.errors()
+			.verify()
+			.path("node.recommended.edges[*].node.title")
+			.entity(List.class)
+			.isEqualTo(List.of("0", "1"));
+	}
+
 	@Autowired
 	private BookOrderRepository bookOrderRepository;
 
@@ -259,11 +309,11 @@ class BookDataFetcherTest {
 		HashMap<String, BookSortBy> sort = new HashMap<>();
 		sort.put(
 			"price_ASC",
-			BookSortBy.newBuilder().price(com.umcs.enterprise.types.Sort.ASC).build()
+			BookSortBy.newBuilder().price(new PirceSortBy(com.umcs.enterprise.types.Sort.ASC)).build()
 		);
 		sort.put(
 			"price_DESC",
-			BookSortBy.newBuilder().price(com.umcs.enterprise.types.Sort.DESC).build()
+			BookSortBy.newBuilder().price(new PirceSortBy(com.umcs.enterprise.types.Sort.DESC)).build()
 		);
 		sort.put(
 			"popularity_ASC",

@@ -23,6 +23,9 @@ export const load: ServerLoad = ({ locals, url }) => {
 									id
 									title
 								}
+								price {
+									formatted
+								}
 								quantity
 							}
 							pageInfo {
@@ -30,7 +33,9 @@ export const load: ServerLoad = ({ locals, url }) => {
 								hasNextPage
 							}
 						}
-						totalPrice
+						price {
+							formatted
+						}
 					}
 				}
 			`),

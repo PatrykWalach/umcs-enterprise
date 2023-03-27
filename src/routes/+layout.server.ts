@@ -15,7 +15,13 @@ export const load: ServerLoad = ({ locals }) => {
 								hasNextPage
 							}
 						}
-						totalPrice
+						price {
+							formatted
+						}
+					}
+					viewer {
+						__typename
+						id
 					}
 				}
 			`)

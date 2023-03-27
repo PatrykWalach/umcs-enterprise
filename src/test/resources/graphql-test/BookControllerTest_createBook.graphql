@@ -10,7 +10,10 @@ mutation BookControllerTestCreateBook($input: CreateBookInput!) {
 			}
 			id
 			popularity
-			price
+			price {
+				formatted
+				raw
+			}
 			releasedAt
 
 			title

@@ -1,18 +1,23 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.node;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
+import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.node.GlobalId;
+import com.umcs.enterprise.node.Node;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import lombok.NonNull;
 
 @DgsComponent
 public class NodeDataFetcher {
 
+	@NonNull
 	private final Map<String, Function<Long, Optional<? extends Node>>> loaders = new HashMap<>();
 
 	public NodeDataFetcher(BookRepository repository) {

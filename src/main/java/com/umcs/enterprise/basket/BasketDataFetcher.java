@@ -1,10 +1,15 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.basket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.internal.DgsWebMvcRequestData;
+import com.umcs.enterprise.ConnectionService;
+import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookDataLoader;
+import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
 import graphql.relay.Connection;
 import graphql.relay.DefaultEdge;
@@ -12,9 +17,9 @@ import graphql.schema.DataFetchingEnvironment;
 import jakarta.servlet.http.Cookie;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -23,8 +28,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 @DgsComponent
 @RequiredArgsConstructor
 public class BasketDataFetcher {
-
-	private final BookRepository bookRepository;
 
 	private Map<Long, Integer> getBasket(String basket) throws JsonProcessingException {
 		if (basket == null) {
@@ -49,12 +52,13 @@ public class BasketDataFetcher {
 	}
 
 	@DgsData(parentType = "Basket")
-	public CompletableFuture<String> totalPrice(
+	public CompletableFuture<BigDecimal> price(
 		DgsDataFetchingEnvironment enf,
 		DataFetchingEnvironment env
 	) {
-		DataLoader<Long, Book> dataLoader = enf.getDataLoader(BookDataLoader.class);
-		Locale poland = new Locale("pl", "PL");
+		DataLoader<Long, com.umcs.enterprise.book.Book> dataLoader = enf.getDataLoader(
+			BookDataLoader.class
+		);
 
 		Map<Long, Integer> basket = env.<Map<Long, Integer>>getSource();
 
@@ -68,30 +72,30 @@ public class BasketDataFetcher {
 						book.getPrice().multiply(BigDecimal.valueOf(basket.get(book.getDatabaseId())))
 					)
 					.reduce(BigDecimal.ZERO, BigDecimal::add)
-			)
-			.thenApply(NumberFormat.getCurrencyInstance(poland)::format);
+			);
 	}
 
+	@NonNull
 	private final ConnectionService connectionService;
 
-	@DgsData(parentType = "Basket")
-	public CompletableFuture<Connection<Book>> books(
-		DgsDataFetchingEnvironment enf,
-		DataFetchingEnvironment env
-	) {
-		DataLoader<Long, Book> dataLoader = enf.getDataLoader(BookDataLoader.class);
-
-		return dataLoader
-			.loadMany(env.<Map<Long, Integer>>getSource().keySet().stream().toList())
-			.thenApply(books -> connectionService.getConnection(books, env));
-	}
-
-	@DgsData(parentType = "BasketBooksEdge")
+	@DgsData(parentType = "OrderedBooksEdge")
 	public Integer quantity(
 		@CookieValue(required = false) String basket,
 		DataFetchingEnvironment env
 	) throws JsonProcessingException {
-		return getBasket(basket).get(env.<DefaultEdge<Book>>getSource().getNode().getDatabaseId());
+		return getBasket(basket)
+			.get(env.<DefaultEdge<com.umcs.enterprise.book.Book>>getSource().getNode().getDatabaseId());
+	}
+
+	@DgsData(parentType = "OrderedBooksEdge")
+	public BigDecimal price(
+		@CookieValue(required = false) String basket,
+		DataFetchingEnvironment env
+	) throws JsonProcessingException {
+		com.umcs.enterprise.book.Book book = env.<DefaultEdge<Book>>getSource().getNode();
+		return book
+			.getPrice()
+			.multiply(BigDecimal.valueOf(getBasket(basket).get(book.getDatabaseId())));
 	}
 
 	private void addCookie(DgsDataFetchingEnvironment dfe, Cookie cookie) {

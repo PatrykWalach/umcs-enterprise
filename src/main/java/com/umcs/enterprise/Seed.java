@@ -1,5 +1,14 @@
 package com.umcs.enterprise;
 
+import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.cover.Cover;
+import com.umcs.enterprise.cover.CoverRepository;
+import com.umcs.enterprise.cover.CoverService;
+import com.umcs.enterprise.order.BookOrder;
+import com.umcs.enterprise.order.BookOrderRepository;
+import com.umcs.enterprise.order.Order;
+import com.umcs.enterprise.order.OrderRepository;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import javax.imageio.ImageIO;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +29,14 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class Seed {
 
+	@NonNull
 	private final CoverRepository coverRepository;
+
+	@NonNull
+	private final OrderRepository orderRepository;
+
+	@NonNull
+	private final BookOrderRepository bookOrderRepository;
 
 	private Cover getCover(String urls) throws IOException {
 		Path uploadDir = Paths.get("static/covers");
@@ -69,41 +86,55 @@ public class Seed {
 	@Bean
 	CommandLineRunner initDatabase(BookRepository repository, CoverService coverService) {
 		return args -> {
+			List<Book> books = List.of(
+				Book
+					.newBuilder()
+					.cover(
+						getCover(
+							"//cf-taniaksiazka.statiki.pl/images/medium/A4C/9788367406710.jpg , //cf-taniaksiazka.statiki.pl/images/medium-x2/A4C/9788367406710.jpg "
+						)
+					)
+					.title("Mężczyzna imieniem Ove")
+					.author("Fredrik Backman")
+					.popularity(1L)
+					.price(BigDecimal.valueOf(30.43))
+					.build(),
+				Book
+					.newBuilder()
+					.cover(
+						getCover(
+							"//cf-taniaksiazka.statiki.pl/images/medium/90B/9788381886604.jpg , //cf-taniaksiazka.statiki.pl/images/medium-x2/90B/9788381886604.jpg "
+						)
+					)
+					.title("Na Zachodzie bez zmian. Wydanie filmowe")
+					.author("Erich Maria Remarque")
+					.price(BigDecimal.valueOf(23.40))
+					.popularity(1L)
+					.build(),
+				Book
+					.newBuilder()
+					.cover(
+						getCover(
+							"//cf-taniaksiazka.statiki.pl/images/medium/38C/9788367069359.jpg , //cf-taniaksiazka.statiki.pl/images/medium-x2/38C/9788367069359.jpg "
+						)
+					)
+					.title("Zaułek koszmarów")
+					.author("William Lindsay Gresham")
+					.popularity(1L)
+					.price(BigDecimal.valueOf(26.94))
+					.build()
+			);
+
+			books = repository.saveAll(books);
+
+			Order order = orderRepository.save(Order.newBuilder().build());
+
+			bookOrderRepository.saveAll(
+				books.stream().map(b -> BookOrder.newBuilder().book(b).order(order).build()).toList()
+			);
+
 			repository.saveAll(
 				Arrays.asList(
-					Book
-						.newBuilder()
-						.cover(
-							getCover(
-								"//cf-taniaksiazka.statiki.pl/images/medium/90B/9788381886604.jpg , //cf-taniaksiazka.statiki.pl/images/medium-x2/90B/9788381886604.jpg "
-							)
-						)
-						.title("Na Zachodzie bez zmian. Wydanie filmowe")
-						.author("Erich Maria Remarque")
-						.price(BigDecimal.valueOf(23.40))
-						.build(),
-					Book
-						.newBuilder()
-						.cover(
-							getCover(
-								"//cf-taniaksiazka.statiki.pl/images/medium/A4C/9788367406710.jpg , //cf-taniaksiazka.statiki.pl/images/medium-x2/A4C/9788367406710.jpg "
-							)
-						)
-						.title("Mężczyzna imieniem Ove")
-						.author("Fredrik Backman")
-						.price(BigDecimal.valueOf(30.43))
-						.build(),
-					Book
-						.newBuilder()
-						.cover(
-							getCover(
-								"//cf-taniaksiazka.statiki.pl/images/medium/38C/9788367069359.jpg , //cf-taniaksiazka.statiki.pl/images/medium-x2/38C/9788367069359.jpg "
-							)
-						)
-						.title("Zaułek koszmarów")
-						.author("William Lindsay Gresham")
-						.price(BigDecimal.valueOf(26.94))
-						.build(),
 					Book
 						.newBuilder()
 						.cover(

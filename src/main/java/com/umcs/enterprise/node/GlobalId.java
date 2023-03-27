@@ -1,4 +1,4 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.node;
 
 import java.nio.charset.StandardCharsets;
 

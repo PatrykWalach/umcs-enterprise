@@ -1,5 +1,7 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.user;
 
+import com.umcs.enterprise.node.Node;
+import com.umcs.enterprise.order.Order;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +18,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails, Node {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "database_id", nullable = false)
 	private Long databaseId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")

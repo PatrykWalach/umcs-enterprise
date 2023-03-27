@@ -1,19 +1,26 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.book;
 
 import com.netflix.graphql.dgs.*;
+import com.umcs.enterprise.*;
+import com.umcs.enterprise.cover.CoverDataLoader;
+import com.umcs.enterprise.cover.CoverRepository;
+import com.umcs.enterprise.cover.CoverService;
+import com.umcs.enterprise.order.OrderRepository;
 import com.umcs.enterprise.types.BookSortBy;
 import com.umcs.enterprise.types.Cover;
 import com.umcs.enterprise.types.CreateBookInput;
+import com.umcs.enterprise.types.PirceSortBy;
+import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
@@ -24,38 +31,38 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class BookDataFetcher {
 
+	@NonNull
 	private final BookRepository bookRepository;
-
-	private final CoverRepository coverRepository;
-
-	private final OrderRepository orderRepository;
-
-	@DgsData(parentType = "Book")
-	public String price(DataFetchingEnvironment env) {
-		Locale poland = new Locale("pl", "PL");
-
-		return NumberFormat.getCurrencyInstance(poland).format(env.<Book>getSource().getPrice());
-	}
-
-	public CoverRepository getCoverRepository() {
-		return coverRepository;
-	}
 
 	@DgsData(parentType = "Book")
 	public CompletableFuture<Cover> cover(
 		DgsDataFetchingEnvironment enf,
 		DataFetchingEnvironment env
 	) {
-		DataLoader<Long, Cover> dataLoader = enf.getDataLoader(CoversDataLoader.class);
-		DataLoader<Long, Cover> randomCover = enf.getDataLoader(CoversDataLoaderRandom.class);
+		DataLoader<Long, Cover> dataLoader = enf.getDataLoader(CoverDataLoader.class);
 
 		return Optional
 			.ofNullable(env.<Book>getSource().getCover())
-			.map(com.umcs.enterprise.Cover::getDatabaseId)
+			.map(com.umcs.enterprise.cover.Cover::getDatabaseId)
 			.map(dataLoader::load)
-			.orElseGet(() -> randomCover.load(env.<Book>getSource().getDatabaseId()));
+			.orElse(null);
 	}
 
+	@DgsData(parentType = "Basket")
+	public CompletableFuture<Connection<Book>> books(
+		DgsDataFetchingEnvironment enf,
+		DataFetchingEnvironment env
+	) {
+		DataLoader<Long, com.umcs.enterprise.book.Book> dataLoader = enf.getDataLoader(
+			BookDataLoader.class
+		);
+
+		return dataLoader
+			.loadMany(env.<Map<Long, Integer>>getSource().keySet().stream().toList())
+			.thenApply(books -> connectionService.getConnection(books, env));
+	}
+
+	@NonNull
 	private final ConnectionService connectionService;
 
 	private <T> Sort getSort(
@@ -98,7 +105,10 @@ public class BookDataFetcher {
 					getSort(
 						sortBy,
 						(fields, order) -> {
-							fields.put("price", order.getPrice());
+							fields.put(
+								"price",
+								Optional.ofNullable(order.getPrice()).map(PirceSortBy::getRaw).orElse(null)
+							);
 							fields.put("popularity", order.getPopularity());
 							fields.put("releasedAt", order.getReleasedAt());
 						}
@@ -108,6 +118,7 @@ public class BookDataFetcher {
 		);
 	}
 
+	@NonNull
 	private final EntityManager manager;
 
 	@DgsData(parentType = "Book")
@@ -118,6 +129,7 @@ public class BookDataFetcher {
 		);
 	}
 
+	@NonNull
 	private final CoverService coverService;
 
 	@DgsData(parentType = "CreateBookResult")
@@ -131,7 +143,7 @@ public class BookDataFetcher {
 		var book = new Book();
 		book.setAuthor(input.getAuthor());
 		book.setCreatedAt(ZonedDateTime.now());
-		book.setPrice(BigDecimal.valueOf(input.getPrice()));
+		book.setPrice(BigDecimal.valueOf(input.getPrice().getRaw()));
 
 		MultipartFile cover = input.getCover();
 

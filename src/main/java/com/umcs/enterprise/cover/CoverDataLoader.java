@@ -1,4 +1,4 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.cover;
 
 import com.netflix.graphql.dgs.DgsDataLoader;
 import java.util.Map;
@@ -7,13 +7,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.MappedBatchLoader;
 
-@DgsDataLoader(name = "bookCovers")
+@DgsDataLoader(name = "CoverDataLoader")
 @RequiredArgsConstructor
-public class CoversDataLoader implements MappedBatchLoader<Long, Cover> {
+public class CoverDataLoader implements MappedBatchLoader<Long, Cover> {
 
+	@NonNull
 	private final CoverRepository coverRepository;
 
 	@Override

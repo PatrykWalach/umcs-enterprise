@@ -1,4 +1,4 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.auth;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,7 +1,8 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.cover;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
+import com.umcs.enterprise.cover.Cover;
 import graphql.schema.DataFetchingEnvironment;
 
 @DgsComponent

@@ -1,4 +1,6 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.node;
+
+import com.umcs.enterprise.node.GlobalId;
 
 public interface Node {
 	Long getDatabaseId();

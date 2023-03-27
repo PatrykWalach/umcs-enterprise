@@ -1,5 +1,8 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.book;
 
+import com.umcs.enterprise.cover.Cover;
+import com.umcs.enterprise.node.Node;
+import com.umcs.enterprise.order.BookOrder;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -17,7 +20,8 @@ import org.hibernate.Hibernate;
 public class Book implements Node {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "database_id", nullable = false)
 	private Long databaseId;
 
 	private String author;

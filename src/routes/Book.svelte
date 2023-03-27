@@ -11,7 +11,9 @@
 				url
 				width
 			}
-			price
+			price {
+				formatted
+			}
 			title
 			author
 		}
@@ -22,7 +24,7 @@
 	$: data = useFragment(Book_book, book);
 </script>
 
-<article class="card-compact card bg-base-100 shadow xl:shadow-lg">
+<article class="card card-compact bg-base-100 shadow xl:shadow-lg">
 	{#if data?.cover}
 		<figure>
 			<img
@@ -50,10 +52,15 @@
 			<form method="post" use:enhance class="flex items-center justify-between">
 				<input type="hidden" name="id" value={data.id} />
 				<div class="text-lg font-bold">
-					{data?.price}
+					{data?.price?.formatted}
 				</div>
 				<!-- <button type="submit" class="btn-primary btn w-full">do koszyka</button> -->
-				<button type="submit" class="btn-ghost btn-square btn">
+				<button
+					type="submit"
+					class="btn-ghost btn-square btn"
+					aria-label="Add to cart"
+					title="Add to cart"
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"

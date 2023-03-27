@@ -1,5 +1,7 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.cover;
 
+import com.umcs.enterprise.cover.Cover;
+import com.umcs.enterprise.cover.CoverRepository;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.UUID;
 import javax.imageio.ImageIO;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class CoverService {
 
+	@NonNull
 	private final CoverRepository coverRepository;
 
 	public Cover uploadCover(MultipartFile file) throws IOException {

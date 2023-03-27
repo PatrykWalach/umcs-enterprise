@@ -3,10 +3,15 @@ import type { Handle } from '@sveltejs/kit';
 import { GraphQLClient } from 'graphql-request';
 
 export const handle: Handle = ({ event, resolve }) => {
+	const token = event.cookies.get('enterprise-token');
+
 	const client = new GraphQLClient('http://localhost:8080/graphql', {
 		fetch: event.fetch,
 		errorPolicy: 'ignore',
-		signal: event.request.signal
+		signal: event.request.signal,
+		headers: new Headers({
+			...(token && { Authorization: `Bearer ${token}` })
+		})
 	});
 	event.locals.client = client;
 	return resolve(event);
@@ -18,10 +23,13 @@ import cookielib from 'cookie';
 const cookies = ['basket'];
 
 export const handleFetch = (async ({ event, request, fetch }) => {
-	cookies
-		.map((cookie) => event.cookies.get(cookie))
-		.flatMap((cookie) => (cookie ? [cookie] : []))
-		.forEach((cookie) => request.headers.set('cookie', cookielib.serialize('basket', cookie)));
+	for (const key of cookies) {
+		const value = event.cookies.get(key);
+		if (!value) {
+			continue;
+		}
+		request.headers.append('cookie', cookielib.serialize(key, value));
+	}
 
 	const response = await fetch(request);
 	const setCookie = response.headers.get('set-cookie');
@@ -29,13 +37,18 @@ export const handleFetch = (async ({ event, request, fetch }) => {
 	if (!setCookie) {
 		return response;
 	}
+
 	const { Path, ...rest } = cookielib.parse(setCookie);
+	console.log({ Path, ...rest });
 
 	cookies
 		.flatMap((cookie): [string, string][] => (rest[cookie] ? [[cookie, rest[cookie]]] : []))
 		.forEach(([key, cookie]) => {
 			event.cookies.set(key, cookie, {
-				path: Path
+				path: Path,
+				httpOnly: true,
+				sameSite: 'lax',
+				secure: false
 			});
 		});
 

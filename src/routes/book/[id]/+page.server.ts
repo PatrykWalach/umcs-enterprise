@@ -22,7 +22,9 @@ export const load: ServerLoad = async ({ locals, params }) => {
 							url
 							width
 						}
-						price
+						price {
+							formatted
+						}
 						recommended(first: 6) {
 							edges {
 								node {
@@ -47,8 +49,10 @@ export const load: ServerLoad = async ({ locals, params }) => {
 	}
 
 	return {
-		...data,
-		node: data.node
+		BookQuery: {
+			...data,
+			node: data.node
+		}
 	};
 };
 

@@ -1,5 +1,6 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.auth;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
-public class Security {
+public class JwtConfig {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -31,6 +32,7 @@ public class Security {
 		return authConfig.getAuthenticationManager();
 	}
 
+	@NonNull
 	private final JwtFilter jwtFilter;
 
 	@Bean

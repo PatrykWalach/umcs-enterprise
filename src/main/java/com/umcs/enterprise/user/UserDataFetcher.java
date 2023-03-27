@@ -1,6 +1,7 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.user;
 
 import com.netflix.graphql.dgs.*;
+import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.types.LoginInput;
 import com.umcs.enterprise.types.LoginResult;
 import com.umcs.enterprise.types.RegisterInput;
@@ -10,6 +11,7 @@ import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class UserDataFetcher {
 
-	@Value("${spring.security.authentication.jwt.secret}")
-	private String secret;
-
+	@NonNull
 	private final AuthenticationManager authenticationManager;
 
 	@DgsMutation
@@ -52,9 +52,13 @@ public class UserDataFetcher {
 		return env.<User>getSource().getUsername();
 	}
 
+	@NonNull
 	private final UserRepository userRepository;
 
+	@NonNull
 	private final JwtService jwtService;
+
+	@NonNull
 	private final PasswordEncoder passwordEncoder;
 
 	@DgsMutation
@@ -62,7 +66,7 @@ public class UserDataFetcher {
 		User user = userRepository.save(
 			User
 				.newBuilder()
-				.authorities(Collections.singletonList(("USER")))
+				.authorities(Collections.singletonList("USER"))
 				.username(input.getUsername())
 				.password(passwordEncoder.encode(input.getPassword()))
 				.build()
