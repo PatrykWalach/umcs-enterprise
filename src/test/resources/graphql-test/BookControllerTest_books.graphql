@@ -3,9 +3,9 @@ query BookControllerTestBooks(
 	$before: String
 	$first: Int
 	$last: Int
-	$sortBy: [BookSortBy]
+	$orderBy: [BookOrderBy]
 ) {
-	books(after: $after, before: $before, first: $first, last: $last, sortBy: $sortBy) {
+	books(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy) {
 		edges {
 			node {
 				id

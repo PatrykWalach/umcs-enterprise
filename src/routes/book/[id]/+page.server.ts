@@ -1,4 +1,4 @@
-import BasketBook from '$lib/BasketBook';
+import BasketBook from '$lib/BasketBook.server';
 import { graphql } from '$lib/gql';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
@@ -57,12 +57,8 @@ export const load: ServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ locals, params }) => {
-		await locals.client.request(BasketBook, {
-			input: {
-				id: params.id
-			}
-		});
+	default: async ({ locals, params, cookies }) => {
+		await BasketBook({ locals, cookies }, { id: params.id });
 
 		return {};
 	}

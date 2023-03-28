@@ -7,19 +7,17 @@ import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
-import com.umcs.enterprise.order.BookOrder;
-import com.umcs.enterprise.order.BookOrderRepository;
-import com.umcs.enterprise.order.Order;
-import com.umcs.enterprise.order.OrderRepository;
-import com.umcs.enterprise.types.BookSortBy;
-import com.umcs.enterprise.types.CreateBookInput;
-import com.umcs.enterprise.types.CreatePriceInput;
-import com.umcs.enterprise.types.PirceSortBy;
+import com.umcs.enterprise.order.BookPurchase;
+import com.umcs.enterprise.order.BookPurchaseRepository;
+import com.umcs.enterprise.order.Purchase;
+import com.umcs.enterprise.order.PurchaseRepository;
+import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserRepository;
 import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,8 +45,8 @@ class BookDataFetcherTest {
 	@BeforeEach
 	void beforeEach() {
 		userRepository.deleteAll();
-		bookOrderRepository.deleteAll();
-		orderRepository.deleteAll();
+		bookPurchaseRepository.deleteAll();
+		purchaseRepository.deleteAll();
 		bookRepository.deleteAll();
 	}
 
@@ -70,6 +68,7 @@ class BookDataFetcherTest {
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
+			.releasedAt(OffsetDateTime.now())
 			.price(CreatePriceInput.newBuilder().raw(100.0).build())
 			.build();
 
@@ -128,6 +127,7 @@ class BookDataFetcherTest {
 		var input = new CreateBookInput.Builder()
 			.title("The Book")
 			.author("The Author")
+			.releasedAt(OffsetDateTime.now())
 			.price(CreatePriceInput.newBuilder().raw(100.0).build())
 			.build();
 
@@ -204,7 +204,7 @@ class BookDataFetcherTest {
 	}
 
 	@Autowired
-	private OrderRepository orderRepository;
+	private PurchaseRepository purchaseRepository;
 
 	@Test
 	void recommended() {
@@ -224,7 +224,9 @@ class BookDataFetcherTest {
 				.collect(Collectors.toList())
 		);
 
-		List<Order> orders = orderRepository.saveAll(Stream.generate(Order::new).limit(4).toList());
+		List<Purchase> purchases = purchaseRepository.saveAll(
+			Stream.generate(Purchase::new).limit(4).toList()
+		);
 
 		ArrayList<List<Book>> slices = new ArrayList<>();
 		slices.add(recommended.subList(0, 5));
@@ -232,14 +234,14 @@ class BookDataFetcherTest {
 		slices.add(recommended.subList(3, 7));
 		slices.add(recommended.subList(1, 6));
 
-		bookOrderRepository.saveAll(
+		bookPurchaseRepository.saveAll(
 			IntStream
 				.range(0, slices.size())
 				.boxed()
 				.flatMap(i ->
 					Stream
 						.concat(slices.get(i).stream(), Stream.of(book))
-						.map(book1 -> BookOrder.newBuilder().book(book1).order(orders.get(i)).build())
+						.map(book1 -> BookPurchase.newBuilder().book(book1).purchase(purchases.get(i)).build())
 				)
 				.toList()
 		);
@@ -269,12 +271,12 @@ class BookDataFetcherTest {
 
 		Book book = bookRepository.save(Book.newBuilder().build());
 
-		Order order = orderRepository.save(new Order());
+		Purchase purchase = purchaseRepository.save(new Purchase());
 
-		bookOrderRepository.saveAll(
+		bookPurchaseRepository.saveAll(
 			Stream
 				.concat(recommended.stream(), Stream.of(book))
-				.map(book1 -> BookOrder.newBuilder().book(book1).order(order).build())
+				.map(book1 -> BookPurchase.newBuilder().book(book1).purchase(purchase).build())
 				.toList()
 		);
 
@@ -291,7 +293,7 @@ class BookDataFetcherTest {
 	}
 
 	@Autowired
-	private BookOrderRepository bookOrderRepository;
+	private BookPurchaseRepository bookPurchaseRepository;
 
 	@ParameterizedTest
 	@CsvSource(
@@ -309,11 +311,11 @@ class BookDataFetcherTest {
 		HashMap<String, BookSortBy> sort = new HashMap<>();
 		sort.put(
 			"price_ASC",
-			BookSortBy.newBuilder().price(new PirceSortBy(com.umcs.enterprise.types.Sort.ASC)).build()
+			BookSortBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.ASC)).build()
 		);
 		sort.put(
 			"price_DESC",
-			BookSortBy.newBuilder().price(new PirceSortBy(com.umcs.enterprise.types.Sort.DESC)).build()
+			BookSortBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.DESC)).build()
 		);
 		sort.put(
 			"popularity_ASC",
@@ -361,7 +363,7 @@ class BookDataFetcherTest {
 
 		this.graphQlTester.documentName("BookControllerTest_books")
 			.variable("first", 4)
-			.variable("sortBy", sort.get(order))
+			.variable("orderBy", sort.get(order))
 			//        when
 			.execute()
 			//                then

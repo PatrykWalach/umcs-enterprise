@@ -15,7 +15,7 @@
 			<option value="popularity">Popularity</option>
 			<option value="price">Price</option>
 		</select>
-		<select name="order" id="" class="select">
+		<select name="purchase" id="" class="select">
 			<option value="asc">Ascending</option>
 			<option value="desc" selected>Descending</option>
 		</select>
@@ -39,7 +39,7 @@
 					class="btn"
 					href="/books?{new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
-						order: $page.url.searchParams.get('order') ?? '',
+						purchase: $page.url.searchParams.get('purchase') ?? '',
 						before: data.BooksQuery.books.pageInfo.startCursor
 					})}"
 				>
@@ -51,7 +51,7 @@
 					class="btn"
 					href="/books?{new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
-						order: $page.url.searchParams.get('order') ?? '',
+						purchase: $page.url.searchParams.get('purchase') ?? '',
 						after: data.BooksQuery.books.pageInfo.endCursor
 					})}"
 				>

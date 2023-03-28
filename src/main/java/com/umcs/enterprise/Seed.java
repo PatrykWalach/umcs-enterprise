@@ -5,10 +5,10 @@ import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.cover.CoverService;
-import com.umcs.enterprise.order.BookOrder;
-import com.umcs.enterprise.order.BookOrderRepository;
-import com.umcs.enterprise.order.Order;
-import com.umcs.enterprise.order.OrderRepository;
+import com.umcs.enterprise.order.BookPurchase;
+import com.umcs.enterprise.order.BookPurchaseRepository;
+import com.umcs.enterprise.order.Purchase;
+import com.umcs.enterprise.order.PurchaseRepository;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,10 +33,10 @@ public class Seed {
 	private final CoverRepository coverRepository;
 
 	@NonNull
-	private final OrderRepository orderRepository;
+	private final PurchaseRepository purchaseRepository;
 
 	@NonNull
-	private final BookOrderRepository bookOrderRepository;
+	private final BookPurchaseRepository bookPurchaseRepository;
 
 	private Cover getCover(String urls) throws IOException {
 		Path uploadDir = Paths.get("static/covers");
@@ -127,10 +127,13 @@ public class Seed {
 
 			books = repository.saveAll(books);
 
-			Order order = orderRepository.save(Order.newBuilder().build());
+			Purchase purchase = purchaseRepository.save(Purchase.newBuilder().build());
 
-			bookOrderRepository.saveAll(
-				books.stream().map(b -> BookOrder.newBuilder().book(b).order(order).build()).toList()
+			bookPurchaseRepository.saveAll(
+				books
+					.stream()
+					.map(b -> BookPurchase.newBuilder().book(b).purchase(purchase).build())
+					.toList()
 			);
 
 			repository.saveAll(

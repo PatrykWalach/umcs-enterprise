@@ -1,18 +1,16 @@
 package com.umcs.enterprise.order;
 
 import com.umcs.enterprise.book.Book;
-import com.umcs.enterprise.order.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "books_orders")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newBuilder")
-public class BookOrder {
+public class BookPurchase {
 
 	@Id
 	@GeneratedValue
@@ -21,7 +19,7 @@ public class BookOrder {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
-	private Order order;
+	private Purchase purchase;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "book_id")

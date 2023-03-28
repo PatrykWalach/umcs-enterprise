@@ -3,14 +3,8 @@ package com.umcs.enterprise.book;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.*;
 import com.umcs.enterprise.cover.CoverDataLoader;
-import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.cover.CoverService;
-import com.umcs.enterprise.order.OrderRepository;
-import com.umcs.enterprise.types.BookSortBy;
-import com.umcs.enterprise.types.Cover;
-import com.umcs.enterprise.types.CreateBookInput;
-import com.umcs.enterprise.types.PirceSortBy;
-import graphql.relay.Connection;
+import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
@@ -20,8 +14,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
@@ -48,35 +41,21 @@ public class BookDataFetcher {
 			.orElse(null);
 	}
 
-	@DgsData(parentType = "Basket")
-	public CompletableFuture<Connection<Book>> books(
-		DgsDataFetchingEnvironment enf,
-		DataFetchingEnvironment env
-	) {
-		DataLoader<Long, com.umcs.enterprise.book.Book> dataLoader = enf.getDataLoader(
-			BookDataLoader.class
-		);
-
-		return dataLoader
-			.loadMany(env.<Map<Long, Integer>>getSource().keySet().stream().toList())
-			.thenApply(books -> connectionService.getConnection(books, env));
-	}
-
 	@NonNull
 	private final ConnectionService connectionService;
 
 	private <T> Sort getSort(
-		List<T> sortBys,
-		BiConsumer<HashMap<String, com.umcs.enterprise.types.Sort>, T> fn
+		List<T> orders,
+		BiConsumer<HashMap<String, com.umcs.enterprise.types.Order>, T> fn
 	) {
 		return Sort.by(
 			Optional
-				.ofNullable(sortBys)
+				.ofNullable(orders)
 				.orElse(new ArrayList<>())
 				.stream()
-				.map(sortBy -> {
-					HashMap<String, com.umcs.enterprise.types.Sort> fields = new HashMap<>();
-					fn.accept(fields, sortBy);
+				.map(orderBy -> {
+					HashMap<String, com.umcs.enterprise.types.Order> fields = new HashMap<>();
+					fn.accept(fields, orderBy);
 					return fields;
 				})
 				.flatMap(fields ->
@@ -85,7 +64,7 @@ public class BookDataFetcher {
 						.stream()
 						.filter(e -> e.getValue() != null)
 						.map(e -> {
-							if (e.getValue() == com.umcs.enterprise.types.Sort.ASC) {
+							if (e.getValue() == com.umcs.enterprise.types.Order.ASC) {
 								return Sort.Order.asc(e.getKey());
 							}
 							return Sort.Order.desc(e.getKey());
@@ -98,16 +77,16 @@ public class BookDataFetcher {
 	@DgsQuery
 	public graphql.relay.Connection<Book> books(
 		DataFetchingEnvironment env,
-		@InputArgument List<BookSortBy> sortBy
+		@InputArgument List<BookOrderBy> orderBy
 	) {
 		return connectionService.getConnection(
 			this.bookRepository.findAll(
 					getSort(
-						sortBy,
+						orderBy,
 						(fields, order) -> {
 							fields.put(
 								"price",
-								Optional.ofNullable(order.getPrice()).map(PirceSortBy::getRaw).orElse(null)
+								Optional.ofNullable(order.getPrice()).map(PriceOrderBy::getRaw).orElse(null)
 							);
 							fields.put("popularity", order.getPopularity());
 							fields.put("releasedAt", order.getReleasedAt());
@@ -150,6 +129,7 @@ public class BookDataFetcher {
 		if (cover != null) {
 			book.setCover(coverService.uploadCover(cover));
 		}
+
 		book.setPopularity(0L);
 		book.setTitle(input.getTitle());
 		book.setCreatedAt(ZonedDateTime.now());

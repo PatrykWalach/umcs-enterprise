@@ -7,6 +7,7 @@ import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.internal.DgsWebMvcRequestData;
 import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookDataFetcher;
 import com.umcs.enterprise.book.BookDataLoader;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
@@ -46,9 +47,8 @@ public class BasketDataFetcher {
 	}
 
 	@DgsQuery
-	public Map<Long, Integer> basket(@CookieValue(required = false) String basket)
-		throws JsonProcessingException {
-		return getBasket(basket);
+	public Map<Long, Integer> basket(@InputArgument String id) throws JsonProcessingException {
+		return getBasket(id);
 	}
 
 	@DgsData(parentType = "Basket")
@@ -75,61 +75,25 @@ public class BasketDataFetcher {
 			);
 	}
 
-	@NonNull
-	private final ConnectionService connectionService;
-
-	@DgsData(parentType = "OrderedBooksEdge")
-	public Integer quantity(
-		@CookieValue(required = false) String basket,
-		DataFetchingEnvironment env
-	) throws JsonProcessingException {
-		return getBasket(basket)
-			.get(env.<DefaultEdge<com.umcs.enterprise.book.Book>>getSource().getNode().getDatabaseId());
-	}
-
-	@DgsData(parentType = "OrderedBooksEdge")
-	public BigDecimal price(
-		@CookieValue(required = false) String basket,
-		DataFetchingEnvironment env
-	) throws JsonProcessingException {
-		com.umcs.enterprise.book.Book book = env.<DefaultEdge<Book>>getSource().getNode();
-		return book
-			.getPrice()
-			.multiply(BigDecimal.valueOf(getBasket(basket).get(book.getDatabaseId())));
-	}
-
-	private void addCookie(DgsDataFetchingEnvironment dfe, Cookie cookie) {
-		DgsWebMvcRequestData requestData = (DgsWebMvcRequestData) dfe.getDgsContext().getRequestData();
-		ServletWebRequest webRequest = (ServletWebRequest) requestData.getWebRequest();
-
-		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
-
-		webRequest.getResponse().addCookie(cookie);
+	@DgsData(parentType = "Basket")
+	public String id(DataFetchingEnvironment env) throws JsonProcessingException {
+		return Base64
+			.getEncoder()
+			.encodeToString(
+				new ObjectMapper()
+					.writeValueAsString(env.<Map<Long, Integer>>getSource())
+					.getBytes(StandardCharsets.UTF_8)
+			);
 	}
 
 	@DgsMutation
-	public Map<Long, Integer> basketBook(
-		@InputArgument BasketBookInput input,
-		@CookieValue(required = false) String basket,
-		DgsDataFetchingEnvironment dfe
-	) throws JsonProcessingException {
-		Map<Long, Integer> books = getBasket(basket);
+	public Map<Long, Integer> basketBook(@InputArgument BasketBookInput input)
+		throws JsonProcessingException {
+		Map<Long, Integer> books = getBasket(input.getBasket().getId());
 
-		GlobalId globalId = GlobalId.from(input.getId());
+		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 		books.merge(globalId.databaseId(), 1, Integer::sum);
-
-		Cookie cookie = new Cookie(
-			"basket",
-			Base64
-				.getEncoder()
-				.encodeToString(
-					new ObjectMapper().writeValueAsString(books).getBytes(StandardCharsets.UTF_8)
-				)
-		);
-		cookie.setPath("/");
-		addCookie(dfe, cookie);
 
 		return books;
 	}
@@ -138,18 +102,15 @@ public class BasketDataFetcher {
 		{ @DgsData(parentType = "UnbasketBookResult"), @DgsData(parentType = "BasketBookResult") }
 	)
 	public Map<Long, Integer> basket(DataFetchingEnvironment env) {
-		return env.<Map<Long, Integer>>getRoot();
+		return env.<Map<Long, Integer>>getSource();
 	}
 
 	@DgsMutation
-	public Map<Long, Integer> unbasketBook(
-		@InputArgument UnbasketBookInput input,
-		@CookieValue(required = false) String basket,
-		DgsDataFetchingEnvironment dfe
-	) throws JsonProcessingException {
-		Map<Long, Integer> books = getBasket(basket);
+	public Map<Long, Integer> unbasketBook(@InputArgument UnbasketBookInput input)
+		throws JsonProcessingException {
+		Map<Long, Integer> books = getBasket(input.getBasket().getId());
 
-		GlobalId globalId = GlobalId.from(input.getId());
+		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 
 		books.computeIfPresent(
@@ -161,17 +122,6 @@ public class BasketDataFetcher {
 				return v - 1;
 			}
 		);
-
-		Cookie cookie = new Cookie(
-			"basket",
-			Base64
-				.getEncoder()
-				.encodeToString(
-					new ObjectMapper().writeValueAsString(books).getBytes(StandardCharsets.UTF_8)
-				)
-		);
-		cookie.setPath("/");
-		addCookie(dfe, cookie);
 
 		return books;
 	}

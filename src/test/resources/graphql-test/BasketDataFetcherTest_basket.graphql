@@ -1,0 +1,21 @@
+query BasketDataFetcherTestBasket($id: ID) {
+	basket(id: $id) {
+		books(first: 10) {
+			edges {
+				price {
+					formatted
+					raw
+				}
+				node {
+					id
+				}
+				quantity
+			}
+		}
+		id
+		price {
+			formatted
+			raw
+		}
+	}
+}

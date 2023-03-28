@@ -1,30 +1,40 @@
 import { graphql } from '$lib/gql';
 import type { ServerLoad } from '@sveltejs/kit';
 
-export const load: ServerLoad = ({ locals }) => {
-	return {
-		NavbarQuery: locals.client.request(
-			graphql(/* GraphQL */ `
-				query NavbarQuery {
-					basket {
-						books(first: 12) {
-							edges {
-								quantity
-							}
-							pageInfo {
-								hasNextPage
-							}
+export const load: ServerLoad = async ({ locals, cookies }) => {
+	const data = await locals.client.request(
+		graphql(/* GraphQL */ `
+			query NavbarQuery($id: ID) {
+				basket(id: $id) {
+					books(first: 12) {
+						edges {
+							quantity
 						}
-						price {
-							formatted
+						pageInfo {
+							hasNextPage
 						}
 					}
-					viewer {
-						__typename
-						id
+					id
+					price {
+						formatted
 					}
 				}
-			`)
-		)
+				viewer {
+					__typename
+					id
+				}
+			}
+		`),
+		{
+			id: cookies.get('basket')
+		}
+	);
+
+	cookies.set('basket', data?.basket?.id ?? '', {
+		path: '/'
+	});
+
+	return {
+		NavbarQuery: data
 	};
 };

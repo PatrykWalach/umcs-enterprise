@@ -9,13 +9,12 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 @Entity
-@Table(name = "\"order\"")
 @Getter
 @Setter
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order implements Node {
+public class Purchase implements Node {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,15 +25,15 @@ public class Order implements Node {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-	private List<BookOrder> books;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")
+	private List<BookPurchase> books;
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		Order order = (Order) o;
-		return getDatabaseId() != null && Objects.equals(getDatabaseId(), order.getDatabaseId());
+		Purchase purchase = (Purchase) o;
+		return getDatabaseId() != null && Objects.equals(getDatabaseId(), purchase.getDatabaseId());
 	}
 
 	@Override

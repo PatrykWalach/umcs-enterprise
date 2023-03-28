@@ -1,7 +1,7 @@
 package com.umcs.enterprise.user;
 
 import com.umcs.enterprise.node.Node;
-import com.umcs.enterprise.order.Order;
+import com.umcs.enterprise.order.Purchase;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +23,7 @@ public class User implements UserDetails, Node {
 	private Long databaseId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private List<Order> orders;
+	private List<Purchase> purchases;
 
 	private String password;
 

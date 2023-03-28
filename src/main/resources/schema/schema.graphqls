@@ -40,21 +40,21 @@ interface Viewer implements Node {
 type User implements Viewer & Node {
 	id: ID!
 	name: String
-	orders(after: String, before: String, first: Int, last: Int): OrderConnection
+	purchases(after: String, before: String, first: Int, last: Int): PurchaseConnection
 }
 
 type Admin implements Viewer & Node {
 	id: ID!
 }
 
-enum OrderStatus {
+enum PurchaseStatus {
+	AWAITING_PAYMENT
 	COMPLETE
-	PENDING
 }
 
 scalar DateTime
-type OrderConnection {
-	edges: [OrderEdge]
+type PurchaseConnection {
+	edges: [PurchaseEdge]
 	pageInfo: PageInfo!
 }
 
@@ -65,60 +65,79 @@ type PageInfo {
 	startCursor: String
 }
 
-type OrderEdge {
+type PurchaseEdge {
 	cursor: String
-	node: Order
+	node: Purchase
 }
-type Order implements Node {
-	books(after: String, before: String, first: Int, last: Int): OrderedBooksConnection
+type Purchase implements Node {
+	books(after: String, before: String, first: Int, last: Int): PurchaseBooksConnection
 	createdAt: DateTime
 	id: ID!
 	price: Price
-	status: OrderStatus
+	status: PurchaseStatus
 	user: User
 }
 
-type OrderedBooksEdge {
+type PurchaseBooksEdge {
 	cursor: String
 	node: Book
 	price: Price
 	quantity: Int
 }
 
-type OrderedBooksConnection {
-	edges: [OrderedBooksEdge]
+type PurchaseBooksConnection {
+	edges: [PurchaseBooksEdge]
+	pageInfo: PageInfo!
+}
+
+type BasketBooksEdge {
+	cursor: String
+	node: Book
+	price: Price
+	quantity: Int
+}
+
+type BasketBooksConnection {
+	edges: [BasketBooksEdge]
 	pageInfo: PageInfo!
 }
 
 type Basket {
-	books(after: String, before: String, first: Int, last: Int): OrderedBooksConnection
+	books(after: String, before: String, first: Int, last: Int): BasketBooksConnection
+	id: ID!
 	price: Price
 }
 
-enum Sort {
+enum Order {
 	ASC
 	DESC
 }
 
-input PriceSortBy {
-	raw: Sort
+input PriceOrderBy {
+	raw: Order
 }
 
-input BookSortBy {
-	popularity: Sort
-	price: PriceSortBy
-	releasedAt: Sort
+input BookOrderBy {
+	popularity: Order
+	price: PriceOrderBy
+	releasedAt: Order
 }
 
 type Query {
 	"""
 	3.5
 	"""
-	basket: Basket
+	basket(id: ID): Basket
 	"""
 	3
 	"""
-	books(after: String, before: String, first: Int, last: Int, sortBy: [BookSortBy]): BookConnection
+	books(
+		after: String
+		before: String
+		first: Int
+		last: Int
+		orderBy: [BookOrderBy]
+	): BookConnection
 	"""
 	3
 	"""
@@ -130,7 +149,7 @@ type Query {
 	"""
 	4
 	"""
-	orders(after: String, before: String, first: Int, last: Int): OrderConnection
+	purchases(after: String, before: String, first: Int, last: Int): PurchaseConnection
 	"""
 	3
 	"""
@@ -139,26 +158,26 @@ type Query {
 
 input UpdateStatusInput {
 	iD: ID!
-	status: OrderStatus
+	status: PurchaseStatus!
 }
 
-type MakeOrderResult {
+type MakePurchaseResult {
 	basket: Basket
-	order: Order
+	purchase: Purchase
 }
 
 scalar Upload
 
 input CreatePriceInput {
-	raw: Float
+	raw: Float!
 }
 
 input CreateBookInput {
-	author: String
+	author: String!
 	cover: Upload
-	price: CreatePriceInput
-	releasedAt: DateTime
-	title: String
+	price: CreatePriceInput!
+	releasedAt: DateTime!
+	title: String!
 }
 
 type BasketBookResult {
@@ -170,18 +189,29 @@ type UnbasketBookResult {
 }
 
 type UpdateStatusResult {
-	order: Order
+	purchase: Purchase
 }
-input BasketBookInput {
+
+input WhereUniqueBasketInput {
 	id: ID!
+}
+
+input WhereUniqueBookInput {
+	id: ID!
+}
+
+input BasketBookInput {
+	basket: WhereUniqueBasketInput
+	book: WhereUniqueBookInput!
 }
 
 input UnbasketBookInput {
-	id: ID!
+	basket: WhereUniqueBasketInput
+	book: WhereUniqueBookInput!
 }
 
 input DeleteInput {
-	id: ID
+	id: ID!
 }
 
 type CreateBookResult {
@@ -192,11 +222,15 @@ type DeleteResult {
 	node: Node
 }
 
+input MakePurchaseInput {
+	basket: WhereUniqueBasketInput!
+}
+
 type Mutation {
 	"""
 	3.5 requires role User
 	"""
-	basketBook(input: BasketBookInput): BasketBookResult
+	basketBook(input: BasketBookInput!): BasketBookResult
 	"""
 	3 requires role Admin
 	"""
@@ -205,7 +239,7 @@ type Mutation {
 	"""
 	3 requires role Admin
 	"""
-	delete(input: DeleteInput): DeleteResult
+	delete(input: DeleteInput!): DeleteResult
 	"""
 	3
 	"""
@@ -214,7 +248,7 @@ type Mutation {
 	"""
 	4 requires role User
 	"""
-	makeOrder: MakeOrderResult
+	makePurchase(input: MakePurchaseInput!): MakePurchaseResult
 	"""
 	3
 	"""
@@ -222,7 +256,7 @@ type Mutation {
 	"""
 	3.5 requires role User
 	"""
-	unbasketBook(input: UnbasketBookInput): UnbasketBookResult
+	unbasketBook(input: UnbasketBookInput!): UnbasketBookResult
 	"""
 	4 requires role Admin
 	"""
@@ -234,16 +268,16 @@ type LoginResult {
 }
 
 input LoginInput {
-	password: String
-	username: String
+	password: String!
+	username: String!
 }
 type RegisterResult {
 	token: String
 }
 
 input RegisterInput {
-	password: String
-	username: String
+	password: String!
+	username: String!
 }
 
 schema {
