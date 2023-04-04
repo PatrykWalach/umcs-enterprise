@@ -52,11 +52,10 @@ class BasketDataFetcherTest {
 				.entity(String.class)
 				.get();
 
-		var book = bookRepository.save(Book.newBuilder().build());
+		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
 
-		IntStream
-			.range(1, 3)
-			.forEachOrdered(i -> {
+		for (int i = 1; i < 3; i++) {
+			id =
 				this.graphQlTester.documentName("BasketDataFetcherTest_basketBook")
 					.variable(
 						"input",
@@ -79,8 +78,11 @@ class BasketDataFetcherTest {
 					.isEqualTo(Collections.singletonList(book.getId()))
 					.path("basketBook.basket.books.edges[*].quantity")
 					.entity(List.class)
-					.isEqualTo(Collections.singletonList(i));
-			});
+					.isEqualTo(Collections.singletonList(i))
+					.path("basketBook.basket.id")
+					.entity(String.class)
+					.get();
+		}
 	}
 
 	@Test
