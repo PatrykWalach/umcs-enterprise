@@ -410,30 +410,30 @@ class BookDataFetcherTest {
 		//        given
 		Cover cover = coverRepository.save(new Cover());
 
-		HashMap<String, BookSortBy> sort = new HashMap<>();
+		HashMap<String, BookOrderBy> sort = new HashMap<>();
 		sort.put(
 			"price_ASC",
-			BookSortBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.ASC)).build()
+			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.ASC)).build()
 		);
 		sort.put(
 			"price_DESC",
-			BookSortBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.DESC)).build()
+			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.DESC)).build()
 		);
 		sort.put(
 			"popularity_ASC",
-			BookSortBy.newBuilder().popularity(com.umcs.enterprise.types.Sort.ASC).build()
+			BookOrderBy.newBuilder().popularity(com.umcs.enterprise.types.Sort.ASC).build()
 		);
 		sort.put(
 			"popularity_DESC",
-			BookSortBy.newBuilder().popularity(com.umcs.enterprise.types.Sort.DESC).build()
+			BookOrderBy.newBuilder().popularity(com.umcs.enterprise.types.Sort.DESC).build()
 		);
 		sort.put(
 			"releasedAt_ASC",
-			BookSortBy.newBuilder().releasedAt(com.umcs.enterprise.types.Sort.ASC).build()
+			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Sort.ASC).build()
 		);
 		sort.put(
 			"releasedAt_DESC",
-			BookSortBy.newBuilder().releasedAt(com.umcs.enterprise.types.Sort.DESC).build()
+			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Sort.DESC).build()
 		);
 
 		Book book0 = Book.newBuilder().cover(cover).build();

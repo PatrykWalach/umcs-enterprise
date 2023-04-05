@@ -17,19 +17,61 @@ input Transformation {
 https://cloudinary.com/documentation/resizing_and_cropping#resize_and_crop_modes
 """
 enum Crop {
+	"""
+	Extracts a region of the specified dimensions from the original image without first resizing it.
+	"""
 	CROP
+	"""
+	Resizes the image to fill the specified dimensions without distortion. The image may be cropped as a result.
+	"""
 	FILL
+	"""
+	Same as fill, but avoids excessive cropping by adding padding when needed. Supported only with automatic cropping.
+	"""
 	FILL_PAD
+	"""
+	Resizes the image to fit inside the bounding box specified by the dimensions, maintaining the aspect ratio.
+	"""
 	FIT
+	"""
+	Performs smart cropping, using the Imagga Crop and Scale add-on.
+	"""
 	IMAGGA_CROP
+	"""
+	Performs smart scaling, using the Imagga Crop and Scale add-on.
+	"""
 	IMAGGA_SCALE
+	"""
+	Same as fill, but only scales down the image.
+	"""
 	LFILL
+	"""
+	Same as fit, but only scales down the image.
+	"""
 	LIMIT
+	"""
+	Same as pad, but only scales down the image.
+	"""
 	LPAD
+	"""
+	Same as fit, but only scales up the image.
+	"""
 	MFIT
+	"""
+	Same as pad, but only scales up the image.
+	"""
 	MPAD
+	"""
+	Resizes the image to fit inside the bounding box specified by the dimensions, maintaining the aspect ratio, and applies padding if the resized image does not fill the whole area.
+	"""
 	PAD
+	"""
+	Resizes the image to the specified dimensions without necessarily retaining the original aspect ratio.
+	"""
 	SCALE
+	"""
+	Creates a thumbnail of the image with the specified dimensions, based on a specified gravity. Scaling may occur.
+	"""
 	THUMB
 }
 
@@ -43,13 +85,14 @@ type BookEdge {
 }
 
 type Cover {
-	crop: String
+	crop: Crop
 	height: Int
 	url: String
 	width: Int
 }
 type Book implements Node {
 	author: String
+	# eslint-disable-next-line @graphql-eslint/relay-edge-types
 	covers(transformations: [Transformation]): [Cover]
 	id: ID!
 	popularity: Int

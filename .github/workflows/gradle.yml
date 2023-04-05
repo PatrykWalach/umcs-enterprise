@@ -12,6 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: test
 
     steps:
       - uses: actions/checkout@v3
@@ -29,6 +30,7 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
+    environment: test
     name: E2E tests
     steps:
       - uses: actions/checkout@v3
@@ -72,6 +74,7 @@ jobs:
 
   eslint:
     runs-on: ubuntu-latest
+    environment: test
     name: Eslint
     steps:
       - uses: actions/checkout@v3
@@ -88,6 +91,7 @@ jobs:
 
   svelte-check:
     runs-on: ubuntu-latest
+    environment: test
     name: Svelte check
     steps:
       - uses: actions/checkout@v3

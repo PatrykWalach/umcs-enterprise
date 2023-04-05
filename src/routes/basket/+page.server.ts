@@ -33,8 +33,8 @@ export const load: ServerLoad = ({ locals, url, cookies }) => {
 											{ width: 2000 }
 										]
 									) {
-										width
 										url
+										width
 									}
 									id
 									title
