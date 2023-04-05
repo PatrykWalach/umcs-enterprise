@@ -16,9 +16,6 @@ import com.netflix.graphql.dgs.client.codegen.GraphQLQueryRequest;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.client.CreateBookGraphQLQuery;
-import com.umcs.enterprise.client.CreateBookProjectionRoot;
-import com.umcs.enterprise.client.CreateBook_BookProjection;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.order.BookPurchase;
@@ -123,11 +120,12 @@ class BookDataFetcherTest {
 		);
 
 		var input = new LinkedHashMap<>();
-
+		var coverInput = new LinkedHashMap<>();
+		coverInput.put("file", null);
 		input.put("title", ("The Book"));
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
-		input.put("cover", (null));
+		input.put("cover", (coverInput));
 		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
 
 		Resource file = new ClassPathResource("cover.jpg");
@@ -153,7 +151,8 @@ class BookDataFetcherTest {
 					)
 					.param(
 						"map",
-						new ObjectMapper().writeValueAsString(Map.of("0", List.of("variables.input.cover")))
+						new ObjectMapper()
+							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
 					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
@@ -169,7 +168,7 @@ class BookDataFetcherTest {
 			)
 			.andExpect(jsonPath("data.createBook.book.price.formatted").isNotEmpty())
 			.andExpect(jsonPath("data.createBook.book.popularity").value(0))
-			.andExpect(jsonPath("data.createBook.book.cover.url").isNotEmpty());
+			.andExpect(jsonPath("data.createBook.book.covers[0].url").isNotEmpty());
 
 		Assertions.assertEquals(1L, bookRepository.count());
 		Assertions.assertEquals(1L, coverRepository.count());
@@ -201,11 +200,12 @@ class BookDataFetcherTest {
 		);
 
 		var input = new LinkedHashMap<>();
-
+		var coverInput = new LinkedHashMap<>();
+		coverInput.put("file", null);
 		input.put("title", ("The Book"));
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
-		input.put("cover", (null));
+		input.put("cover", (coverInput));
 		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
 
 		Resource file = new ClassPathResource("cover.jpg");
@@ -231,7 +231,8 @@ class BookDataFetcherTest {
 					)
 					.param(
 						"map",
-						new ObjectMapper().writeValueAsString(Map.of("0", List.of("variables.input.cover")))
+						new ObjectMapper()
+							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
 					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
@@ -413,11 +414,11 @@ class BookDataFetcherTest {
 		HashMap<String, BookOrderBy> sort = new HashMap<>();
 		sort.put(
 			"price_ASC",
-			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Order.ASC)).build()
+			BookOrderBy.newBuilder().price(new PriceOrderBy(com.umcs.enterprise.types.Order.ASC)).build()
 		);
 		sort.put(
 			"price_DESC",
-			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Order.DESC)).build()
+			BookOrderBy.newBuilder().price(new PriceOrderBy(com.umcs.enterprise.types.Order.DESC)).build()
 		);
 		sort.put(
 			"popularity_ASC",
