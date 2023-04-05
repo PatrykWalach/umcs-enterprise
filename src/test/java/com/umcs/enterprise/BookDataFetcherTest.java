@@ -413,27 +413,27 @@ class BookDataFetcherTest {
 		HashMap<String, BookOrderBy> sort = new HashMap<>();
 		sort.put(
 			"price_ASC",
-			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.ASC)).build()
+			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Order.ASC)).build()
 		);
 		sort.put(
 			"price_DESC",
-			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Sort.DESC)).build()
+			BookOrderBy.newBuilder().price(new PriceSortBy(com.umcs.enterprise.types.Order.DESC)).build()
 		);
 		sort.put(
 			"popularity_ASC",
-			BookOrderBy.newBuilder().popularity(com.umcs.enterprise.types.Sort.ASC).build()
+			BookOrderBy.newBuilder().popularity(com.umcs.enterprise.types.Order.ASC).build()
 		);
 		sort.put(
 			"popularity_DESC",
-			BookOrderBy.newBuilder().popularity(com.umcs.enterprise.types.Sort.DESC).build()
+			BookOrderBy.newBuilder().popularity(com.umcs.enterprise.types.Order.DESC).build()
 		);
 		sort.put(
 			"releasedAt_ASC",
-			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Sort.ASC).build()
+			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Order.ASC).build()
 		);
 		sort.put(
 			"releasedAt_DESC",
-			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Sort.DESC).build()
+			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Order.DESC).build()
 		);
 
 		Book book0 = Book.newBuilder().cover(cover).build();
