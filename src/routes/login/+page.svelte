@@ -5,7 +5,7 @@
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">
 	<div class="hero-content h-full bg-base-300">
 		<div class="text-center md:px-20 lg:text-left">
-			<h1 class="text-5xl font-bold">Login now!</h1>
+			<h1 class="font-bold text-5xl">Login now!</h1>
 			<p class="py-6">
 				Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
 				quasi. In deleniti eaque aut repudiandae et a id nisi.
@@ -52,7 +52,7 @@
 				</div>
 			</form>
 
-			<div class="card-compact card border border-base-content/20">
+			<div class="card card-compact border border-base-content/20">
 				<div class="card-body items-center">
 					<span class="label-text-alt label block">
 						New around here? <a href="/register" class="link">Create an account.</a>
