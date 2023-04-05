@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
+	import { isNotNull } from '$lib/isNotNull';
 	import Book from '../../Book.svelte';
 
 	import type { PageData } from './$types';
@@ -20,18 +21,18 @@
 				</div> -->
 	<section class="grid grid-cols-2 items-end gap-2 sm:gap-4 md:row-span-2 md:grid-cols-1">
 		<div class="card bg-base-100">
-			{#if data.BookQuery.node?.cover}
-				<figure class="">
-					<img
-						loading="lazy"
-						class="h-auto w-full mix-blend-darken"
-						src={data.BookQuery.node.cover?.url}
-						width={data.BookQuery.node.cover?.width}
-						height={data.BookQuery.node.cover?.height}
-						alt=""
-					/>
-				</figure>
-			{/if}
+			<figure class="">
+				<img
+					loading="lazy"
+					class="h-auto w-full mix-blend-darken"
+					srcset={data.BookQuery.node.covers
+						?.filter(isNotNull)
+						.map((cover) => `${cover.url} ${cover.width}w`)
+						.join(', ')}
+					sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+					alt=""
+				/>
+			</figure>
 		</div>
 
 		<div class="grid gap-2 md:gap-4">
@@ -79,14 +80,11 @@
 			<h2 class="ml-4 text-2xl">Frequently bought together</h2>
 			<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
 				{#each data.BookQuery.node.recommended.edges
-					.slice()
-					.concat(data.BookQuery.node.recommended.edges)
-					.concat(data.BookQuery.node.recommended.edges) ?? [] as book (book?.node?.id)}
-					{#if book?.node}
-						<li class="contents">
-							<Book book={book.node} />
-						</li>
-					{/if}
+					?.map((edge) => edge?.node)
+					.filter(isNotNull) ?? [] as book (book.id)}
+					<li class="contents">
+						<Book {book} />
+					</li>
 				{/each}
 			</ol>
 		{/if}

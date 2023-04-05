@@ -1,10 +1,24 @@
 package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Uploader;
+import com.cloudinary.strategies.AbstractUploaderStrategy;
+import com.cloudinary.strategies.StrategyLoader;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.DocumentContext;
+import com.netflix.graphql.dgs.DgsQueryExecutor;
+import com.netflix.graphql.dgs.client.codegen.GraphQLQueryRequest;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.client.CreateBookGraphQLQuery;
+import com.umcs.enterprise.client.CreateBookProjectionRoot;
+import com.umcs.enterprise.client.CreateBook_BookProjection;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.order.BookPurchase;
@@ -15,25 +29,45 @@ import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserRepository;
 import io.jsonwebtoken.Jwts;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.Assert;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@AutoConfigureMockMvc
 class BookDataFetcherTest {
 
 	@Autowired
@@ -48,10 +82,33 @@ class BookDataFetcherTest {
 		bookPurchaseRepository.deleteAll();
 		purchaseRepository.deleteAll();
 		bookRepository.deleteAll();
+		coverRepository.deleteAll();
 	}
 
+	@AfterEach
+	void afterEach() throws Exception {
+		List<String> ids = coverRepository
+			.findAll()
+			.stream()
+			.map(Cover::getUuid)
+			.filter(Objects::nonNull)
+			.toList();
+
+		if (ids.isEmpty()) {
+			return;
+		}
+
+		cloudinary.api().deleteResources(ids, Map.of());
+	}
+
+	@Autowired
+	private MockMvc mvc;
+
+	@Autowired
+	private Cloudinary cloudinary;
+
 	@Test
-	void createBook_admin() {
+	void createBook_admin() throws Exception {
 		//        given
 		var user = userRepository.save(
 			User
@@ -65,39 +122,57 @@ class BookDataFetcherTest {
 			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
 		);
 
-		var input = new CreateBookInput.Builder()
-			.title("The Book")
-			.author("The Author")
-			.releasedAt(OffsetDateTime.now())
-			.price(CreatePriceInput.newBuilder().raw(100.0).build())
-			.build();
+		var input = new LinkedHashMap<>();
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
-			.documentName("BookControllerTest_createBook")
-			.variable("input", input)
-			//        when
-			.execute()
+		input.put("title", ("The Book"));
+		input.put("author", ("The Author"));
+		input.put("releasedAt", (OffsetDateTime.now().toString()));
+		input.put("cover", (null));
+		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+
+		Resource file = new ClassPathResource("cover.jpg");
+
+		String query = new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
+			.getContentAsString(StandardCharsets.UTF_8);
+
+		//        when
+		this.mvc.perform(
+				multipart("/graphql")
+					.file(
+						new MockMultipartFile(
+							"0",
+							file.getFilename(),
+							MediaType.IMAGE_JPEG_VALUE,
+							file.getInputStream()
+						)
+					)
+					.param(
+						"operations",
+						new ObjectMapper()
+							.writeValueAsString(Map.of("query", query, "variables", Map.of("input", input)))
+					)
+					.param(
+						"map",
+						new ObjectMapper().writeValueAsString(Map.of("0", List.of("variables.input.cover")))
+					)
+					.header("Authorization", "Bearer " + token)
+					.header("graphql-require-preflight", "")
+			)
 			//                then
-			.errors()
-			.verify()
-			.path("createBook.book.title")
-			.entity(String.class)
-			.isEqualTo(input.getTitle())
-			.path("createBook.book.author")
-			.entity(String.class)
-			.isEqualTo(input.getAuthor())
-			.path("createBook.book.price.raw")
-			.entity(BigDecimal.class)
-			.isEqualTo(BigDecimal.valueOf(input.getPrice().getRaw()))
-			.path("createBook.book.price.formatted")
-			.entity(String.class)
-			.matches(s -> s.contains("100,00"))
-			.path("createBook.book.popularity")
-			.entity(Integer.class)
-			.isEqualTo(0);
-		//		Assertions.assertEquals(1L, bookRepository.count());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("errors").doesNotExist())
+			.andExpect(jsonPath("data.createBook.book.title").value(input.get("title")))
+			.andExpect(jsonPath("data.createBook.book.author").value(input.get("author")))
+			.andExpect(
+				jsonPath("data.createBook.book.price.raw")
+					.value(((CreatePriceInput) input.get("price")).getRaw())
+			)
+			.andExpect(jsonPath("data.createBook.book.price.formatted").isNotEmpty())
+			.andExpect(jsonPath("data.createBook.book.popularity").value(0))
+			.andExpect(jsonPath("data.createBook.book.cover.url").isNotEmpty());
+
+		Assertions.assertEquals(1L, bookRepository.count());
+		Assertions.assertEquals(1L, coverRepository.count());
 	}
 
 	@Autowired
@@ -110,7 +185,7 @@ class BookDataFetcherTest {
 	private JwtService jwtService;
 
 	@Test
-	void createBook_user() {
+	void createBook_user() throws Exception {
 		//        given
 		var user = userRepository.save(
 			User
@@ -120,32 +195,54 @@ class BookDataFetcherTest {
 				.username("user")
 				.build()
 		);
+
 		String token = jwtService.signToken(
 			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
 		);
 
-		var input = new CreateBookInput.Builder()
-			.title("The Book")
-			.author("The Author")
-			.releasedAt(OffsetDateTime.now())
-			.price(CreatePriceInput.newBuilder().raw(100.0).build())
-			.build();
+		var input = new LinkedHashMap<>();
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
-			.documentName("BookControllerTest_createBook")
-			.variable("input", input)
-			//        when
-			.execute()
+		input.put("title", ("The Book"));
+		input.put("author", ("The Author"));
+		input.put("releasedAt", (OffsetDateTime.now().toString()));
+		input.put("cover", (null));
+		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+
+		Resource file = new ClassPathResource("cover.jpg");
+
+		String query = new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
+			.getContentAsString(StandardCharsets.UTF_8);
+
+		//        when
+		this.mvc.perform(
+				multipart("/graphql")
+					.file(
+						new MockMultipartFile(
+							"0",
+							file.getFilename(),
+							MediaType.IMAGE_JPEG_VALUE,
+							file.getInputStream()
+						)
+					)
+					.param(
+						"operations",
+						new ObjectMapper()
+							.writeValueAsString(Map.of("query", query, "variables", Map.of("input", input)))
+					)
+					.param(
+						"map",
+						new ObjectMapper().writeValueAsString(Map.of("0", List.of("variables.input.cover")))
+					)
+					.header("Authorization", "Bearer " + token)
+					.header("graphql-require-preflight", "")
+			)
 			//                then
-			.errors()
-			.expect(e -> true)
-			.verify()
-			.path("createBook")
-			.valueIsNull();
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("errors").isArray())
+			.andExpect(jsonPath("data.createBook").isEmpty());
 
-		Assert.isTrue(bookRepository.count() == 0, "There should be no books");
+		Assertions.assertEquals(0L, bookRepository.count());
+		Assertions.assertEquals(0L, coverRepository.count());
 	}
 
 	@ParameterizedTest
@@ -169,8 +266,9 @@ class BookDataFetcherTest {
 		String endCursor
 	) {
 		//        given
+		var cover = coverRepository.save(new Cover());
 		bookRepository.saveAll(
-			IntStream.range(0, 14).mapToObj(i -> new Book()).collect(Collectors.toList())
+			IntStream.range(0, 14).mapToObj(i -> Book.newBuilder().cover(cover).build()).toList()
 		);
 
 		this.graphQlTester.documentName("BookControllerTest_books")
@@ -209,19 +307,19 @@ class BookDataFetcherTest {
 	@Test
 	void recommended() {
 		//        given
-
-		Book book = bookRepository.save(Book.newBuilder().build());
+		Cover cover = coverRepository.save(new Cover());
+		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
 		bookRepository.saveAll(
 			IntStream
 				.range(0, 10)
-				.mapToObj(i -> Book.newBuilder().title("" + i).build())
-				.collect(Collectors.toList())
+				.mapToObj(i -> Book.newBuilder().title("" + i).cover(cover).build())
+				.toList()
 		);
 		var recommended = bookRepository.saveAll(
 			IntStream
 				.range(0, 7)
-				.mapToObj(i -> Book.newBuilder().title("" + (10 + i)).build())
-				.collect(Collectors.toList())
+				.mapToObj(i -> Book.newBuilder().cover(cover).title("" + (10 + i)).build())
+				.toList()
 		);
 
 		List<Purchase> purchases = purchaseRepository.saveAll(
@@ -261,15 +359,16 @@ class BookDataFetcherTest {
 	@Test
 	void recommended_2() {
 		//        given
+		Cover cover = coverRepository.save(new Cover());
 
 		var recommended = bookRepository.saveAll(
 			IntStream
 				.range(0, 2)
-				.mapToObj(i -> Book.newBuilder().title("" + (i)).build())
-				.collect(Collectors.toList())
+				.mapToObj(i -> Book.newBuilder().cover(cover).title("" + (i)).build())
+				.toList()
 		);
 
-		Book book = bookRepository.save(Book.newBuilder().build());
+		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
 
 		Purchase purchase = purchaseRepository.save(new Purchase());
 
@@ -307,7 +406,10 @@ class BookDataFetcherTest {
 			"releasedAt_DESC,Book:0,Book:1,Book:3,Book:2"
 		}
 	)
-	void books_sort(String order, String out0, String out1, String out2, String out3) { //        given
+	void books_sort(String order, String out0, String out1, String out2, String out3) {
+		//        given
+		Cover cover = coverRepository.save(new Cover());
+
 		HashMap<String, BookSortBy> sort = new HashMap<>();
 		sort.put(
 			"price_ASC",
@@ -334,10 +436,10 @@ class BookDataFetcherTest {
 			BookSortBy.newBuilder().releasedAt(com.umcs.enterprise.types.Sort.DESC).build()
 		);
 
-		Book book0 = new Book();
-		Book book1 = new Book();
-		Book book2 = new Book();
-		Book book3 = new Book();
+		Book book0 = Book.newBuilder().cover(cover).build();
+		Book book1 = Book.newBuilder().cover(cover).build();
+		Book book2 = Book.newBuilder().cover(cover).build();
+		Book book3 = Book.newBuilder().cover(cover).build();
 
 		book0.setTitle("Book:0");
 		book1.setTitle("Book:1");
@@ -423,9 +525,7 @@ class BookDataFetcherTest {
 	@Test
 	void cover() {
 		//        given
-		Cover cover = coverRepository.save(
-			Cover.newBuilder().width(12).height(15).filename("file.jpg").build()
-		);
+		Cover cover = coverRepository.save(Cover.newBuilder().uuid("12").build());
 		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
 
 		this.graphQlTester.documentName("BookControllerTest_bookCover")
@@ -435,11 +535,16 @@ class BookDataFetcherTest {
 			//                then
 			.errors()
 			.verify()
-			.path("node.cover.width")
+			.path("node.covers[0].url")
+			.entity(String.class)
+			.matches(Predicate.not(String::isBlank))
+			.path("node.covers[0].width")
+			.valueIsNull()
+			.path("node.covers[1].url")
+			.entity(String.class)
+			.matches(Predicate.not(String::isBlank))
+			.path("node.covers[1].width")
 			.entity(Integer.class)
-			.isEqualTo(cover.getWidth())
-			.path("node.cover.height")
-			.entity(Integer.class)
-			.isEqualTo(cover.getHeight());
+			.isEqualTo(100);
 	}
 }

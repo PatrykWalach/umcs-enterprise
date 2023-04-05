@@ -2,7 +2,6 @@ package com.umcs.enterprise.book;
 
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.*;
-import com.umcs.enterprise.cover.CoverDataLoader;
 import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
@@ -11,14 +10,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import lombok.*;
-import org.dataloader.DataLoader;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.multipart.MultipartFile;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -26,20 +23,6 @@ public class BookDataFetcher {
 
 	@NonNull
 	private final BookRepository bookRepository;
-
-	@DgsData(parentType = "Book")
-	public CompletableFuture<Cover> cover(
-		DgsDataFetchingEnvironment enf,
-		DataFetchingEnvironment env
-	) {
-		DataLoader<Long, Cover> dataLoader = enf.getDataLoader(CoverDataLoader.class);
-
-		return Optional
-			.ofNullable(env.<Book>getSource().getCover())
-			.map(com.umcs.enterprise.cover.Cover::getDatabaseId)
-			.map(dataLoader::load)
-			.orElse(null);
-	}
 
 	@NonNull
 	private final ConnectionService connectionService;
@@ -70,7 +53,7 @@ public class BookDataFetcher {
 							return Sort.Order.desc(e.getKey());
 						})
 				)
-				.collect(Collectors.toList())
+				.toList()
 		);
 	}
 
@@ -124,10 +107,10 @@ public class BookDataFetcher {
 		book.setCreatedAt(ZonedDateTime.now());
 		book.setPrice(BigDecimal.valueOf(input.getPrice().getRaw()));
 
-		MultipartFile cover = input.getCover();
-
-		if (cover != null) {
-			book.setCover(coverService.uploadCover(cover));
+		if (input.getCover().getFile() != null) {
+			book.setCover(coverService.upload(input.getCover().getFile()));
+		} else {
+			book.setCover(coverService.upload(input.getCover().getUrl()));
 		}
 
 		book.setPopularity(0L);

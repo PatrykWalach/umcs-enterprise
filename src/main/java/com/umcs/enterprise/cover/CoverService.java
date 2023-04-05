@@ -1,16 +1,12 @@
 package com.umcs.enterprise.cover;
 
-import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
-import java.awt.image.BufferedImage;
+import com.cloudinary.Cloudinary;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import javax.imageio.ImageIO;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,28 +19,30 @@ public class CoverService {
 	@NonNull
 	private final CoverRepository coverRepository;
 
-	public Cover uploadCover(MultipartFile file) throws IOException {
-		Path uploadDir = Paths.get("static/covers");
-		if (!Files.exists(uploadDir)) {
-			Files.createDirectories(uploadDir);
-		}
-		String filename =
-			UUID.randomUUID() +
-			Objects
-				.requireNonNull(file.getOriginalFilename())
-				.substring(file.getOriginalFilename().lastIndexOf("."));
-		Path newFile = uploadDir.resolve(filename);
+	@NonNull
+	private final Cloudinary cloudinary;
 
-		try (OutputStream outputStream = Files.newOutputStream(newFile)) {
-			outputStream.write(file.getBytes());
-		}
-		BufferedImage image = ImageIO.read(newFile.toFile());
+	private Cover uploadAndSave(Object multipart) throws IOException {
+		UUID uuid = UUID.randomUUID();
 
-		Cover cover = new Cover();
-		cover.setFilename(filename);
-		cover.setHeight(image.getHeight());
-		cover.setWidth(image.getWidth());
+		cloudinary.uploader().upload(multipart, Map.of("public_id", uuid.toString()));
 
-		return coverRepository.save(cover);
+		return coverRepository.save(Cover.newBuilder().uuid(uuid.toString()).build());
+	}
+
+	public Cover upload(MultipartFile multipart) throws IOException {
+		return uploadAndSave(toFile(multipart));
+	}
+
+	public Cover upload(String url) throws IOException {
+		return uploadAndSave((url));
+	}
+
+	private File toFile(MultipartFile multipart) throws IOException {
+		File file = new File(Objects.requireNonNull(multipart.getOriginalFilename()));
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.write(multipart.getBytes());
+		fos.close();
+		return file;
 	}
 }

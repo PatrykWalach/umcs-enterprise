@@ -4,7 +4,11 @@ import type { Actions } from '@sveltejs/kit';
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const data = await request.formData();
-		const { cover, author, price, title, releasedAt } = Object.fromEntries(data);
+		const { cover, author, price, title, url } = Object.fromEntries(data);
+
+		if (!(cover instanceof File) || !(typeof url === 'string')) {
+			throw new Error('cover not uploaded');
+		}
 
 		await locals.client.request(
 			graphql(`
@@ -19,8 +23,11 @@ export const actions: Actions = {
 					title: String(title),
 					author: String(author),
 					price: { raw: Number(price) },
-					cover: cover instanceof File ? cover : null,
-					releasedAt: String(releasedAt)
+					cover: {
+						file: cover,
+						url
+					},
+					releasedAt: new Date().toISOString()
 				}
 			},
 			{

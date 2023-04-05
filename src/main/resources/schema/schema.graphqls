@@ -7,12 +7,32 @@ type Price {
 	raw: Float
 }
 
-type Cover implements Node {
+input Transformation {
+	crop: String
 	height: Int
-	id: ID!
-	url: String
 	width: Int
 }
+
+"""
+https://cloudinary.com/documentation/resizing_and_cropping#resize_and_crop_modes
+"""
+enum Crop {
+	CROP
+	FILL
+	FILL_PAD
+	FIT
+	IMAGGA_CROP
+	IMAGGA_SCALE
+	LFILL
+	LIMIT
+	LPAD
+	MFIT
+	MPAD
+	PAD
+	SCALE
+	THUMB
+}
+
 type BookConnection {
 	edges: [BookEdge]
 	pageInfo: PageInfo!
@@ -21,9 +41,16 @@ type BookEdge {
 	cursor: String
 	node: Book
 }
+
+type Cover {
+	crop: String
+	height: Int
+	url: String
+	width: Int
+}
 type Book implements Node {
 	author: String
-	cover: Cover
+	covers(transformations: [Transformation]): [Cover]
 	id: ID!
 	popularity: Int
 	price: Price
@@ -172,9 +199,13 @@ input CreatePriceInput {
 	raw: Float!
 }
 
+input CreateCoverInput {
+	file: Upload
+	url: String
+}
 input CreateBookInput {
 	author: String!
-	cover: Upload
+	cover: CreateCoverInput!
 	price: CreatePriceInput!
 	releasedAt: DateTime!
 	title: String!

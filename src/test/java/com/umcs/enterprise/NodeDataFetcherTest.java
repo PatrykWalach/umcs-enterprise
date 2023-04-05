@@ -4,6 +4,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.cover.Cover;
+import com.umcs.enterprise.cover.CoverRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,10 +20,14 @@ class NodeDataFetcherTest {
 	@Autowired
 	private GraphQlTester graphQlTester;
 
+	@Autowired
+	private CoverRepository coverRepository;
+
 	@Test
 	void returnsNode() {
 		//        given
-		var book = bookRepository.save(Book.newBuilder().title("Book title").build());
+		var cover = coverRepository.save(new Cover());
+		var book = bookRepository.save(Book.newBuilder().cover(cover).title("Book title").build());
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", book.getId())

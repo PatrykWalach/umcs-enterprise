@@ -10,6 +10,7 @@ import com.umcs.enterprise.user.UserRepository;
 import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ class UserDataFetcherTest {
 			.verify()
 			.path("login.token")
 			.entity(String.class)
-			.matches(s -> !s.isBlank());
+			.matches(Predicate.not(String::isBlank));
 	}
 
 	@Test
@@ -99,7 +100,7 @@ class UserDataFetcherTest {
 			.verify()
 			.path("register.token")
 			.entity(String.class)
-			.matches(s -> !s.isBlank());
+			.matches(Predicate.not(String::isBlank));
 		//		Assertions.assertEquals(1L, userRepository.count());
 	}
 

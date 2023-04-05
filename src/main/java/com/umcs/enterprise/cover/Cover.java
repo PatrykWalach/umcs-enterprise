@@ -3,6 +3,8 @@ package com.umcs.enterprise.cover;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.node.Node;
 import jakarta.persistence.*;
+import java.sql.Blob;
+import java.util.UUID;
 import lombok.*;
 
 @Entity
@@ -18,12 +20,8 @@ public class Cover implements Node {
 	@Column(name = "database_id", nullable = false)
 	private Long databaseId;
 
-	private int width;
+	private String uuid;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	private Book book;
-
-	private String filename;
-
-	private int height;
 }

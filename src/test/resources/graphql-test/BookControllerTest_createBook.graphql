@@ -2,11 +2,8 @@ mutation BookControllerTestCreateBook($input: CreateBookInput!) {
 	createBook(input: $input) {
 		book {
 			author
-			cover {
-				height
-				id
+			covers(transformations: [{}]) {
 				url
-				width
 			}
 			id
 			popularity

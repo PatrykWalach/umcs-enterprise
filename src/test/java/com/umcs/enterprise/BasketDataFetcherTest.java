@@ -5,11 +5,14 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.cover.Cover;
+import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.types.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,7 @@ class BasketDataFetcherTest {
 			.verify()
 			.path("basket.id")
 			.entity(String.class)
-			.matches(s -> !s.isBlank())
+			.matches(Predicate.not(String::isBlank))
 			.path("basket.books.edges")
 			.entity(List.class)
 			.isEqualTo(Collections.emptyList());
@@ -41,6 +44,9 @@ class BasketDataFetcherTest {
 
 	@Autowired
 	private BookRepository bookRepository;
+
+	@Autowired
+	private CoverRepository coverRepository;
 
 	@Test
 	void basketBook() {
@@ -52,7 +58,13 @@ class BasketDataFetcherTest {
 				.entity(String.class)
 				.get();
 
-		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
+		var book = bookRepository.save(
+			Book
+				.newBuilder()
+				.cover(coverRepository.save(new Cover()))
+				.price(BigDecimal.valueOf(10))
+				.build()
+		);
 
 		for (int i = 1; i < 3; i++) {
 			id =
@@ -72,7 +84,7 @@ class BasketDataFetcherTest {
 					.verify()
 					.path("basketBook.basket.id")
 					.entity(String.class)
-					.matches(s -> !s.isBlank())
+					.matches(Predicate.not(String::isBlank))
 					.path("basketBook.basket.books.edges[*].node.id")
 					.entity(List.class)
 					.isEqualTo(Collections.singletonList(book.getId()))
@@ -95,7 +107,7 @@ class BasketDataFetcherTest {
 			.verify()
 			.path("basket.id")
 			.entity(String.class)
-			.matches(s -> !s.isBlank())
+			.matches(Predicate.not(String::isBlank))
 			.path("basket.books.edges")
 			.entity(List.class)
 			.isEqualTo(Collections.emptyList());

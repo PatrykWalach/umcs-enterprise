@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { isNotNull } from '$lib/isNotNull';
 	import '../app.css';
 	import type { LayoutData } from './$types';
 
@@ -7,8 +8,9 @@
 	const pluralRules = new Intl.PluralRules();
 
 	$: quantity = data.NavbarQuery.basket?.books?.edges
-		?.flatMap((edge) => (edge?.quantity ? [edge.quantity] : []))
-		?.reduce((a, b) => a + b, 0);
+		?.map((edge) => edge?.quantity)
+		.filter(isNotNull)
+		.reduce((a, b) => a + b, 0);
 </script>
 
 <div class="container mx-auto">

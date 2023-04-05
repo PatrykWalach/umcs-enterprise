@@ -8,7 +8,7 @@ export const handle: Handle = ({ event, resolve }) => {
 	const client = new GraphQLClient('http://localhost:8080/graphql', {
 		fetch: event.fetch,
 		errorPolicy: 'ignore',
-		signal: event.request.signal,
+		signal: event.request.signal as any,
 		headers: new Headers({
 			...(token && { Authorization: `Bearer ${token}` })
 		})

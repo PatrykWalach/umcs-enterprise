@@ -16,9 +16,25 @@ export const load: ServerLoad = async ({ locals, params }) => {
 					id
 					... on Book {
 						author
-						cover {
-							height
-							id
+						covers(
+							transformations: [
+								{ width: 100 }
+								{ width: 200 }
+								{ width: 300 }
+								{ width: 400 }
+								{ width: 500 }
+								{ width: 600 }
+								{ width: 700 }
+								{ width: 800 }
+								{ width: 900 }
+								{ width: 1000 }
+								{ width: 1200 }
+								{ width: 1400 }
+								{ width: 1600 }
+								{ width: 1800 }
+								{ width: 2000 }
+							]
+						) {
 							url
 							width
 						}

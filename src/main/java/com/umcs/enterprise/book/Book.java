@@ -32,7 +32,7 @@ public class Book implements Node {
 	private String synopsis;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cover_id")
+	@JoinColumn(name = "cover_id", nullable = false)
 	private Cover cover;
 
 	@Column(precision = 19, scale = 4)

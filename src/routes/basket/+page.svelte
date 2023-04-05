@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { isNotNull } from '$lib/isNotNull';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -24,18 +25,18 @@
 							{#if edge}
 								<li class="contents">
 									<div class="">
-										{#if edge.node?.cover}
-											<figure>
-												<img
-													loading="lazy"
-													class="h-auto w-16 mix-blend-darken"
-													src={edge.node.cover?.url}
-													width={edge.node.cover?.width}
-													height={edge.node.cover?.height}
-													alt=""
-												/>
-											</figure>
-										{/if}
+										<figure>
+											<img
+												loading="lazy"
+												class="h-auto w-16 mix-blend-darken"
+												srcset={edge.node?.covers
+													?.filter(isNotNull)
+													.map((cover) => `${cover.url} ${cover.width}w`)
+													.join(', ')}
+												sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+												alt=""
+											/>
+										</figure>
 									</div>
 									<div class="truncate">
 										<div class=" text-xl">

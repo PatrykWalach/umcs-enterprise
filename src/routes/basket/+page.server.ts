@@ -1,6 +1,6 @@
 import BasketBook from '$lib/BasketBook.server';
-import { graphql } from '$lib/gql';
 import UnbasketBook from '$lib/UnbasketBook.server';
+import { graphql } from '$lib/gql';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
@@ -14,11 +14,27 @@ export const load: ServerLoad = ({ locals, url, cookies }) => {
 							edges {
 								node {
 									author
-									cover {
-										height
-										id
-										url
+									covers(
+										transformations: [
+											{ width: 100 }
+											{ width: 200 }
+											{ width: 300 }
+											{ width: 400 }
+											{ width: 500 }
+											{ width: 600 }
+											{ width: 700 }
+											{ width: 800 }
+											{ width: 900 }
+											{ width: 1000 }
+											{ width: 1200 }
+											{ width: 1400 }
+											{ width: 1600 }
+											{ width: 1800 }
+											{ width: 2000 }
+										]
+									) {
 										width
+										url
 									}
 									id
 									title
