@@ -2,7 +2,7 @@ package com.umcs.enterprise.book;
 
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.node.Node;
-import com.umcs.enterprise.order.BookPurchase;
+import com.umcs.enterprise.purchase.BookPurchase;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -43,7 +43,7 @@ public class Book implements Node {
 	private ZonedDateTime releasedAt;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
-	private List<BookPurchase> orders;
+	private List<BookPurchase> purchases;
 
 	private Long popularity;
 

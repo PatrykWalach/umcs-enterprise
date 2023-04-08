@@ -1,5 +1,7 @@
-<script>
+<script lang="ts">
 	import { enhance } from '$app/forms';
+
+	export let form: import('./$types').ActionData;
 </script>
 
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">
@@ -30,6 +32,11 @@
 							id="username"
 							autocomplete="username"
 						/>
+						<label class="label" for="username">
+							<span class="label-text-alt text-error">
+								{form?.username.error || ''}
+							</span>
+						</label>
 					</div>
 
 					<div class="form-control">
@@ -52,7 +59,7 @@
 				</div>
 			</form>
 
-			<div class="card-compact card border border-base-content/20">
+			<div class="card card-compact border border-base-content/20">
 				<div class="card-body items-center">
 					<span class="label-text-alt label block">
 						New around here? <a href="/register" class="link">Create an account.</a>

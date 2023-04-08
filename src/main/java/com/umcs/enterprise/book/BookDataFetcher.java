@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import lombok.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
@@ -96,7 +94,7 @@ public class BookDataFetcher {
 
 	@DgsData(parentType = "CreateBookResult")
 	public Book book(DataFetchingEnvironment env) {
-		return env.<Book>getSource();
+		return env.getSource();
 	}
 
 	@Secured("ADMIN")

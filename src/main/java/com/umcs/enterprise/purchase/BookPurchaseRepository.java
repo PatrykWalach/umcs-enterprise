@@ -1,4 +1,4 @@
-package com.umcs.enterprise.order;
+package com.umcs.enterprise.purchase;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

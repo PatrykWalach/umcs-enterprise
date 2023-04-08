@@ -1,4 +1,4 @@
-package com.umcs.enterprise.order;
+package com.umcs.enterprise.purchase;
 
 import com.umcs.enterprise.book.Book;
 import jakarta.persistence.*;
@@ -18,7 +18,7 @@ public class BookPurchase {
 	private Long databaseId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id")
+	@JoinColumn(name = "purchase_id")
 	private Purchase purchase;
 
 	@ManyToOne(fetch = FetchType.LAZY)

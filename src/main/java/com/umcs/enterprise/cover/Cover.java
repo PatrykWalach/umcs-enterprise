@@ -3,8 +3,6 @@ package com.umcs.enterprise.cover;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.node.Node;
 import jakarta.persistence.*;
-import java.sql.Blob;
-import java.util.UUID;
 import lombok.*;
 
 @Entity

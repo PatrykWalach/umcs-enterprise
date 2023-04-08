@@ -20,7 +20,7 @@ module.exports = {
 					'error',
 					{
 						exceptions: {
-							suffixes: ['Connection', 'Edge', 'Result'],
+							suffixes: ['Connection', 'Edge', 'Result', 'Success', 'Error'],
 							types: ['PageInfo', 'Price', 'Cover']
 						}
 					}

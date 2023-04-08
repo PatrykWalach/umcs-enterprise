@@ -1,7 +1,7 @@
 package com.umcs.enterprise.user;
 
 import com.umcs.enterprise.node.Node;
-import com.umcs.enterprise.order.Purchase;
+import com.umcs.enterprise.purchase.Purchase;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;

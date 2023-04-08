@@ -60,10 +60,10 @@ class UserDataFetcherTest {
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> true)
 			.verify()
-			.path("login")
-			.valueIsNull();
+			.path("login.username")
+			.entity(String.class)
+			.isEqualTo("Niepoprawne dane uwierzytelniające");
 	}
 
 	@Test
@@ -79,10 +79,10 @@ class UserDataFetcherTest {
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> true)
 			.verify()
-			.path("register")
-			.valueIsNull();
+			.path("register.username")
+			.entity(String.class)
+			.isEqualTo("You are not original enough");
 		//		Assertions.assertEquals(1L, userRepository.count());
 	}
 

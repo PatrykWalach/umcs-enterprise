@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
-import com.netflix.graphql.dgs.InputArgument;
 import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.book.Book;
-import com.umcs.enterprise.book.BookDataFetcher;
 import com.umcs.enterprise.book.BookDataLoader;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
-import org.springframework.stereotype.Component;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -40,7 +37,7 @@ public class BasketBooksDataFetcher {
 	) {
 		DataLoader<Long, Book> dataLoader = enf.getDataLoader(BookDataLoader.class);
 
-		Map<Long, Integer> basket = env.<Map<Long, Integer>>getSource();
+		Map<Long, Integer> basket = env.getSource();
 
 		return dataLoader
 			.loadMany(basket.keySet().stream().toList())

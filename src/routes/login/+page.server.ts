@@ -22,7 +22,13 @@ export const actions: Actions = {
 			graphql(`
 				mutation Login($input: LoginInput!) {
 					login(input: $input) {
-						token
+						__typename
+						... on LoginSuccess {
+							token
+						}
+						... on LoginError {
+							username
+						}
 					}
 				}
 			`),
@@ -34,11 +40,18 @@ export const actions: Actions = {
 			}
 		);
 
-		if (data.login?.token) {
-			cookies.set('enterprise-token', data.login?.token);
+		if (data.login?.__typename === 'LoginSuccess') {
+			cookies.set('enterprise-token', data.login.token || '');
 			throw redirect(303, '/');
 		}
 
-		return {};
+		if (data.login?.__typename === 'LoginError') {
+			return {
+				username: {
+					value: username,
+					error: data.login?.username
+				}
+			};
+		}
 	}
 };

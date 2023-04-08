@@ -337,16 +337,29 @@ type Mutation {
 	updateStatus(input: UpdateStatusInput!): UpdateStatusResult
 }
 
-type LoginResult {
+type LoginSuccess {
 	token: String
 }
+
+type LoginError {
+	username: String
+}
+
+union LoginResult = LoginSuccess | LoginError
+
+type RegisterSuccess {
+	token: String
+}
+
+type RegisterError {
+	username: String
+}
+
+union RegisterResult = RegisterSuccess | RegisterError
 
 input LoginInput {
 	password: String!
 	username: String!
-}
-type RegisterResult {
-	token: String
 }
 
 input RegisterInput {

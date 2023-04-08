@@ -1,16 +1,14 @@
 package com.umcs.enterprise.node;
 
 import com.netflix.graphql.dgs.*;
-import com.umcs.enterprise.book.BookRepository;
+import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.node.Node;
 import graphql.schema.DataFetchingEnvironment;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import lombok.NonNull;
+import java.util.concurrent.CompletionStage;
+import org.dataloader.DataLoader;
 
 @DgsComponent
 public class NodeDataFetcher {
@@ -21,9 +19,17 @@ public class NodeDataFetcher {
 	}
 
 	@DgsQuery
-	public CompletableFuture<Object> node(@InputArgument String id, DgsDataFetchingEnvironment enf) {
+	public CompletableFuture<Node> node(@InputArgument String id, DgsDataFetchingEnvironment enf) {
 		GlobalId globalId = GlobalId.from(id);
+		DataLoader<Object, Node> loader = enf.getDataLoader(globalId.className() + "DataLoader");
 
-		return enf.getDataLoader(globalId.className() + "DataLoader").load(globalId.databaseId());
+		if (loader == null) {
+			throw new DgsEntityNotFoundException();
+		}
+
+		return loader
+			.load(globalId.databaseId())
+			.thenApply(Optional::ofNullable)
+			.thenApply(optional -> optional.orElseThrow(DgsEntityNotFoundException::new));
 	}
 }

@@ -22,7 +22,13 @@ export const actions: Actions = {
 			graphql(`
 				mutation Register($input: RegisterInput!) {
 					register(input: $input) {
-						token
+						__typename
+						... on RegisterSuccess {
+							token
+						}
+						... on RegisterError {
+							username
+						}
 					}
 				}
 			`),
@@ -34,11 +40,18 @@ export const actions: Actions = {
 			}
 		);
 
-		if (data.register?.token) {
-			cookies.set('enterprise-token', data.register?.token);
+		if (data.register?.__typename === 'RegisterSuccess') {
+			cookies.set('enterprise-token', data.register.token || '');
 			throw redirect(303, '/');
 		}
 
-		return {};
+		if (data.register?.__typename === 'RegisterError') {
+			return {
+				username: {
+					value: username,
+					error: data.register?.username
+				}
+			};
+		}
 	}
 };

@@ -2,10 +2,7 @@ package com.umcs.enterprise.user;
 
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.auth.JwtService;
-import com.umcs.enterprise.types.LoginInput;
-import com.umcs.enterprise.types.LoginResult;
-import com.umcs.enterprise.types.RegisterInput;
-import com.umcs.enterprise.types.RegisterResult;
+import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
 import io.jsonwebtoken.Jwts;
 import java.util.Collections;
@@ -13,10 +10,13 @@ import java.util.HashMap;
 import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -29,15 +29,19 @@ public class UserDataFetcher {
 
 	@DgsMutation
 	public LoginResult login(@InputArgument LoginInput input) {
-		Authentication auth = authenticationManager.authenticate(
-			new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
-		);
+		try {
+			Authentication auth = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
+			);
 
-		String token = jwtService.signToken(
-			Jwts.builder().setClaims(new HashMap<>()).setSubject(auth.getName())
-		);
+			String token = jwtService.signToken(
+				Jwts.builder().setClaims(new HashMap<>()).setSubject(auth.getName())
+			);
 
-		return LoginResult.newBuilder().token(token).build();
+			return LoginSuccess.newBuilder().token(token).build();
+		} catch (AuthenticationException e) {
+			return LoginError.newBuilder().username(e.getLocalizedMessage()).build();
+		}
 	}
 
 	@DgsQuery
@@ -63,19 +67,23 @@ public class UserDataFetcher {
 
 	@DgsMutation
 	public RegisterResult register(@InputArgument RegisterInput input) {
-		User user = userRepository.save(
-			User
-				.newBuilder()
-				.authorities(Collections.singletonList("USER"))
-				.username(input.getUsername())
-				.password(passwordEncoder.encode(input.getPassword()))
-				.build()
-		);
+		try {
+			User user = userRepository.save(
+				User
+					.newBuilder()
+					.authorities(Collections.singletonList("USER"))
+					.username(input.getUsername())
+					.password(passwordEncoder.encode(input.getPassword()))
+					.build()
+			);
 
-		String token = jwtService.signToken(
-			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
-		);
+			String token = jwtService.signToken(
+				Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
+			);
 
-		return RegisterResult.newBuilder().token(token).build();
+			return RegisterSuccess.newBuilder().token(token).build();
+		} catch (DataIntegrityViolationException e) {
+			return RegisterError.newBuilder().username("You are not original enough").build();
+		}
 	}
 }
