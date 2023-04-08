@@ -12,13 +12,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -57,13 +54,10 @@ public class UserDataFetcher {
 	}
 
 	@NonNull
-	private final UserRepository userRepository;
+	private final UserService userRepository;
 
 	@NonNull
 	private final JwtService jwtService;
-
-	@NonNull
-	private final PasswordEncoder passwordEncoder;
 
 	@DgsMutation
 	public RegisterResult register(@InputArgument RegisterInput input) {
@@ -73,7 +67,7 @@ public class UserDataFetcher {
 					.newBuilder()
 					.authorities(Collections.singletonList("USER"))
 					.username(input.getUsername())
-					.password(passwordEncoder.encode(input.getPassword()))
+					.password(input.getPassword())
 					.build()
 			);
 

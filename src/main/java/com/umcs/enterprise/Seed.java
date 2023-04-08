@@ -11,7 +11,7 @@ import com.umcs.enterprise.purchase.BookPurchaseRepository;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.purchase.PurchaseRepository;
 import com.umcs.enterprise.user.User;
-import com.umcs.enterprise.user.UserRepository;
+import com.umcs.enterprise.user.UserService;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Stream;
@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -36,10 +35,7 @@ public class Seed {
 	private final BookPurchaseRepository bookPurchaseRepository;
 
 	@NonNull
-	private final UserRepository userRepository;
-
-	@NonNull
-	private PasswordEncoder passwordEncoder;
+	private final UserService userRepository;
 
 	private Cover toCover(String url, String uuid) {
 		//		try {
@@ -61,7 +57,7 @@ public class Seed {
 					.newBuilder()
 					.authorities(Collections.singletonList("ADMIN"))
 					.username("admin")
-					.password(passwordEncoder.encode("admin"))
+					.password("admin")
 					.build()
 			);
 

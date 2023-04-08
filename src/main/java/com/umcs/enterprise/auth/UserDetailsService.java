@@ -1,6 +1,6 @@
 package com.umcs.enterprise.auth;
 
-import com.umcs.enterprise.user.UserRepository;
+import com.umcs.enterprise.user.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +13,7 @@ public class UserDetailsService
 	implements org.springframework.security.core.userdetails.UserDetailsService {
 
 	@NonNull
-	private final UserRepository userRepository;
+	private final UserService userRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {

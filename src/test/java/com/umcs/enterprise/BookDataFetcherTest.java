@@ -18,14 +18,13 @@ import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.purchase.PurchaseRepository;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
-import com.umcs.enterprise.user.UserRepository;
+import com.umcs.enterprise.user.UserService;
 import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -43,7 +42,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
@@ -94,7 +92,7 @@ class BookDataFetcherTest {
 			User
 				.newBuilder()
 				.authorities(Collections.singletonList(("ADMIN")))
-				.password(passwordEncoder.encode("user"))
+				.password("user")
 				.username("user")
 				.build()
 		);
@@ -158,10 +156,7 @@ class BookDataFetcherTest {
 	}
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private UserService userRepository;
 
 	@Autowired
 	private JwtService jwtService;
@@ -173,7 +168,7 @@ class BookDataFetcherTest {
 			User
 				.newBuilder()
 				.authorities(Collections.singletonList(("USER")))
-				.password(passwordEncoder.encode("user"))
+				.password("user")
 				.username("user")
 				.build()
 		);

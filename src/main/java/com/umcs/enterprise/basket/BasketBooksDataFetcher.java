@@ -14,6 +14,7 @@ import graphql.schema.DataFetchingEnvironment;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
 
@@ -21,10 +22,11 @@ import org.dataloader.DataLoader;
 @RequiredArgsConstructor
 public class BasketBooksDataFetcher {
 
+	@NonNull
 	private final ConnectionService connectionService;
 
 	@DgsData(parentType = "BasketBooksEdge")
-	public BigDecimal price(DataFetchingEnvironment env) throws JsonProcessingException {
+	public BigDecimal price(DataFetchingEnvironment env) {
 		var edge = env.<BasketBooksEdge>getSource();
 
 		return edge.getNode().getPrice().multiply(BigDecimal.valueOf(edge.getQuantity()));
