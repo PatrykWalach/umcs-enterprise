@@ -41,7 +41,8 @@ public class Book implements Node {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
 	private List<BookOrder> orders;
 
-	private Long popularity;
+	private Long 
+	popularity;
 
 	@Override
 	public boolean equals(Object o) {
