@@ -25,8 +25,7 @@ public class Book implements Node {
 	private String title;
 
 	@Column(length = 2_000)
-	private String
-	 synopsis;
+	private String synopsis;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cover_id")
