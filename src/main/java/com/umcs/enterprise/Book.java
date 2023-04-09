@@ -20,8 +20,7 @@ public class Book implements Node {
 	@GeneratedValue
 	private Long databaseId;
 
-	private String
-	 author;
+	private String author;
 
 	private String title;
 
