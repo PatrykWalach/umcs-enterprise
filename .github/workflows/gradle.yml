@@ -86,6 +86,28 @@ jobs:
       - name: Lint
         run: npm run lint
 
+  format:
+    runs-on: ubuntu-latest
+    name: Format
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies 📦
+        run: npm ci
+
+      - name: Format
+        run: npm run format
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "refactor: run format"
+          branch: ${{ github.head_ref }}
+
   svelte-check:
     runs-on: ubuntu-latest
     name: Svelte check
