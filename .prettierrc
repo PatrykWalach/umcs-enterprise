@@ -5,6 +5,7 @@
 	"printWidth": 100,
 	"plugins": ["prettier-plugin-svelte", "prettier-plugin-java", "prettier-plugin-tailwindcss"],
 	"pluginSearchDirs": false,
+	"endOfLine": "auto",
 	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
 	"htmlWhitespaceSensitivity": "ignore"
 }
