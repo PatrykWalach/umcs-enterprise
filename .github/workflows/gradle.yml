@@ -43,11 +43,24 @@ jobs:
           node-version: 16
           cache: 'npm'
 
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")" >> $GITHUB_ENV
+
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ env.PLAYWRIGHT_VERSION }}
+
       - name: Install dependencies 📦
         run: npm ci
 
       - name: Install Playwright
         run: npx playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
 
       - name: Install postgresql
         uses: harmon758/postgresql-action@v1
@@ -92,6 +105,33 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+  format:
+    runs-on: ubuntu-latest
+    name: Format
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies 📦
+        run: npm ci
+
+      - name: Format
+        run: npm run format
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'refactor: run format'
 
   svelte-check:
     runs-on: ubuntu-latest
