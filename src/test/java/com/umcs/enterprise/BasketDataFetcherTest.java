@@ -12,15 +12,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.graphql.test.tester.WebGraphQlTester;
+import org.springframework.graphql.test.tester.HttpGraphQlTester;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@ExtendWith(CleanDb.class)
 class BasketDataFetcherTest {
 
 	@Autowired
-	private WebGraphQlTester graphQlTester;
+	private HttpGraphQlTester graphQlTester;
 
 	@Test
 	void basket() {

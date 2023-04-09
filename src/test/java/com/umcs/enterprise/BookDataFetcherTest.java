@@ -12,10 +12,8 @@ import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
-import com.umcs.enterprise.purchase.BookPurchase;
-import com.umcs.enterprise.purchase.BookPurchaseRepository;
+import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.purchase.Purchase;
-import com.umcs.enterprise.purchase.PurchaseRepository;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
@@ -30,8 +28,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,29 +37,21 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.graphql.test.tester.WebGraphQlTester;
+import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@ExtendWith(CleanDb.class)
 @AutoConfigureMockMvc
 class BookDataFetcherTest {
 
 	@Autowired
-	private WebGraphQlTester graphQlTester;
+	private HttpGraphQlTester graphQlTester;
 
 	@Autowired
 	private BookRepository bookRepository;
-
-	@BeforeEach
-	void beforeEach() {
-		userRepository.deleteAll();
-		bookPurchaseRepository.deleteAll();
-		purchaseRepository.deleteAll();
-		bookRepository.deleteAll();
-		coverRepository.deleteAll();
-	}
 
 	@AfterEach
 	void afterEach() throws Exception {
@@ -281,7 +271,7 @@ class BookDataFetcherTest {
 	}
 
 	@Autowired
-	private PurchaseRepository purchaseRepository;
+	private PurchaseService purchaseRepository;
 
 	@Test
 	void recommended() {
@@ -469,7 +459,7 @@ class BookDataFetcherTest {
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> true)
+			.expect(e -> "INTERNAL".equals(e.getExtensions().get("errorType")))
 			.verify()
 			.path("books")
 			.valueIsNull();

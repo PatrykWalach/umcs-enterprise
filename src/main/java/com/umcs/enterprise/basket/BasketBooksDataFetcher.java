@@ -1,6 +1,5 @@
 package com.umcs.enterprise.basket;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
@@ -33,19 +32,16 @@ public class BasketBooksDataFetcher {
 	}
 
 	@DgsData(parentType = "Basket")
-	public CompletableFuture<Connection<Book>> books(
-		DgsDataFetchingEnvironment enf,
-		DataFetchingEnvironment env
-	) {
-		DataLoader<Long, Book> dataLoader = enf.getDataLoader(BookDataLoader.class);
+	public CompletableFuture<Connection<Book>> books(DgsDataFetchingEnvironment env) {
+		DataLoader<Long, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
 
 		Map<Long, Integer> basket = env.getSource();
 
 		return dataLoader
 			.loadMany(basket.keySet().stream().toList())
 			.thenApply(books -> connectionService.getConnection(books, env))
-			.thenApply(connection -> {
-				return new DefaultConnection<>(
+			.thenApply(connection ->
+				new DefaultConnection<>(
 					connection
 						.getEdges()
 						.stream()
@@ -60,7 +56,7 @@ public class BasketBooksDataFetcher {
 						})
 						.toList(),
 					connection.getPageInfo()
-				);
-			});
+				)
+			);
 	}
 }

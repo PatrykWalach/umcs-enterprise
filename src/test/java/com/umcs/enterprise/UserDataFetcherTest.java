@@ -11,14 +11,24 @@ import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Predicate;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.graphql.test.tester.WebGraphQlTester;
+import org.springframework.graphql.test.tester.HttpGraphQlTester;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@ExtendWith(CleanDb.class)
 class UserDataFetcherTest {
+
+	@Autowired
+	private HttpGraphQlTester graphQlTester;
+
+	@Autowired
+	private UserService userRepository;
+
+	@Autowired
+	private JwtService jwtService;
 
 	@Test
 	void login() {
@@ -99,20 +109,6 @@ class UserDataFetcherTest {
 			.entity(String.class)
 			.matches(Predicate.not(String::isBlank));
 		//		Assertions.assertEquals(1L, userRepository.count());
-	}
-
-	@Autowired
-	private WebGraphQlTester graphQlTester;
-
-	@Autowired
-	private UserService userRepository;
-
-	@Autowired
-	private JwtService jwtService;
-
-	@BeforeEach
-	void beforeEach() {
-		userRepository.deleteAll();
 	}
 
 	@Test

@@ -6,10 +6,7 @@ import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.cover.CoverService;
-import com.umcs.enterprise.purchase.BookPurchase;
-import com.umcs.enterprise.purchase.BookPurchaseRepository;
-import com.umcs.enterprise.purchase.Purchase;
-import com.umcs.enterprise.purchase.PurchaseRepository;
+import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
 import java.math.BigDecimal;
@@ -19,7 +16,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
@@ -29,7 +25,7 @@ public class Seed {
 	private final CoverRepository coverRepository;
 
 	@NonNull
-	private final PurchaseRepository purchaseRepository;
+	private final PurchaseService purchaseRepository;
 
 	@NonNull
 	private final BookPurchaseRepository bookPurchaseRepository;

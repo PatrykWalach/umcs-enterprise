@@ -1,8 +1,9 @@
 package com.umcs.enterprise.user;
 
-import java.util.Optional;
+import java.util.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,8 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	public void deleteAll() {
-		userRepository.deleteAll();
+	@PostFilter("hasRole('ADMIN') or filterObject.username == authentication.principal.username")
+	public List<User> findAllById(Iterable<Long> ids) {
+		return userRepository.findAllById(ids);
 	}
 }

@@ -1,6 +1,7 @@
-package com.umcs.enterprise.cover;
+package com.umcs.enterprise.user;
 
 import com.netflix.graphql.dgs.DgsDataLoader;
+import com.umcs.enterprise.node.Node;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -12,24 +13,24 @@ import lombok.RequiredArgsConstructor;
 import org.dataloader.MappedBatchLoader;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
-@DgsDataLoader(name = "CoverDataLoader")
+@DgsDataLoader(name = "UserDataLoader")
 @RequiredArgsConstructor
-public class CoverDataLoader implements MappedBatchLoader<Long, Cover> {
+public class UserDataLoader implements MappedBatchLoader<Long, User> {
 
 	@NonNull
-	private final CoverRepository coverRepository;
+	private final UserService repository;
 
 	@NonNull
 	private final DelegatingSecurityContextAsyncTaskExecutor executor;
 
 	@Override
-	public CompletionStage<Map<Long, Cover>> load(Set<Long> keys) {
+	public CompletionStage<Map<Long, User>> load(Set<Long> keys) {
 		return CompletableFuture.supplyAsync(
 			() ->
-				coverRepository
+				repository
 					.findAllById(keys)
 					.stream()
-					.collect(Collectors.toMap(Cover::getDatabaseId, Function.identity())),
+					.collect(Collectors.toMap(Node::getDatabaseId, Function.identity())),
 			executor
 		);
 	}

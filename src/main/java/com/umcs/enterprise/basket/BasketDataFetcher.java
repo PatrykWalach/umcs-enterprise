@@ -41,11 +41,8 @@ public class BasketDataFetcher {
 	}
 
 	@DgsData(parentType = "Basket")
-	public CompletableFuture<BigDecimal> price(
-		DgsDataFetchingEnvironment enf,
-		DataFetchingEnvironment env
-	) {
-		DataLoader<Long, com.umcs.enterprise.book.Book> dataLoader = enf.getDataLoader(
+	public CompletableFuture<BigDecimal> price(DgsDataFetchingEnvironment env) {
+		DataLoader<Long, com.umcs.enterprise.book.Book> dataLoader = env.getDataLoader(
 			BookDataLoader.class
 		);
 
