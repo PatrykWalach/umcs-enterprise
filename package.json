@@ -5,19 +5,14 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "playwright test",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"test": "npm run generate && playwright test",
+		"check": "npm run generate && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "npm run prettier -- --check . && eslint .",
+		"lint": "eslint .",
 		"prettier": "prettier --cache --cache-strategy content",
 		"format": "npm run prettier -- --write .",
-		"prepare": "husky install && npm run generate",
 		"docker": "docker-compose up -d",
 		"generate": "graphql-codegen --config codegen.cts"
-	},
-	"lint-staged": {
-		"*.*": "npm run prettier -- --write",
-		"*.{cjs,mjs,js,cts,mts,ts,svelte,html,md,mdx}": "eslint"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -35,8 +30,6 @@
 		"eslint": "^8.36.0",
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-plugin-svelte3": "^4.0.0",
-		"husky": "^8.0.3",
-		"lint-staged": "^13.2.0",
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.7",
 		"prettier-plugin-java": "^2.1.0",
