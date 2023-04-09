@@ -51,6 +51,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - run: chmod +x ./gradlew
+      - run: mkdir static/covers
       - run: chmod +x ./static/covers
 
       - name: Run E2E tests 🧪
