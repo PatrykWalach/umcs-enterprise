@@ -34,8 +34,7 @@ public class Book implements Node {
 	@Column(precision = 19, scale = 4)
 	private BigDecimal price;
 
-	private ZonedDateTime 
-	createdAt;
+	private ZonedDateTime createdAt;
 
 	private ZonedDateTime releasedAt;
 
