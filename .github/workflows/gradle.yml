@@ -31,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E tests
     container: mcr.microsoft.com/playwright:v1.32.0-focal
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
