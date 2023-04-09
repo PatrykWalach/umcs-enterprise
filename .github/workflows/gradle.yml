@@ -109,6 +109,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: 'refactor: run format'
+          token: ${{ secrets.PAT }}
 
   svelte-check:
     runs-on: ubuntu-latest
