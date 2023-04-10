@@ -1,7 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { AnyVariables, DocumentInput, OperationContext } from "@urql/core";
-
+import type { AnyVariables, DocumentInput, OperationContext } from '@urql/core';
 
 // for information about these interfaces
 declare global {
@@ -26,5 +25,4 @@ declare global {
 	}
 }
 
-export { };
-
+export {};

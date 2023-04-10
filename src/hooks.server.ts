@@ -48,9 +48,9 @@ export const handle: Handle = ({ event, resolve }) => {
 			if (!data) {
 				throw error;
 			}
-			
+
 			return data;
-		},
+		}
 	};
 	return resolve(event);
 };
