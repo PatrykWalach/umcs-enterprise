@@ -2,20 +2,33 @@ package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.types.LoginInput;
 import com.umcs.enterprise.types.RegisterInput;
+import com.umcs.enterprise.user.User;
+import com.umcs.enterprise.user.UserService;
 import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.graphql.test.tester.WebGraphQlTester;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.graphql.test.tester.HttpGraphQlTester;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@ExtendWith(CleanDb.class)
 class UserDataFetcherTest {
+
+	@Autowired
+	private HttpGraphQlTester graphQlTester;
+
+	@Autowired
+	private UserService userRepository;
+
+	@Autowired
+	private JwtService jwtService;
 
 	@Test
 	void login() {
@@ -26,7 +39,7 @@ class UserDataFetcherTest {
 				.newBuilder()
 				.username("user")
 				.authorities(Collections.singletonList("USER"))
-				.password(passwordEncoder.encode("user"))
+				.password("user")
 				.build()
 		);
 
@@ -39,27 +52,28 @@ class UserDataFetcherTest {
 			.verify()
 			.path("login.token")
 			.entity(String.class)
-			.matches(s -> !s.isBlank());
+			.matches(Predicate.not(String::isBlank));
 	}
 
 	@Test
 	void login_invalid() {
 		//        given
 		var input = LoginInput.newBuilder().password("user").username("user").build();
-		userRepository.save(
-			User.newBuilder().username("user").password(passwordEncoder.encode("password")).build()
-		);
+		userRepository.save(User.newBuilder().username("user").password("password").build());
 
-		this.graphQlTester.documentName("UserDataFetcherTest_login")
+		this.graphQlTester.mutate()
+			.header("Accept-Language", "en")
+			.build()
+			.documentName("UserDataFetcherTest_login")
 			.variable("input", input)
 			//                when
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> true)
 			.verify()
-			.path("login")
-			.valueIsNull();
+			.path("login.username")
+			.entity(String.class)
+			.isEqualTo("Bad credentials");
 	}
 
 	@Test
@@ -75,10 +89,10 @@ class UserDataFetcherTest {
 			.execute()
 			//                then
 			.errors()
-			.expect(e -> true)
 			.verify()
-			.path("register")
-			.valueIsNull();
+			.path("register.username")
+			.entity(String.class)
+			.isEqualTo("You are not original enough");
 		//		Assertions.assertEquals(1L, userRepository.count());
 	}
 
@@ -96,25 +110,8 @@ class UserDataFetcherTest {
 			.verify()
 			.path("register.token")
 			.entity(String.class)
-			.matches(s -> !s.isBlank());
+			.matches(Predicate.not(String::isBlank));
 		//		Assertions.assertEquals(1L, userRepository.count());
-	}
-
-	@Autowired
-	private WebGraphQlTester graphQlTester;
-
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private JwtService jwtService;
-
-	@BeforeEach
-	void beforeEach() {
-		userRepository.deleteAll();
 	}
 
 	@Test
@@ -124,7 +121,7 @@ class UserDataFetcherTest {
 			User
 				.newBuilder()
 				.authorities(Collections.singletonList(("USER")))
-				.password(passwordEncoder.encode("user"))
+				.password("user")
 				.username("user")
 				.build()
 		);

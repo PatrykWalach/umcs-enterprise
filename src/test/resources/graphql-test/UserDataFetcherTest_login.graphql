@@ -1,5 +1,10 @@
 mutation UserDataFetcherTestLogin($input: LoginInput!) {
 	login(input: $input) {
-		token
+		... on LoginSuccess {
+			token
+		}
+		... on LoginError {
+			username
+		}
 	}
 }

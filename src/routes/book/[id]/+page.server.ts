@@ -1,4 +1,4 @@
-import BasketBook from '$lib/BasketBook';
+import BasketBook from '$lib/BasketBook.server';
 import { graphql } from '$lib/gql';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
@@ -16,13 +16,31 @@ export const load: ServerLoad = async ({ locals, params }) => {
 					id
 					... on Book {
 						author
-						cover {
-							height
-							id
+						covers(
+							transformations: [
+								{ width: 100 }
+								{ width: 200 }
+								{ width: 300 }
+								{ width: 400 }
+								{ width: 500 }
+								{ width: 600 }
+								{ width: 700 }
+								{ width: 800 }
+								{ width: 900 }
+								{ width: 1000 }
+								{ width: 1200 }
+								{ width: 1400 }
+								{ width: 1600 }
+								{ width: 1800 }
+								{ width: 2000 }
+							]
+						) {
 							url
 							width
 						}
-						price
+						price {
+							formatted
+						}
 						recommended(first: 6) {
 							edges {
 								node {
@@ -47,18 +65,16 @@ export const load: ServerLoad = async ({ locals, params }) => {
 	}
 
 	return {
-		...data,
-		node: data.node
+		BookQuery: {
+			...data,
+			node: data.node
+		}
 	};
 };
 
 export const actions: Actions = {
-	default: async ({ locals, params }) => {
-		await locals.client.request(BasketBook, {
-			input: {
-				id: params.id
-			}
-		});
+	default: async ({ locals, params, cookies }) => {
+		await BasketBook({ locals, cookies }, { id: params.id });
 
 		return {};
 	}
