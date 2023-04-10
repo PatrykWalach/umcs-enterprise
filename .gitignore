@@ -51,3 +51,5 @@ vite.config.ts.timestamp-*
 /.gql
 /postgres-data
 .turbo
+/playwright-report
+/test-results
