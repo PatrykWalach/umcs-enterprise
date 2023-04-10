@@ -17,7 +17,7 @@ export default async function basketBook(
 ) {
 	const basketId = event.cookies.get('basket');
 
-	const data = await event.locals.client.request(BasketBook, {
+	const data = await event.locals.client.mutation(BasketBook, {
 		input: {
 			book: variables,
 			...(basketId && {

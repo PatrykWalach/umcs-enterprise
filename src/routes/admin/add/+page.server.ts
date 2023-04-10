@@ -10,7 +10,7 @@ export const actions: Actions = {
 			throw new Error('cover not uploaded');
 		}
 
-		await locals.client.request(
+		await locals.client.mutation(
 			graphql(`
 				mutation AddBook($input: CreateBookInput!) {
 					createBook(input: $input) {

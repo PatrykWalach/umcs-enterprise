@@ -18,7 +18,7 @@ export const actions: Actions = {
 			throw new Error('No password');
 		}
 
-		const data = await locals.client.request(
+		const data = await locals.client.mutation(
 			graphql(`
 				mutation Login($input: LoginInput!) {
 					login(input: $input) {

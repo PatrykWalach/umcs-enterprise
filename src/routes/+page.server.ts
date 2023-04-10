@@ -25,7 +25,8 @@ export const load: ServerLoad = ({ locals }) => {
 						}
 					}
 				}
-			`)
+			`),
+			{}
 		)
 	};
 };
