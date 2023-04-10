@@ -4,7 +4,7 @@ import BasketBook from '$lib/BasketBook.server';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
-export const load: ServerLoad = ({ locals, url }) => {
+export const load: ServerLoad = async ({ locals, url }) => {
 	const purchase = {
 		asc: Order.Asc,
 		desc: Order.Desc
@@ -15,40 +15,46 @@ export const load: ServerLoad = ({ locals, url }) => {
 		popularity: { popularity: purchase },
 		price: { price: { raw: purchase } }
 	}[url.searchParams.get('by') ?? ''] ?? { releasedAt: Order.Desc };
-
-	return {
-		BooksQuery: locals.client.request(
-			graphql(/* GraphQL */ `
-				query BooksQuery(
-					$after: String
-					$before: String
-					$first: Int
-					$last: Int
-					$orderBy: [BookOrderBy]
-				) {
-					books(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy) {
-						edges {
-							node {
-								...Book_book
-								id
-							}
-						}
-						pageInfo {
-							endCursor
-							hasNextPage
-							hasPreviousPage
-							startCursor
+	const { data, error } = await locals.client.query(
+		graphql(/* GraphQL */ `
+			query BooksQuery(
+				$after: String
+				$before: String
+				$first: Int
+				$last: Int
+				$orderBy: [BookOrderBy]
+			) {
+				books(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy) {
+					edges {
+						node {
+							...Book_book
+							id
 						}
 					}
+					pageInfo {
+						endCursor
+						hasNextPage
+						hasPreviousPage
+						startCursor
+					}
 				}
-			`),
-			{
-				after: url.searchParams.get('after'),
-				before: url.searchParams.get('before'),
-				[url.searchParams.get('before') ? 'last' : 'first']: 60,
-				orderBy
 			}
-		)
+		`),
+		{
+			after: url.searchParams.get('after'),
+			before: url.searchParams.get('before'),
+			[url.searchParams.get('before') ? 'last' : 'first']: 60,
+			orderBy
+		}
+	);
+
+
+	if(!data){
+		throw error
+	}
+
+	return {
+		BooksQuery: data
 	};
 };
 

@@ -3,30 +3,37 @@ import BasketBook from '$lib/BasketBook.server';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
-export const load: ServerLoad = ({ locals }) => {
-	return {
-		HomeQuery: locals.client.request(
-			graphql(/* GraphQL */ `
-				query HomeQuery {
-					new: books(first: 12, orderBy: { releasedAt: DESC }) {
-						edges {
-							node {
-								...Book_book
-								id
-							}
-						}
-					}
-					popular: books(first: 12, orderBy: { popularity: DESC }) {
-						edges {
-							node {
-								...Book_book
-								id
-							}
+export const load: ServerLoad = async ({ locals }) => {
+	const { data ,error} = await locals.client.query(
+		graphql(/* GraphQL */ `
+			query HomeQuery {
+				new: books(first: 12, orderBy: { releasedAt: DESC }) {
+					edges {
+						node {
+							...Book_book
+							id
 						}
 					}
 				}
-			`)
-		)
+				popular: books(first: 12, orderBy: { popularity: DESC }) {
+					edges {
+						node {
+							...Book_book
+							id
+						}
+					}
+				}
+			}
+		`),
+		{}
+	);
+
+	if (!data) {
+		throw error;
+	}
+
+	return {
+		HomeQuery: data
 	};
 };
 

@@ -4,63 +4,69 @@ import UnbasketBook from '$lib/UnbasketBook.server';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
-export const load: ServerLoad = ({ locals, url, cookies }) => {
-	return {
-		BasketQuery: locals.client.request(
-			graphql(/* GraphQL */ `
-				query BasketQuery($after: String, $id: ID) {
-					basket(id: $id) {
-						books(after: $after, first: 10) {
-							edges {
-								node {
-									author
-									covers(
-										transformations: [
-											{ width: 100 }
-											{ width: 200 }
-											{ width: 300 }
-											{ width: 400 }
-											{ width: 500 }
-											{ width: 600 }
-											{ width: 700 }
-											{ width: 800 }
-											{ width: 900 }
-											{ width: 1000 }
-											{ width: 1200 }
-											{ width: 1400 }
-											{ width: 1600 }
-											{ width: 1800 }
-											{ width: 2000 }
-										]
-									) {
-										url
-										width
-									}
-									id
-									title
+export const load: ServerLoad = async ({ locals, url, cookies }) => {
+	const { data, error } = await locals.client.query(
+		graphql(/* GraphQL */ `
+			query BasketQuery($after: String, $id: ID) {
+				basket(id: $id) {
+					books(after: $after, first: 10) {
+						edges {
+							node {
+								author
+								covers(
+									transformations: [
+										{ width: 100 }
+										{ width: 200 }
+										{ width: 300 }
+										{ width: 400 }
+										{ width: 500 }
+										{ width: 600 }
+										{ width: 700 }
+										{ width: 800 }
+										{ width: 900 }
+										{ width: 1000 }
+										{ width: 1200 }
+										{ width: 1400 }
+										{ width: 1600 }
+										{ width: 1800 }
+										{ width: 2000 }
+									]
+								) {
+									url
+									width
 								}
-								price {
-									formatted
-								}
-								quantity
+								id
+								title
 							}
-							pageInfo {
-								endCursor
-								hasNextPage
+							price {
+								formatted
 							}
+							quantity
 						}
-						id
-						price {
-							formatted
+						pageInfo {
+							endCursor
+							hasNextPage
 						}
 					}
+					id
+					price {
+						formatted
+					}
 				}
-			`),
-			{
-				after: url.searchParams.get('after'),
-				id: cookies.get('basket')
 			}
-		)
+		`),
+		{
+			after: url.searchParams.get('after'),
+			id: cookies.get('basket')
+		}
+	);
+
+	if (!data) {
+		throw error;
+	}
+
+	return {
+		BasketQuery: data
 	};
 };
 
@@ -71,9 +77,7 @@ export const actions: Actions = {
 			throw new Error('No book id');
 		}
 
-		const basketId = cookies.get('basket');
-
-		const data = await BasketBook({ locals, cookies }, { id });
+		await BasketBook({ locals, cookies }, { id });
 
 		return {};
 	},
@@ -83,7 +87,7 @@ export const actions: Actions = {
 			throw new Error('No book id');
 		}
 
-		const data = await UnbasketBook({ locals, cookies }, { id });
+		await UnbasketBook({ locals, cookies }, { id });
 
 		return {};
 	}

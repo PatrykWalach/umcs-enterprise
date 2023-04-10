@@ -18,7 +18,7 @@ export const actions: Actions = {
 			throw new Error('No password');
 		}
 
-		const data = await locals.client.request(
+		const { data, error } = await locals.client.query(
 			graphql(`
 				mutation Login($input: LoginInput!) {
 					login(input: $input) {
@@ -39,6 +39,10 @@ export const actions: Actions = {
 				}
 			}
 		);
+
+		if (!data) {
+			throw error;
+		}
 
 		if (data.login?.__typename === 'LoginSuccess') {
 			cookies.set('enterprise-token', data.login.token || '');

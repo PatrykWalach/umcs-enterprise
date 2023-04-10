@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { isNotNull } from '$lib/isNotNull';
 	import Book from '../Book.svelte';
 	import type { PageData } from './$types';
 
@@ -23,12 +24,10 @@
 	</form>
 
 	<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
-		{#each data.BooksQuery.books?.edges ?? [] as book (book?.node?.id)}
-			{#if book?.node}
+		{#each data.BooksQuery.books?.edges?.map(book => book?.node).filter(isNotNull) ?? [] as book (book.id)}
 				<li class="contents">
-					<Book book={book.node} />
+					<Book book={book} />
 				</li>
-			{/if}
 		{/each}
 	</ol>
 

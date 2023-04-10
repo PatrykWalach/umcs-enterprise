@@ -1,17 +1,37 @@
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 
-import { GraphQLClient } from 'graphql-request';
+import { Client, fetchExchange } from '@urql/core';
+import { authExchange } from '@urql/exchange-auth';
 
 export const handle: Handle = ({ event, resolve }) => {
 	const token = event.cookies.get('enterprise-token');
 
-	const client = new GraphQLClient('http://localhost:8080/graphql', {
+	const client = new Client({
+		url: 'http://localhost:8080/graphql',
 		fetch: event.fetch,
-		errorPolicy: 'ignore',
-		signal: event.request.signal as any,
-		headers: new Headers({
-			...(token && { Authorization: `Bearer ${token}` })
-		})
+		fetchOptions: {
+			signal: event.request.signal
+		},
+		exchanges: [
+			authExchange(async (utils) => {
+				return {
+					addAuthToOperation(operation) {
+						if (!token) return operation;
+						return utils.appendHeaders(operation, {
+							Authorization: `Bearer ${token}`
+						});
+					},
+					didAuthError(error, _operation) {
+						return error.graphQLErrors.some((e) => e.extensions?.errorType === 'UNAUTHENTICATED');
+					},
+					async refreshAuth() {
+						event.cookies.set('enterprise-token', '');
+						throw redirect(303, '/login');
+					}
+				};
+			}),
+			fetchExchange
+		]
 	});
 	event.locals.client = client;
 	return resolve(event);

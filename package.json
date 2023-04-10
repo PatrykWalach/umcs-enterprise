@@ -48,8 +48,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"daisyui": "^2.51.5",
-		"graphql": "^16.6.0",
-		"graphql-request": "^5.2.0"
+		"@urql/core": "^4.0.4",
+		"@urql/exchange-auth": "^2.1.0",
+		"daisyui": "^2.51.5"
 	}
 }

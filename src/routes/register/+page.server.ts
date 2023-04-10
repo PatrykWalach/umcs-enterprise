@@ -18,7 +18,7 @@ export const actions: Actions = {
 			throw new Error('No password');
 		}
 
-		const data = await locals.client.request(
+		const {data,error} = await locals.client.mutation(
 			graphql(`
 				mutation Register($input: RegisterInput!) {
 					register(input: $input) {
@@ -39,6 +39,10 @@ export const actions: Actions = {
 				}
 			}
 		);
+
+		if (!data) {
+			throw error;
+		}
 
 		if (data.register?.__typename === 'RegisterSuccess') {
 			cookies.set('enterprise-token', data.register.token || '');

@@ -9,6 +9,7 @@ const config: CodegenConfig = {
 		skipTypename: true,
 		immutableTypes: true
 	},
+	ignoreNoDocuments: true,
 	generates: {
 		'.gql/': {
 			preset: 'client',
