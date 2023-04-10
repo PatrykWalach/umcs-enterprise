@@ -1,4 +1,4 @@
-import { graphql } from './gql/index';
+import { graphql } from '$gql';
 
 export default graphql(`
 	mutation BasketBook($input: BasketBookInput!) {

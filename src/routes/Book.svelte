@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { graphql, useFragment, type FragmentType } from '$lib/gql';
+	import { graphql, useFragment, type FragmentType } from '$gql';
 
 	let Book_book = graphql(`
 		fragment Book_book on Book {

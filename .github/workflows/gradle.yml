@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_REMOTE_ONLY: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -74,7 +79,7 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Run E2E tests 🧪
-        run: npm exec start-server-and-test "./gradlew bootRun" http://localhost:8080/graphiql test
+        run: turbo test
 
       - name: Upload test results
         if: always()
@@ -97,7 +102,7 @@ jobs:
         run: npm ci
 
       - name: Lint
-        run: npm run lint
+        run: turbo lint
 
   format:
     runs-on: ubuntu-latest
@@ -119,7 +124,7 @@ jobs:
         run: npm ci
 
       - name: Format
-        run: npm run format
+        run: turbo format
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
@@ -140,4 +145,4 @@ jobs:
         run: npm ci
 
       - name: Svelte Check
-        run: npm run check
+        run: turbo check

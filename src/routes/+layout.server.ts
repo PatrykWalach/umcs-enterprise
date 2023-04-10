@@ -1,4 +1,4 @@
-import { graphql } from '$lib/gql';
+import { graphql } from '$gql';
 import type { ServerLoad } from '@sveltejs/kit';
 
 export const load: ServerLoad = ({ locals }) => {
