@@ -1,5 +1,5 @@
+import { graphql } from '$gql';
 import type { Cookies } from '@sveltejs/kit';
-import { graphql } from './gql/index';
 
 const UnbasketBook = graphql(`
 	mutation UnbasketBook($input: UnbasketBookInput!) {

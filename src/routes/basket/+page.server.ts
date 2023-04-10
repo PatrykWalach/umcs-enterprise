@@ -1,6 +1,6 @@
+import { graphql } from '$gql';
 import BasketBook from '$lib/BasketBook.server';
 import UnbasketBook from '$lib/UnbasketBook.server';
-import { graphql } from '$lib/gql';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 

@@ -10,7 +10,7 @@ const config: CodegenConfig = {
 		immutableTypes: true
 	},
 	generates: {
-		'src/lib/gql/': {
+		'.gql/': {
 			preset: 'client',
 			plugins: [],
 			config: {
