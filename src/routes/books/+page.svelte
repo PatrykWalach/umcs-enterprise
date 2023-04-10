@@ -11,18 +11,18 @@
 <div class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
 	<form method="get" class="flex justify-end gap-8">
 		<select name="by" id="" class="select">
-			<option value="realease_date" selected>Data wydania</option>
-			<option value="popularity">Popularność</option>
-			<option value="price">Cena</option>
+			<option value="realease_date" selected>Release date</option>
+			<option value="popularity">Popularity</option>
+			<option value="price">Price</option>
 		</select>
-		<select name="order" id="" class="select">
-			<option value="asc">Rosnąco</option>
-			<option value="desc" selected>Malejąco</option>
+		<select name="purchase" id="" class="select">
+			<option value="asc">Ascending</option>
+			<option value="desc" selected>Descending</option>
 		</select>
 		<button type="submit" class="btn-secondary btn">sort</button>
 	</form>
 
-	<ol class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 sm:gap-4">
+	<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
 		{#each data.BooksQuery.books?.edges ?? [] as book (book?.node?.id)}
 			{#if book?.node}
 				<li class="contents">
@@ -39,11 +39,11 @@
 					class="btn"
 					href="/books?{new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
-						order: $page.url.searchParams.get('order') ?? '',
+						purchase: $page.url.searchParams.get('purchase') ?? '',
 						before: data.BooksQuery.books.pageInfo.startCursor
 					})}"
 				>
-					Poprzednia strona
+					Previous
 				</a>
 			{/if}
 			{#if data.BooksQuery.books?.pageInfo?.hasNextPage && data.BooksQuery.books.pageInfo.endCursor}
@@ -51,11 +51,11 @@
 					class="btn"
 					href="/books?{new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
-						order: $page.url.searchParams.get('order') ?? '',
+						purchase: $page.url.searchParams.get('purchase') ?? '',
 						after: data.BooksQuery.books.pageInfo.endCursor
 					})}"
 				>
-					Następna strona
+					Next
 				</a>
 			{/if}
 		</div>

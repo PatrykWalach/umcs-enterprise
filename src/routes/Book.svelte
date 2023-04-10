@@ -1,17 +1,36 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { graphql, useFragment, type FragmentType } from '$gql';
+	import { isNotNull } from '$lib/isNotNull';
 
 	let Book_book = graphql(`
 		fragment Book_book on Book {
 			id
-			cover {
-				id
-				height
-				url
+			covers(
+				transformations: [
+					{ width: 100 }
+					{ width: 200 }
+					{ width: 300 }
+					{ width: 400 }
+					{ width: 500 }
+					{ width: 600 }
+					{ width: 700 }
+					{ width: 800 }
+					{ width: 900 }
+					{ width: 1000 }
+					{ width: 1200 }
+					{ width: 1400 }
+					{ width: 1600 }
+					{ width: 1800 }
+					{ width: 2000 }
+				]
+			) {
 				width
+				url
 			}
-			price
+			price {
+				formatted
+			}
 			title
 			author
 		}
@@ -22,19 +41,19 @@
 	$: data = useFragment(Book_book, book);
 </script>
 
-<article class="card-compact card bg-base-100 shadow xl:shadow-lg">
-	{#if data?.cover}
-		<figure>
-			<img
-				loading="lazy"
-				class="h-auto w-full mix-blend-darken"
-				src={data.cover?.url}
-				width={data.cover?.width}
-				height={data.cover?.height}
-				alt=""
-			/>
-		</figure>
-	{/if}
+<article class="card card-compact bg-base-100 shadow xl:shadow-lg">
+	<figure>
+		<img
+			loading="lazy"
+			class="aspect-[3/4] h-auto w-full object-contain mix-blend-darken"
+			srcset={data.covers
+				?.filter(isNotNull)
+				.map((cover) => `${cover.url} ${cover.width}w`)
+				.join(', ')}
+			sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+			alt=""
+		/>
+	</figure>
 	<div class="card-body justify-between gap-4">
 		<div>
 			<h3 class="card-title line-clamp-3 xl:line-clamp-2" title={data?.title}>
@@ -49,11 +68,16 @@
 		<div>
 			<form method="post" use:enhance class="flex items-center justify-between">
 				<input type="hidden" name="id" value={data.id} />
-				<div class="text-lg font-bold">
-					{data?.price}
+				<div class="font-bold text-lg">
+					{data?.price?.formatted}
 				</div>
 				<!-- <button type="submit" class="btn-primary btn w-full">do koszyka</button> -->
-				<button type="submit" class="btn-ghost btn-square btn">
+				<button
+					type="submit"
+					class="btn-ghost btn-square btn"
+					aria-label="Add to cart"
+					title="Add to cart"
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"

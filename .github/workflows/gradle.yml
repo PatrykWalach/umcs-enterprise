@@ -10,6 +10,10 @@ permissions:
   contents: read
 
 env:
+  CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+  CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+  CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+  
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
   TURBO_REMOTE_ONLY: true
@@ -34,6 +38,7 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
+
     name: E2E tests
     steps:
       - uses: actions/checkout@v3
@@ -61,13 +66,6 @@ jobs:
         run: npx playwright install --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Install postgresql
-        uses: harmon758/postgresql-action@v1
-        with:
-          postgresql user: postgres
-          postgresql password: postgres
-          postgresql db: postgres
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -90,6 +88,7 @@ jobs:
 
   eslint:
     runs-on: ubuntu-latest
+
     name: Eslint
     steps:
       - uses: actions/checkout@v3
@@ -133,6 +132,7 @@ jobs:
 
   svelte-check:
     runs-on: ubuntu-latest
+
     name: Svelte check
     steps:
       - uses: actions/checkout@v3

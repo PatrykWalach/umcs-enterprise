@@ -5,5 +5,14 @@ query NodeControllerTestNode($id: ID!) {
 		... on Book {
 			title
 		}
+		... on User {
+			name
+		}
+		... on Purchase {
+			user {
+				id
+				name
+			}
+		}
 	}
 }

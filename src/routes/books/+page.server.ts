@@ -1,20 +1,20 @@
+import BasketBook from '$lib/BasketBook.server';
 import { graphql } from '$gql';
-import { Sort } from '$gql/graphql';
-import BasketBook from '$lib/BasketBook';
+import { Order } from '$gql/graphql';
 import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const load: ServerLoad = ({ locals, url }) => {
-	const order = {
-		asc: Sort.Asc,
-		desc: Sort.Desc
-	}[url.searchParams.get('order') ?? ''];
+	const purchase = {
+		asc: Order.Asc,
+		desc: Order.Desc
+	}[url.searchParams.get('purchase') ?? ''];
 
-	const sortBy = {
-		realease_date: { releasedAt: order },
-		popularity: { popularity: order },
-		price: { price: order }
-	}[url.searchParams.get('by') ?? ''] ?? { releasedAt: Sort.Desc };
+	const orderBy = {
+		realease_date: { releasedAt: purchase },
+		popularity: { popularity: purchase },
+		price: { price: { raw: purchase } }
+	}[url.searchParams.get('by') ?? ''] ?? { releasedAt: Order.Desc };
 
 	return {
 		BooksQuery: locals.client.request(
@@ -24,9 +24,9 @@ export const load: ServerLoad = ({ locals, url }) => {
 					$before: String
 					$first: Int
 					$last: Int
-					$sortBy: [BookSortBy]
+					$orderBy: [BookOrderBy]
 				) {
-					books(after: $after, before: $before, first: $first, last: $last, sortBy: $sortBy) {
+					books(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy) {
 						edges {
 							node {
 								...Book_book
@@ -46,25 +46,27 @@ export const load: ServerLoad = ({ locals, url }) => {
 				after: url.searchParams.get('after'),
 				before: url.searchParams.get('before'),
 				[url.searchParams.get('before') ? 'last' : 'first']: 60,
-				sortBy
+				orderBy
 			}
 		)
 	};
 };
 
 export const actions: Actions = {
-	default: async ({ locals, request }) => {
+	default: async ({ locals, request, cookies }) => {
 		const { id } = Object.fromEntries(await request.formData());
 
 		if (typeof id !== 'string') {
 			throw new Error('No book id');
 		}
 
-		await locals.client.request(BasketBook, {
-			input: {
-				id
-			}
-		});
+		await BasketBook(
+			{
+				locals,
+				cookies
+			},
+			{ id }
+		);
 
 		return {};
 	}
