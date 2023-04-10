@@ -19,7 +19,7 @@ public class ConnectionService {
 		if (first == null && last == null) {
 			throw new IllegalArgumentException(
 				format(
-					"The %s.%s connection field requires a 'first' or 'last' argument",
+					"Exactly one of 'first' or 'last' is required",
 					env.getParentType(),
 					env.getField().getName()
 				)
@@ -29,7 +29,7 @@ public class ConnectionService {
 		if (first != null && last != null) {
 			throw new IllegalArgumentException(
 				format(
-					"The %s.%s connection field requires a 'first' or 'last' argument, not both",
+					"Exactly one of 'first' or 'last' is required",
 					env.getParentType(),
 					env.getField().getName()
 				)

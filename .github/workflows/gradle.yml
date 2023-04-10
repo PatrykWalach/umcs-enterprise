@@ -77,7 +77,7 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Run E2E tests 🧪
-        run: npm exec turbo ci:test
+        run: npm exec turbo test
 
       - name: Upload test results
         if: always()

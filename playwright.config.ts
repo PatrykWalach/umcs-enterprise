@@ -1,6 +1,11 @@
 import { devices, PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
+	webServer: {
+		command: './gradlew bootRun',
+		url: 'http://localhost:8080/graphiql',
+		reuseExistingServer: !process.env.CI
+	},
 	snapshotDir: './__snapshots__',
 	/* Maximum time one test can run for. */
 	timeout: 10 * 1000,
