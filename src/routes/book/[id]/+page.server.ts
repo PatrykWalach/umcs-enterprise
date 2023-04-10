@@ -8,7 +8,7 @@ export const load: ServerLoad = async ({ locals, params }) => {
 		throw new Error('No id');
 	}
 
-	const {data,error} = await locals.client.query(
+	const { data, error } = await locals.client.query(
 		graphql(/* GraphQL */ `
 			query BookQuery($id: ID!) {
 				node(id: $id) {
@@ -60,8 +60,8 @@ export const load: ServerLoad = async ({ locals, params }) => {
 		}
 	);
 
-	if(!data){
-		throw error
+	if (!data) {
+		throw error;
 	}
 
 	if (data.node?.__typename !== 'Book') {

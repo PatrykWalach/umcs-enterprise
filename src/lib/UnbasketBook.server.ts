@@ -25,7 +25,7 @@ export default async function unbasketBook(
 			})
 		}
 	});
-	
+
 	if (!data) {
 		throw error;
 	}

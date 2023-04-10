@@ -24,10 +24,12 @@
 	</form>
 
 	<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
-		{#each data.BooksQuery.books?.edges?.map(book => book?.node).filter(isNotNull) ?? [] as book (book.id)}
-				<li class="contents">
-					<Book book={book} />
-				</li>
+		{#each data.BooksQuery.books?.edges
+			?.map((book) => book?.node)
+			.filter(isNotNull) ?? [] as book (book.id)}
+			<li class="contents">
+				<Book {book} />
+			</li>
 		{/each}
 	</ol>
 

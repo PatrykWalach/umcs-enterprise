@@ -4,7 +4,7 @@ import type { ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const load: ServerLoad = async ({ locals }) => {
-	const { data ,error} = await locals.client.query(
+	const { data, error } = await locals.client.query(
 		graphql(/* GraphQL */ `
 			query HomeQuery {
 				new: books(first: 12, orderBy: { releasedAt: DESC }) {

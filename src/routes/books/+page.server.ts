@@ -48,9 +48,8 @@ export const load: ServerLoad = async ({ locals, url }) => {
 		}
 	);
 
-
-	if(!data){
-		throw error
+	if (!data) {
+		throw error;
 	}
 
 	return {
