@@ -61,7 +61,7 @@ class UserDataFetcherTest {
 		var input = LoginInput.newBuilder().password("user").username("user").build();
 		userRepository.save(User.newBuilder().username("user").password("password").build());
 
-		this.graphQlTester.documentName("UserDataFetcherTest_login")
+		this.graphQlTester.mutate().header("Accept-Language","en").build().documentName("UserDataFetcherTest_login")
 			.variable("input", input)
 			//                when
 			.execute()
@@ -70,7 +70,7 @@ class UserDataFetcherTest {
 			.verify()
 			.path("login.username")
 			.entity(String.class)
-			.isEqualTo("Niepoprawne dane uwierzytelniające");
+			.isEqualTo("Bad credentials");
 	}
 
 	@Test
