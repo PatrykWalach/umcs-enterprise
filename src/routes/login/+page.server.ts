@@ -1,4 +1,4 @@
-import { graphql } from '$lib/gql';
+import { graphql } from '$gql';
 import { redirect, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
