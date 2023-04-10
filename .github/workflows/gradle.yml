@@ -79,7 +79,7 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Run E2E tests 🧪
-        run: turbo test
+        run: npm exec turbo test
 
       - name: Upload test results
         if: always()
@@ -102,7 +102,7 @@ jobs:
         run: npm ci
 
       - name: Lint
-        run: turbo lint
+        run: npm exec turbo lint
 
   format:
     runs-on: ubuntu-latest
@@ -124,7 +124,7 @@ jobs:
         run: npm ci
 
       - name: Format
-        run: turbo format
+        run: npm exec turbo format
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
@@ -145,4 +145,4 @@ jobs:
         run: npm ci
 
       - name: Svelte Check
-        run: turbo check
+        run: npm exec turbo check
