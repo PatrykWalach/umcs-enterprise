@@ -6,11 +6,9 @@
 			"dependsOn": ["generate"]
 		},
 		"lint": {},
-		"ci:test": {
-
-		},
+		"ci:test": {},
 		"test": {
-			"outputs": ["playwright-report","test-results"],
+			"outputs": ["playwright-report", "test-results"],
 			"dependsOn": ["build"],
 			"env": ["CI"]
 		},
