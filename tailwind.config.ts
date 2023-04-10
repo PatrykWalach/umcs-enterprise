@@ -1,6 +1,6 @@
-import { Config } from "tailwindcss";
+import { Config } from 'tailwindcss';
 
-const config:  Config ={
+const config: Config = {
 	content: ['./src/**/*.{html,svelte}'],
 	theme: {
 		extend: {}
@@ -12,10 +12,7 @@ const config:  Config ={
 		fontSize: false
 		// ...
 	},
-	plugins: [
-		require('daisyui'),
-		require('tailwindcss-fluid-type')
-	]
-} ;
+	plugins: [require('daisyui'), require('tailwindcss-fluid-type')]
+};
 
-export default config
+export default config;
