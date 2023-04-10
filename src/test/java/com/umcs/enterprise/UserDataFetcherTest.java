@@ -61,7 +61,10 @@ class UserDataFetcherTest {
 		var input = LoginInput.newBuilder().password("user").username("user").build();
 		userRepository.save(User.newBuilder().username("user").password("password").build());
 
-		this.graphQlTester.mutate().header("Accept-Language","en").build().documentName("UserDataFetcherTest_login")
+		this.graphQlTester.mutate()
+			.header("Accept-Language", "en")
+			.build()
+			.documentName("UserDataFetcherTest_login")
 			.variable("input", input)
 			//                when
 			.execute()
