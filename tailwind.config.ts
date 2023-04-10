@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import { Config } from "tailwindcss";
+
+const config:  Config ={
 	content: ['./src/**/*.{html,svelte}'],
 	theme: {
 		extend: {}
@@ -12,8 +13,9 @@ module.exports = {
 		// ...
 	},
 	plugins: [
-		require('@tailwindcss/line-clamp'),
 		require('daisyui'),
 		require('tailwindcss-fluid-type')
 	]
-};
+} ;
+
+export default config

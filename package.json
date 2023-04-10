@@ -50,7 +50,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@tailwindcss/line-clamp": "^0.4.4",
 		"daisyui": "^2.51.5",
 		"graphql": "^16.6.0",
 		"graphql-request": "^5.2.0"
