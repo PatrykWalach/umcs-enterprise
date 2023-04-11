@@ -6,6 +6,10 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>Basket</title>
+</svelte:head>
+
 <main class="bg-base-200">
 	<div class="flex justify-center pt-4">
 		<ul class="steps">

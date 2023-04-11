@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
 	import { isNotNull } from '$lib/isNotNull';
 	import Book from '../../Book.svelte';
 
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
-	$: url = new URL($page.url);
 </script>
 
+<svelte:head>
+	<title>{data.BookQuery.node.title}</title>
+	<meta
+		name="description"
+		content="Written by {data.BookQuery.node.author}. {data.BookQuery.node.synopsis}"
+	/>
+</svelte:head>
 <main>
 	<article
 		class="grid grid-cols-1 gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4 md:grid-cols-3 xl:grid-cols-[22.5rem_1fr]"
