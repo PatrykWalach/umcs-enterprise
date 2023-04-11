@@ -5,7 +5,7 @@
 			"outputs": [".svelte-kit/**"],
 			"inputs": [
 				"src/**",
-				"!src/main**",
+				"!src/main/**",
 				"vite.config.ts",
 				"tailwind.config.ts",
 				"svelte.config.js",
