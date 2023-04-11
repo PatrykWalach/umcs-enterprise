@@ -29,11 +29,13 @@ test('can add to basket', async ({ page }) => {
 	await expect.soft(nav.getByText('Total: 6,45 zł')).toBeVisible();
 	await nav.getByRole('link', { name: 'To checkout' }).click();
 	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(
-		main.getByRole('heading', {
-			name: 'Kicia Kocia. Wiosna'
-		})
-	).toBeVisible();
+	await expect
+		.soft(
+			main.getByRole('heading', {
+				name: 'Kicia Kocia. Wiosna'
+			})
+		)
+		.toBeVisible();
 });
 
 test('can quickly add to basket', async ({ page }) => {
@@ -60,9 +62,11 @@ test('can quickly add to basket', async ({ page }) => {
 	await expect.soft(nav.getByText('Total: 6,45 zł')).toBeVisible();
 	await nav.getByRole('link', { name: 'To checkout' }).click();
 	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(
-		main.getByRole('heading', {
-			name: 'Kicia Kocia. Wiosna'
-		})
-	).toBeVisible();
+	await expect
+		.soft(
+			main.getByRole('heading', {
+				name: 'Kicia Kocia. Wiosna'
+			})
+		)
+		.toBeVisible();
 });
