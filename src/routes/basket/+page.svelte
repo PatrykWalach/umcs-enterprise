@@ -42,7 +42,7 @@
 								<td class="p-2">
 									<div class="">
 										<h2 class="line-clamp-2 text-lg">
-											<a href="/book/{edge.node.id}" class="link link-hover">{edge.node.title}</a>
+											<a href="/book/{edge.node.id}" class="link-hover link">{edge.node.title}</a>
 										</h2>
 										<div class="">
 											{edge.node.author}

@@ -5,7 +5,7 @@ import type { Actions } from './$types';
 
 export const load: ServerLoad = async ({ locals, params }) => {
 	if (!params.id) {
-		throw error(500,'No id');
+		throw error(500, 'No id');
 	}
 
 	const data = await locals.client.request(
@@ -77,7 +77,7 @@ export const actions: Actions = {
 		const { id } = Object.fromEntries(await request.formData());
 
 		if (typeof id !== 'string') {
-			throw error(500,'No book id');
+			throw error(500, 'No book id');
 		}
 
 		await BasketBook({ locals, cookies }, { id });

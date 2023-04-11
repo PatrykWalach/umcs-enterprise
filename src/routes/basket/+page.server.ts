@@ -68,7 +68,7 @@ export const actions: Actions = {
 	basket_book: async ({ locals, request, cookies }) => {
 		const { id } = Object.fromEntries(await request.formData());
 		if (typeof id !== 'string') {
-			throw error(500,'No book id');
+			throw error(500, 'No book id');
 		}
 
 		const basketId = cookies.get('basket');

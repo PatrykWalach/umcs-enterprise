@@ -6,7 +6,7 @@
 	export let data: PageData;
 </script>
 
-<main class="bg-base-200 grid gap-2 sm:gap-4 p-2 sm:p-4">
+<main class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
 	<!-- <pre>{JSON.stringify(data)}</pre> -->
 	<section class="grid gap-2 sm:gap-4" aria-labelledby="bestsellers">
 		<h2 class="mx-4 mt-4 text-3xl" id="bestsellers">

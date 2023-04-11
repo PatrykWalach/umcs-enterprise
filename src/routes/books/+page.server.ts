@@ -58,7 +58,7 @@ export const actions: Actions = {
 		const { id } = Object.fromEntries(await request.formData());
 
 		if (typeof id !== 'string') {
-			throw error(500,'No book id');
+			throw error(500, 'No book id');
 		}
 
 		await BasketBook(

@@ -54,7 +54,7 @@
 							{data.BookQuery.node.author}
 						</address>
 					{/if}
-					<div class="text-xl font-medium">
+					<div class="font-medium text-xl">
 						{data.BookQuery.node.price?.formatted}
 					</div>
 				</div>

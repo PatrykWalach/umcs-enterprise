@@ -7,13 +7,13 @@ test('can add to basket', async ({ page }) => {
 	const main = page.getByRole('main');
 	const nav = page.getByRole('navigation');
 
- 
-
-	const book = main.getByRole('region', {
-		name: 'Bestsellers'
-	}).getByRole('article', {
-		name: 'Kicia Kocia. Wiosna'
-	});
+	const book = main
+		.getByRole('region', {
+			name: 'Bestsellers'
+		})
+		.getByRole('article', {
+			name: 'Kicia Kocia. Wiosna'
+		});
 
 	await expect.soft(book.getByText('6,45 zł')).toBeVisible();
 
@@ -39,11 +39,13 @@ test('can quickly add to basket', async ({ page }) => {
 	const main = page.getByRole('main');
 	const nav = page.getByRole('navigation');
 
-	const book = main.getByRole('region', {
-		name: 'Bestsellers'
-	}).getByRole('article', {
-		name: 'Kicia Kocia. Wiosna'
-	});
+	const book = main
+		.getByRole('region', {
+			name: 'Bestsellers'
+		})
+		.getByRole('article', {
+			name: 'Kicia Kocia. Wiosna'
+		});
 
 	await expect.soft(book.getByText('6,45 zł')).toBeVisible();
 
