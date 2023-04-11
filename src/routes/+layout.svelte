@@ -10,11 +10,11 @@
 
 <div class="container mx-auto">
 	<div class="shadow-xl">
-		<nav class="navbar bg-base-100 shadow-xl">
+		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
 				<a class="btn-ghost btn normal-case text-3xl" href="/">Bookstore</a>
 			</div>
-			<div class="flex flex-none gap-1">
+			<nav class="flex flex-none gap-1">
 				<div class="dropdown-end dropdown">
 					<button type="button" aria-label="Show cart total" class="btn-ghost btn-square btn">
 						<div class="indicator">
@@ -126,8 +126,8 @@
 					<a href="/login" class="btn-ghost btn">Login</a>
 					<a href="/register" class="btn-ghost hidden md:btn">Register</a>
 				{/if}
-			</div>
-		</nav>
+			</nav>
+		</header>
 		<slot />
 	</div>
 </div>
