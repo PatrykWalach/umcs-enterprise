@@ -8,7 +8,7 @@
 	$: url = new URL($page.url);
 </script>
 
-<div class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
+<main class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
 	<form method="get" class="flex justify-end gap-8">
 		<select name="by" id="" class="select">
 			<option value="realease_date" selected>Release date</option>
@@ -25,7 +25,7 @@
 	<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
 		{#each data.BooksQuery.books?.edges ?? [] as book (book?.node?.id)}
 			{#if book?.node}
-				<li class="contents">
+				<li class="grid">
 					<Book book={book.node} />
 				</li>
 			{/if}
@@ -60,6 +60,6 @@
 			{/if}
 		</div>
 	</footer>
-</div>
+</main>
 
 <slot />

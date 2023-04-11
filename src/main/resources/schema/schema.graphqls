@@ -176,6 +176,7 @@ type Basket {
 	books(after: String, before: String, first: Int, last: Int): BasketBooksConnection
 	id: ID!
 	price: Price
+	quantity: Int
 }
 
 enum Order {

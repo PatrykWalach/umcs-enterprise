@@ -24,4 +24,6 @@ public class BookPurchase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "book_id")
 	private Book book;
+
+	private Integer quantity;
 }
