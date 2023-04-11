@@ -6,7 +6,7 @@
 	export let data: PageData;
 </script>
 
-<div class="bg-base-200">
+<main class="bg-base-200">
 	<div class="flex justify-center pt-4">
 		<ul class="steps">
 			<li class="step-primary step">Register</li>
@@ -16,61 +16,63 @@
 		</ul>
 	</div>
 
-	<div class="grid gap-2 p-2 sm:gap-4 sm:p-4 lg:grid-cols-2">
-		<div class="card card-compact bg-base-100">
+	<div class="grid gap-2 p-2 sm:gap-4 sm:p-4 lg:grid-cols-3">
+		<div class="card card-compact bg-base-100 lg:col-span-2">
 			<div class="card-body">
-				<div class="grid grid-cols-[auto_5fr_auto_1fr] place-items-center justify-items-center">
-					<ul class="contents">
-						{#each data.BasketQuery.basket?.books?.edges ?? [] as edge (edge?.node?.id)}
-							{#if edge}
-								<li class="contents">
+				<table class="">
+					{#each data.BasketQuery.basket?.books?.edges
+						?.map((edge) => edge?.node && { ...edge, node: edge.node })
+						.filter(isNotNull) ?? [] as edge (edge.node.id)}
+						{#if true}
+							<tr class="p-2">
+								<td class="p-2">
+									<figure>
+										<img
+											loading="lazy"
+											class="h-auto w-16 mix-blend-darken"
+											srcset={edge.node.covers
+												?.filter(isNotNull)
+												.map((cover) => `${cover.url} ${cover.width}w`)
+												.join(', ')}
+											sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+											alt=""
+										/>
+									</figure>
+								</td>
+								<td class="p-2">
 									<div class="">
-										<figure>
-											<img
-												loading="lazy"
-												class="h-auto w-16 mix-blend-darken"
-												srcset={edge.node?.covers
-													?.filter(isNotNull)
-													.map((cover) => `${cover.url} ${cover.width}w`)
-													.join(', ')}
-												sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
-												alt=""
-											/>
-										</figure>
-									</div>
-									<div class="truncate">
-										<div class=" text-xl">
-											{edge.node?.title}
-										</div>
+										<h2 class="line-clamp-2 text-lg">
+											<a href="/book/{edge.node.id}" class="link-hover link">{edge.node.title}</a>
+										</h2>
 										<div class="">
-											{edge.node?.author}
+											{edge.node.author}
 										</div>
 									</div>
-									<div>
-										<form action="" method="post" use:enhance>
-											<input type="hidden" value={edge?.node?.id} name="id" />
-											<div class="btn-group">
-												<button class="btn-outline btn" formaction="/basket?/unbasket_book">
-													-
-												</button>
-												<div class="btn-outline btn border-x-0">{edge?.quantity}</div>
-												<button class="btn-outline btn" formaction="/basket?/basket_book">+</button>
-											</div>
-										</form>
-									</div>
-									<div>{edge.price?.formatted}</div>
-								</li>
-							{/if}
-						{/each}
-					</ul>
+								</td>
+								<td class="hidden p-2 xl:table-cell">
+									<form action="" class="" method="post" use:enhance>
+										<input type="hidden" value={edge.node.id} name="id" />
+										<div class="btn-group">
+											<button class="btn-outline btn" formaction="/basket?/unbasket_book">-</button>
+											<div class="btn-outline btn border-x-0">{edge.quantity}</div>
+											<button class="btn-outline btn" formaction="/basket?/basket_book">+</button>
+										</div>
+									</form>
+								</td>
+								<td class="p-2">{edge.price?.formatted}</td>
+							</tr>
+						{/if}
+					{/each}
 
-					<div class="contents font-semibold">
-						<div />
-						<div>Total</div>
-						<div />
-						<div>{data.BasketQuery.basket?.price?.formatted}</div>
-					</div>
-				</div>
+					<tr class="p-2">
+						<td class="p-2" />
+						<td class="p-2"><span class="text-base">Total</span></td>
+						<td class="hidden p-2 xl:table-cell" />
+						<td class="p-2">
+							<span class="font-semibold">{data.BasketQuery.basket?.price?.formatted}</span>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<div class="card flex-1 bg-base-100">
@@ -81,4 +83,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+</main>

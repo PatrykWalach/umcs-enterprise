@@ -11,7 +11,7 @@ export const test = base.extend<
 	app: [
 		// eslint-disable-next-line no-empty-pattern
 		async ({}, use) => {
-			const server = await preview({});
+			const server = await preview({ logLevel: 'silent' });
 
 			await use(server);
 		},

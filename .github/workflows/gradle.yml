@@ -38,6 +38,12 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        project: [default, no-js, mobile]
+        total: [10]
 
     name: E2E tests
     steps:
@@ -77,7 +83,7 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Run E2E tests 🧪
-        run: npm exec turbo test
+        run: npm exec turbo test -- -- --project=${{ matrix.project }} --shard=${{ matrix.index }}/${{ matrix.total }}
 
       - name: Upload test results
         if: always()
