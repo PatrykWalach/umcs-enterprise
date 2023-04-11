@@ -124,7 +124,7 @@
 					</div>
 				{:else}
 					<a href="/login" class="btn-ghost btn">Login</a>
-					<a href="/register" class="btn-ghost hidden md:btn">Regsiter</a>
+					<a href="/register" class="btn-ghost hidden md:btn">Register</a>
 				{/if}
 			</div>
 		</nav>

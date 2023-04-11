@@ -1,9 +1,14 @@
 import { Config } from 'tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 const config: Config = {
 	content: ['./src/**/*.{html,svelte}'],
 	theme: {
-		extend: {}
+		extend: {
+			fontFamily: {
+				sans: [['"Roboto Flex"', ...defaultTheme.fontFamily.sans], {}]
+			}
+		}
 	},
 	daisyui: {
 		themes: ['retro']
