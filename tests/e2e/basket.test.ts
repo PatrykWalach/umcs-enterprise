@@ -18,7 +18,7 @@ test('can add to basket', async ({ page }) => {
 	await expect(book.getByText('6,45 zł')).toBeVisible();
 
 	await book.getByRole('link').click();
-	await expect(page).toHaveTitle('Kicia Kocia. Wiosna')
+	await expect(page).toHaveTitle('Kicia Kocia. Wiosna');
 
 	await expect(main.getByText('6,45 zł')).toBeVisible();
 
@@ -28,7 +28,7 @@ test('can add to basket', async ({ page }) => {
 	await nav.getByRole('button', { name: 'Show cart total' }).click();
 	await expect(nav.getByText('Total: 6,45 zł')).toBeVisible();
 	await nav.getByRole('link', { name: 'To checkout' }).click();
-	await expect(page).toHaveTitle('Basket')
+	await expect(page).toHaveTitle('Basket');
 	await expect(
 		main.getByRole('heading', {
 			name: 'Kicia Kocia. Wiosna'
@@ -55,11 +55,11 @@ test('can quickly add to basket', async ({ page }) => {
 	// when
 	await book.getByRole('button', { name: 'Add to cart' }).click();
 	// then
-	
+
 	await nav.getByRole('button', { name: 'Show cart total' }).click();
 	await expect(nav.getByText('Total: 6,45 zł')).toBeVisible();
 	await nav.getByRole('link', { name: 'To checkout' }).click();
-	await expect(page).toHaveTitle('Basket')
+	await expect(page).toHaveTitle('Basket');
 	await expect(
 		main.getByRole('heading', {
 			name: 'Kicia Kocia. Wiosna'
