@@ -57,7 +57,6 @@ test('can quickly add to basket', async ({ page }) => {
 	await book.getByRole('button', { name: 'Add to cart' }).click();
 	// then
 
-
 	await page.goto('/basket');
 	await expect.soft(page).toHaveTitle('Basket');
 	await expect.soft(main.getByText('Total 6,45 zł')).toBeVisible();
