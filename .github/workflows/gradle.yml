@@ -83,7 +83,7 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Run E2E tests 🧪
-        run: npm exec turbo test -- --project=${{ matrix.project }} --shard=${{ matrix.index }}/${{ matrix.total }}
+        run: npm exec turbo test -- -- --project=${{ matrix.project }} --shard=${{ matrix.index }}/${{ matrix.total }}
 
       - name: Upload test results
         if: always()
