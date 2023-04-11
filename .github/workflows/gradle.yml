@@ -38,6 +38,10 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [default, no-js, mobile]
 
     name: E2E tests
     steps:
@@ -77,13 +81,13 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Run E2E tests 🧪
-        run: npm exec turbo test
+        run: npm exec turbo test -- -- --project=${{ matrix.project }}
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
+          name: ${{ matrix.project }}-playwright-report
           path: playwright-report
 
   eslint:

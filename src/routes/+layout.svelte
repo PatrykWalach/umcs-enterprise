@@ -6,22 +6,17 @@
 	export let data: LayoutData;
 
 	const pluralRules = new Intl.PluralRules();
-
-	$: quantity = data.NavbarQuery.basket?.books?.edges
-		?.map((edge) => edge?.quantity)
-		.filter(isNotNull)
-		.reduce((a, b) => a + b, 0);
 </script>
 
 <div class="container mx-auto">
 	<div class="shadow-xl">
-		<nav class="navbar bg-base-100 shadow-xl">
+		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
 				<a class="btn-ghost btn normal-case text-3xl" href="/">Bookstore</a>
 			</div>
-			<div class="flex flex-none gap-1">
+			<nav class="flex flex-none gap-1">
 				<div class="dropdown-end dropdown">
-					<button type="button" class="btn-ghost btn-square btn" id="cart">
+					<button type="button" aria-label="Show cart total" class="btn-ghost btn-square btn">
 						<div class="indicator">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +33,7 @@
 								/>
 							</svg>
 							<span class="badge badge-sm indicator-item">
-								{quantity ?? 0}{data.NavbarQuery.basket?.books?.pageInfo?.hasNextPage ? '+' : ''}
+								{data.NavbarQuery.basket?.quantity ?? 0}
 							</span>
 						</div>
 					</button>
@@ -46,10 +41,9 @@
 						tabindex="-1"
 						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow"
 					>
-						<div class="card-body">
+						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">
-								{data.NavbarQuery.basket?.books?.pageInfo?.hasNextPage ? 'Ponad ' : ''}{quantity ||
-									'Brak'}
+								{data.NavbarQuery.basket?.quantity || 'Brak'}
 								{(() => ({
 									one: 'Książka',
 									many: 'Książek',
@@ -57,20 +51,43 @@
 									other: null,
 									zero: 'Książek',
 									two: 'Książki'
-								}))()[pluralRules.select(quantity ?? 0)] ?? 'Książek'}
+								}))()[pluralRules.select(data.NavbarQuery.basket?.quantity ?? 0)] ?? 'Książek'}
 							</span>
-							<span class="font-semibold text-info text-lg">
-								Total: {data.NavbarQuery.basket?.price?.formatted ?? 0}
-							</span>
+							<ul class="grid gap-4">
+								{#each data.NavbarQuery.basket?.books?.edges
+									?.map((edge) => edge?.node)
+									.filter(isNotNull) ?? [] as node (node.id)}
+									<li class="grid grid-cols-3 gap-2">
+										<figure>
+											<img
+												loading="lazy"
+												class="h-auto w-16 mix-blend-darken"
+												srcset={node.covers
+													?.filter(isNotNull)
+													.map((cover) => `${cover.url} ${cover.width}w`)
+													.join(', ')}
+												sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+												alt=""
+											/>
+										</figure>
+										<article class="col-span-2">
+											<h4><a href="/book/{node.id}" class="link-hover link">{node.title}</a></h4>
+										</article>
+									</li>
+								{/each}
+							</ul>
 							<div class="card-actions">
-								<a href="/basket" class="btn-primary btn-block btn">to checkout</a>
+								<span class="font-semibold text-info text-lg">
+									Total: {data.NavbarQuery.basket?.price?.formatted ?? 0}
+								</span>
+								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
 							</div>
 						</div>
 					</div>
 				</div>
 				{#if data.NavbarQuery.viewer?.__typename === 'User'}
 					<div class="dropdown-end dropdown">
-						<button type="button" class="btn-ghost btn-square avatar btn">
+						<button type="button" aria-label="Show menu" class="btn-ghost btn-square avatar btn">
 							<!--
 			 <div class="w-10 rounded-full">
 						 <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
@@ -107,10 +124,10 @@
 					</div>
 				{:else}
 					<a href="/login" class="btn-ghost btn">Login</a>
-					<a href="/register" class="btn-ghost hidden md:btn">Regsiter</a>
+					<a href="/register" class="btn-ghost hidden md:btn">Register</a>
 				{/if}
-			</div>
-		</nav>
+			</nav>
+		</header>
 		<slot />
 	</div>
 </div>

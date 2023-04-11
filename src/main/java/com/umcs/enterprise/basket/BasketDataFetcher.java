@@ -62,6 +62,12 @@ public class BasketDataFetcher {
 	}
 
 	@DgsData(parentType = "Basket")
+	public Integer quantity(DgsDataFetchingEnvironment env) {
+		Map<Long, Integer> basket = env.getSource();
+		return basket.values().stream().reduce(0, Integer::sum);
+	}
+
+	@DgsData(parentType = "Basket")
 	public String id(DataFetchingEnvironment env) throws JsonProcessingException {
 		return Base64
 			.getEncoder()
