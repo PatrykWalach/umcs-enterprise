@@ -6,6 +6,7 @@
 			"inputs": [
 				"src/**",
 				"!src/main/**",
+				"!src/test/**",
 				"vite.config.ts",
 				"tailwind.config.ts",
 				"svelte.config.js",
@@ -17,7 +18,7 @@
 		"test": {
 			"outputs": ["playwright-report", "test-results"],
 			"dependsOn": ["build"],
-			"inputs": ["tests/**", "playwright.config.ts"],
+			"inputs": ["tests/**", "src/main/**", "build.gradle", "playwright.config.ts"],
 			"env": ["CI"]
 		},
 		"check": {
