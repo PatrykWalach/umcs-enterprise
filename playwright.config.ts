@@ -7,12 +7,13 @@ const config: PlaywrightTestConfig = {
 		reuseExistingServer: !process.env.CI
 	},
 	snapshotDir: './__snapshots__',
-	/* Maximum time one test can run for. */
-	timeout: 30 * 1000,
-	globalTimeout: 9 * 60 * 1000,
+	maxFailures: 100,
 	expect: {
 		timeout: 10 * 1000
 	},
+	globalTimeout: 9 * 60 * 1000,
+	/* Maximum time one test can run for. */
+	timeout: 30 * 1000,
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
