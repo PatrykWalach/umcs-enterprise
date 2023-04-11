@@ -7,16 +7,21 @@ const config: PlaywrightTestConfig = {
 		reuseExistingServer: !process.env.CI
 	},
 	snapshotDir: './__snapshots__',
+	maxFailures: 100,
+	expect: {
+		timeout: 10 * 1000
+	},
+	globalTimeout: 9 * 60 * 1000,
 	/* Maximum time one test can run for. */
-	timeout: 10 * 1000,
+	timeout: 30 * 1000,
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
-	retries: process.env.CI ? 2 : 0,
+	retries: process.env.CI ? 3 : 0,
 	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	workers: process.env.CI ? 2 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

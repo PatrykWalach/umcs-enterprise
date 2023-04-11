@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Test
 
 on:
   push:
@@ -20,6 +20,7 @@ env:
 
 jobs:
   build:
+    name: Gradle build
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +44,7 @@ jobs:
       matrix:
         project: [default, no-js, mobile]
 
-    name: E2E tests
+    name: E2E
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -93,7 +94,7 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
 
-    name: Eslint
+    name: Lint
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -137,7 +138,7 @@ jobs:
   svelte-check:
     runs-on: ubuntu-latest
 
-    name: Svelte check
+    name: Typecheck
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
