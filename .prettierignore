@@ -17,4 +17,4 @@ yarn.lock
 .eslintignore
 .gitignore
 *.properties
-/src/lib/gql
+/.gql
