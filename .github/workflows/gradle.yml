@@ -38,7 +38,7 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
-    strategy: 
+    strategy:
       fail-fast: false
       matrix:
         project: [default, no-js, mobile]
