@@ -41,7 +41,7 @@
 	$: data = useFragment(Book_book, book);
 </script>
 
-<article class="card card-compact bg-base-100 shadow xl:shadow-lg">
+<article class="card card-compact bg-base-100 shadow xl:shadow-lg" aria-labelledby="{data.id}">
 	<figure>
 		<img
 			loading="lazy"
@@ -56,7 +56,7 @@
 	</figure>
 	<div class="card-body justify-between gap-4">
 		<div>
-			<h3 class="card-title line-clamp-3 xl:line-clamp-2" title={data?.title}>
+			<h3 id={data.id} class="card-title line-clamp-3 md:line-clamp-2" title={data?.title}>
 				<a href="/book/{data.id}" class="link-hover link">{data?.title}</a>
 			</h3>
 			{#if data?.author}

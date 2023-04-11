@@ -1,7 +1,7 @@
 import { graphql } from '$gql';
 import BasketBook from '$lib/BasketBook.server';
 import UnbasketBook from '$lib/UnbasketBook.server';
-import type { ServerLoad } from '@sveltejs/kit';
+import { error, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const load: ServerLoad = ({ locals, url, cookies }) => {
@@ -68,7 +68,7 @@ export const actions: Actions = {
 	basket_book: async ({ locals, request, cookies }) => {
 		const { id } = Object.fromEntries(await request.formData());
 		if (typeof id !== 'string') {
-			throw new Error('No book id');
+			throw error(500,'No book id');
 		}
 
 		const basketId = cookies.get('basket');

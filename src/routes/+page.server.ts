@@ -1,6 +1,6 @@
 import { graphql } from '$gql';
 import BasketBook from '$lib/BasketBook.server';
-import type { ServerLoad } from '@sveltejs/kit';
+import { error, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const load: ServerLoad = ({ locals }) => {
@@ -35,7 +35,7 @@ export const actions: Actions = {
 		const { id } = Object.fromEntries(await request.formData());
 
 		if (typeof id !== 'string') {
-			throw new Error('No book id');
+			throw error(500,'No book id');
 		}
 
 		await BasketBook(

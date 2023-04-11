@@ -6,18 +6,23 @@ export const load: ServerLoad = async ({ locals, cookies }) => {
 		graphql(/* GraphQL */ `
 			query NavbarQuery($id: ID) {
 				basket(id: $id) {
-					books(first: 12) {
+					books(first: 3) {
 						edges {
-							quantity
-						}
-						pageInfo {
-							hasNextPage
+							node {
+								covers(transformations: [{ width: 50 }]) {
+									url
+									width
+								}
+								id
+								title
+							}
 						}
 					}
 					id
 					price {
 						formatted
 					}
+					quantity
 				}
 				viewer {
 					__typename

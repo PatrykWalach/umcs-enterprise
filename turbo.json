@@ -3,12 +3,21 @@
 	"pipeline": {
 		"build": {
 			"outputs": [".svelte-kit/**"],
+			"inputs": [
+				"src/**",
+				"!src/main**",
+				"vite.config.ts",
+				"tailwind.config.ts",
+				"svelte.config.js",
+				"postcss.config.cjs"
+			],
 			"dependsOn": ["generate"]
 		},
 		"lint": {},
 		"test": {
 			"outputs": ["playwright-report", "test-results"],
 			"dependsOn": ["build"],
+			"inputs": ["tests/**", "playwright.config.ts"],
 			"env": ["CI"]
 		},
 		"check": {
@@ -22,7 +31,7 @@
 				"src/**/*.graphqls",
 				"src/**/*.ts",
 				"codegen.cts",
-				"./.graphqlrc.json"
+				".graphqlrc.json"
 			]
 		},
 		"dev": {
