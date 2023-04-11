@@ -3,7 +3,15 @@
 	"pipeline": {
 		"build": {
 			"outputs": [".svelte-kit/**"],
-			"dependsOn": ["generate"]
+			"dependsOn": ["generate"],
+			"inputs": [
+				"src/**",
+				"!src/main/**",
+				"svelte.config.js",
+				"tailwind.config.ts",
+				"postcss.config.cjs",
+				"vite.config.ts"
+			]
 		},
 		"lint": {},
 		"test": {
