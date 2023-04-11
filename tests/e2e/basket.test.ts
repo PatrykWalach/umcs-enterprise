@@ -26,7 +26,7 @@ test('can add to basket', async ({ page }) => {
 	await main.getByRole('button', { name: 'To cart', exact: true }).click();
 	// then
 	await nav.getByRole('button', { name: 'Show cart total' }).click();
-	await expect(nav.getByText('Total: 6,45 zł')).toBeVisible();
+	await expect(nav.getByText('Total: 6,45 zł')).toHaveCount(1);
 	await nav.getByRole('link', { name: 'To checkout' }).click();
 	await expect(page).toHaveTitle('Basket');
 	await expect(
@@ -57,7 +57,7 @@ test('can quickly add to basket', async ({ page }) => {
 	// then
 
 	await nav.getByRole('button', { name: 'Show cart total' }).click();
-	await expect(nav.getByText('Total: 6,45 zł')).toBeVisible();
+	await expect(nav.getByText('Total: 6,45 zł')).toHaveCount(1);
 	await nav.getByRole('link', { name: 'To checkout' }).click();
 	await expect(page).toHaveTitle('Basket');
 	await expect(
