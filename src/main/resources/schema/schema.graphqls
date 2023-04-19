@@ -239,11 +239,11 @@ type MakePurchaseResult {
 
 scalar Upload
 
-input CreatePrice{
+input CreatePrice {
 	raw: Float!
 }
 
-input CreateCover{
+input CreateCover {
 	file: Upload
 	url: String
 }
@@ -363,7 +363,7 @@ input LoginInput {
 	username: String!
 }
 
-input RegisterInput{
+input RegisterInput {
 	password: String!
 	username: String!
 }
