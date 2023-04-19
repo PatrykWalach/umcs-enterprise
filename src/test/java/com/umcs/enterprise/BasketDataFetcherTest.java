@@ -72,8 +72,8 @@ class BasketDataFetcherTest {
 						"input",
 						BasketBookInput
 							.newBuilder()
-							.basket(WhereUniqueBasketInput.newBuilder().id(id).build())
-							.book(WhereUniqueBookInput.newBuilder().id(book.getId()).build())
+							.basket(WhereUniqueBasket.newBuilder().id(id).build())
+							.book(WhereUniqueBook.newBuilder().id(book.getId()).build())
 							.build()
 					)
 					//        when
