@@ -113,7 +113,6 @@ public class BookDataFetcher {
 		book.setPopularity(0L);
 		book.setTitle(input.getTitle());
 
-
 		return bookRepository.save(book);
 	}
 }
