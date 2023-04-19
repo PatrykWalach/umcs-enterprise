@@ -21,6 +21,6 @@ public record GlobalId(String className, UUID databaseId) {
 		}
 
 		String className = split[0];
-		return new GlobalId(className,  UUID.fromString(split[1]));
+		return new GlobalId(className, UUID.fromString(split[1]));
 	}
 }

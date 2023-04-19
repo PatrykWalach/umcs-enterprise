@@ -3,9 +3,8 @@ package com.umcs.enterprise.cover;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.node.Node;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Getter
@@ -13,10 +12,10 @@ import java.util.UUID;
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cover   {
+public class Cover {
 
-	@Id@GeneratedValue(strategy = GenerationType.AUTO)
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
 	private Long databaseId;
 

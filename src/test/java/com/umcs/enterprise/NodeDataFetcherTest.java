@@ -16,7 +16,6 @@ import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,8 +191,6 @@ class NodeDataFetcherTest {
 			Book.newBuilder().cover(coverRepository.save(new Cover())).title("Book title").build()
 		);
 		book.setDatabaseId(UUID.randomUUID());
-
-
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", book.getId())
