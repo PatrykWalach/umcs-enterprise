@@ -322,7 +322,7 @@ class BookDataFetcherTest {
 			.verify()
 			.path("node.recommended.edges[*].node.title")
 			.entity(List.class)
-			.isEqualTo(List.of("13", "12", "14", "11", "15", "10", "16"));
+			.isEqualTo(List.of("13", "12", "14", "11", "15", "16", "10"));
 	}
 
 	@Test
