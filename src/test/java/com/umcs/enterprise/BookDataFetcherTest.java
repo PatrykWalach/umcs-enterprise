@@ -97,7 +97,7 @@ class BookDataFetcherTest {
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
 		input.put("cover", (coverInput));
-		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+		input.put("price", (CreatePrice.newBuilder().raw(100.0).build()));
 
 		Resource file = new ClassPathResource("cover.jpg");
 
@@ -135,7 +135,7 @@ class BookDataFetcherTest {
 			.andExpect(jsonPath("data.createBook.book.author").value(input.get("author")))
 			.andExpect(
 				jsonPath("data.createBook.book.price.raw")
-					.value(((CreatePriceInput) input.get("price")).getRaw())
+					.value(((CreatePrice) input.get("price")).getRaw())
 			)
 			.andExpect(jsonPath("data.createBook.book.price.formatted").isNotEmpty())
 			.andExpect(jsonPath("data.createBook.book.popularity").value(0))
@@ -174,7 +174,7 @@ class BookDataFetcherTest {
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
 		input.put("cover", (coverInput));
-		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+		input.put("price", (CreatePrice.newBuilder().raw(100.0).build()));
 
 		Resource file = new ClassPathResource("cover.jpg");
 
