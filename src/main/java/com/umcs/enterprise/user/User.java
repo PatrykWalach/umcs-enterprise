@@ -5,6 +5,8 @@ import com.umcs.enterprise.purchase.Purchase;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +19,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 public class User implements UserDetails, Node {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "database_id", nullable = false)
-	private Long databaseId;
+	@Id@GeneratedValue(strategy = GenerationType.AUTO)
+
+	@Column(nullable = false)
+	private UUID databaseId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Purchase> purchases;

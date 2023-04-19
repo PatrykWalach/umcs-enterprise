@@ -4,6 +4,7 @@ import com.netflix.graphql.dgs.DgsDataLoader;
 import com.umcs.enterprise.node.Node;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
@@ -15,7 +16,7 @@ import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecu
 
 @DgsDataLoader(name = "PurchaseDataLoader")
 @RequiredArgsConstructor
-public class PurchaseDataLoader implements MappedBatchLoader<Long, Purchase> {
+public class PurchaseDataLoader implements MappedBatchLoader<UUID, Purchase> {
 
 	@NonNull
 	private final PurchaseService repository;
@@ -24,7 +25,7 @@ public class PurchaseDataLoader implements MappedBatchLoader<Long, Purchase> {
 	private final DelegatingSecurityContextAsyncTaskExecutor executor;
 
 	@Override
-	public CompletionStage<Map<Long, Purchase>> load(Set<Long> keys) {
+	public CompletionStage<Map<UUID, Purchase>> load(Set<UUID> keys) {
 		return CompletableFuture.supplyAsync(
 			() ->
 				repository

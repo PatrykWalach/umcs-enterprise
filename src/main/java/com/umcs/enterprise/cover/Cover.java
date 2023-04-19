@@ -5,17 +5,19 @@ import com.umcs.enterprise.node.Node;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @Setter
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cover implements Node {
+public class Cover   {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "database_id", nullable = false)
+	@Id@GeneratedValue(strategy = GenerationType.AUTO)
+
+	@Column(nullable = false)
 	private Long databaseId;
 
 	private String uuid;

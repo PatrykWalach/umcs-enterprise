@@ -19,7 +19,7 @@ import org.dataloader.DataLoader;
 @RequiredArgsConstructor
 public class BasketDataFetcher {
 
-	private Map<Long, Integer> getBasket(String basket) throws JsonProcessingException {
+	private Map<UUID, Integer> getBasket(String basket) throws JsonProcessingException {
 		if (basket == null) {
 			return new HashMap<>();
 		}
@@ -36,17 +36,17 @@ public class BasketDataFetcher {
 	}
 
 	@DgsQuery
-	public Map<Long, Integer> basket(@InputArgument String id) throws JsonProcessingException {
+	public Map<UUID, Integer> basket(@InputArgument String id) throws JsonProcessingException {
 		return getBasket(id);
 	}
 
 	@DgsData(parentType = "Basket")
 	public CompletableFuture<BigDecimal> price(DgsDataFetchingEnvironment env) {
-		DataLoader<Long, com.umcs.enterprise.book.Book> dataLoader = env.getDataLoader(
+		DataLoader<UUID, com.umcs.enterprise.book.Book> dataLoader = env.getDataLoader(
 			BookDataLoader.class
 		);
 
-		Map<Long, Integer> basket = env.getSource();
+		Map<UUID, Integer> basket = env.getSource();
 
 		return dataLoader
 			.loadMany(basket.keySet().stream().toList())
@@ -79,9 +79,9 @@ public class BasketDataFetcher {
 	}
 
 	@DgsMutation
-	public Map<Long, Integer> basketBook(@InputArgument BasketBookInput input)
+	public Map<UUID, Integer> basketBook(@InputArgument BasketBookInput input)
 		throws JsonProcessingException {
-		Map<Long, Integer> books = getBasket(input.getBasket().getId());
+		Map<UUID, Integer> books = getBasket(input.getBasket().getId());
 
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
@@ -98,9 +98,9 @@ public class BasketDataFetcher {
 	}
 
 	@DgsMutation
-	public Map<Long, Integer> unbasketBook(@InputArgument UnbasketBookInput input)
+	public Map<UUID, Integer> unbasketBook(@InputArgument UnbasketBookInput input)
 		throws JsonProcessingException {
-		Map<Long, Integer> books = getBasket(input.getBasket().getId());
+		Map<UUID, Integer> books = getBasket(input.getBasket().getId());
 
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");

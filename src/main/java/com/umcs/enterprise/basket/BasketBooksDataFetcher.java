@@ -12,6 +12,7 @@ import graphql.relay.Edge;
 import graphql.schema.DataFetchingEnvironment;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,9 @@ public class BasketBooksDataFetcher {
 
 	@DgsData(parentType = "Basket")
 	public CompletableFuture<Connection<Book>> books(DgsDataFetchingEnvironment env) {
-		DataLoader<Long, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
+		DataLoader<UUID, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
 
-		Map<Long, Integer> basket = env.getSource();
+		Map<UUID, Integer> basket = env.getSource();
 
 		return dataLoader
 			.loadMany(basket.keySet().stream().toList())

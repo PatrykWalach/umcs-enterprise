@@ -31,7 +31,7 @@ public class UserService {
 	}
 
 	@PostFilter("hasRole('ADMIN') or filterObject.username == authentication.principal.username")
-	public List<User> findAllById(Iterable<Long> ids) {
+	public List<User> findAllById(Iterable<UUID> ids) {
 		return userRepository.findAllById(ids);
 	}
 }

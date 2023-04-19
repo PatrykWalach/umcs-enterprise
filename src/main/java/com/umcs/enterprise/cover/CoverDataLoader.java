@@ -3,6 +3,7 @@ package com.umcs.enterprise.cover;
 import com.netflix.graphql.dgs.DgsDataLoader;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;

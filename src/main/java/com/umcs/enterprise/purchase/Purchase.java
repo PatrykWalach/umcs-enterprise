@@ -5,6 +5,8 @@ import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -16,10 +18,10 @@ import org.hibernate.Hibernate;
 @AllArgsConstructor
 public class Purchase implements Node {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "database_id", nullable = false)
-	private Long databaseId;
+	@Id@GeneratedValue(strategy = GenerationType.AUTO)
+
+	@Column(nullable = false)
+	private UUID databaseId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
