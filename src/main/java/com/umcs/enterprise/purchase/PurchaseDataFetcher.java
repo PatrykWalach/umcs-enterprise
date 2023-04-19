@@ -5,7 +5,6 @@ import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
-
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 

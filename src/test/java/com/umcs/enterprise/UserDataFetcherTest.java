@@ -81,7 +81,12 @@ class UserDataFetcherTest {
 	void register_taken() {
 		//        given
 
-		var input = RegisterInput.newBuilder().password("user").username("user").databaseId(UUID.randomUUID().toString()).build();
+		var input = RegisterInput
+			.newBuilder()
+			.password("user")
+			.username("user")
+			.databaseId(UUID.randomUUID().toString())
+			.build();
 		userRepository.save(User.newBuilder().username("user").build());
 
 		this.graphQlTester.documentName("UserDataFetcherTest_register")
@@ -100,7 +105,12 @@ class UserDataFetcherTest {
 	@Test
 	void register() {
 		//        given
-		var input = RegisterInput.newBuilder().password("user").username("user").databaseId(UUID.randomUUID().toString()).build();
+		var input = RegisterInput
+			.newBuilder()
+			.password("user")
+			.username("user")
+			.databaseId(UUID.randomUUID().toString())
+			.build();
 
 		this.graphQlTester.documentName("UserDataFetcherTest_register")
 			.variable("input", input)
