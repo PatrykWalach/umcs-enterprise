@@ -250,6 +250,7 @@ input CreateCoverInput {
 input CreateBookInput {
 	author: String!
 	cover: CreateCoverInput!
+	databaseId: String!
 	price: CreatePriceInput!
 	releasedAt: DateTime!
 	title: String!
@@ -364,6 +365,7 @@ input LoginInput {
 }
 
 input RegisterInput {
+	databaseId: String!
 	password: String!
 	username: String!
 }

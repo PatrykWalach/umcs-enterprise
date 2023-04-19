@@ -10,6 +10,7 @@ import com.umcs.enterprise.user.UserService;
 import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,7 +81,7 @@ class UserDataFetcherTest {
 	void register_taken() {
 		//        given
 
-		var input = RegisterInput.newBuilder().password("user").username("user").build();
+		var input = RegisterInput.newBuilder().password("user").username("user").databaseId(UUID.randomUUID().toString()).build();
 		userRepository.save(User.newBuilder().username("user").build());
 
 		this.graphQlTester.documentName("UserDataFetcherTest_register")
@@ -99,7 +100,7 @@ class UserDataFetcherTest {
 	@Test
 	void register() {
 		//        given
-		var input = RegisterInput.newBuilder().password("user").username("user").build();
+		var input = RegisterInput.newBuilder().password("user").username("user").databaseId(UUID.randomUUID().toString()).build();
 
 		this.graphQlTester.documentName("UserDataFetcherTest_register")
 			.variable("input", input)

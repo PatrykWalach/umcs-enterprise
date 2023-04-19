@@ -93,6 +93,7 @@ class BookDataFetcherTest {
 		var input = new LinkedHashMap<>();
 		var coverInput = new LinkedHashMap<>();
 		coverInput.put("file", null);
+		input.put("databaseId", UUID.randomUUID().toString());
 		input.put("title", ("The Book"));
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
@@ -170,6 +171,7 @@ class BookDataFetcherTest {
 		var input = new LinkedHashMap<>();
 		var coverInput = new LinkedHashMap<>();
 		coverInput.put("file", null);
+		input.put("databaseId", UUID.randomUUID().toString());
 		input.put("title", ("The Book"));
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
