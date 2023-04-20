@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedBy;
 
 @Entity
 @Getter
@@ -24,6 +25,7 @@ public class Purchase implements Node {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@CreatedBy
 	private User user;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")

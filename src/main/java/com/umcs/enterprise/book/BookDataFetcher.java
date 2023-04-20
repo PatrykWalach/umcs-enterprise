@@ -103,7 +103,6 @@ public class BookDataFetcher {
 		var book = new Book();
 		book.setDatabaseId(UUID.fromString(input.getDatabaseId()));
 		book.setAuthor(input.getAuthor());
-		book.setCreatedAt(ZonedDateTime.now());
 		book.setPrice(BigDecimal.valueOf(input.getPrice().getRaw()));
 
 		if (input.getCover().getFile() != null) {
@@ -114,7 +113,6 @@ public class BookDataFetcher {
 
 		book.setPopularity(0L);
 		book.setTitle(input.getTitle());
-		book.setCreatedAt(ZonedDateTime.now());
 
 		return bookRepository.save(book);
 	}
