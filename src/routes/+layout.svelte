@@ -7,8 +7,6 @@
 
 	const pluralRules = new Intl.PluralRules();
 
-
-	
 	$: ({ NavbarQuery } = data);
 </script>
 

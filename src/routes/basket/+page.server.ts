@@ -4,9 +4,6 @@ import UnbasketBook from '$lib/UnbasketBook.server';
 import { error } from '@sveltejs/kit';
 import type { Actions } from './$houdini';
 
- 
-
-
 export const actions: Actions = {
 	basket_book: async ({ locals, request, cookies }) => {
 		const { id } = Object.fromEntries(await request.formData());

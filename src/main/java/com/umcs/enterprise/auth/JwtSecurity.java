@@ -37,7 +37,9 @@ public class JwtSecurity implements WebMvcConfigurer {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.cors().and()
+		http
+			.cors()
+			.and()
 			.csrf()
 			.disable()
 			.authorizeHttpRequests()

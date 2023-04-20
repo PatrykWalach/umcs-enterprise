@@ -1,18 +1,18 @@
-	query HomeQuery {
-		new: books(first: 12, orderBy: { releasedAt: DESC }) {
-			edges {
-				node @required {
-					...Book_book
-					id
-				}
-			}
-		}
-		popular: books(first: 12, orderBy: { popularity: DESC }) {
-			edges {
-				node @required {
-					...Book_book
-					id
-				}
+query HomeQuery {
+	new: books(first: 12, orderBy: { releasedAt: DESC }) {
+		edges {
+			node @required {
+				...Book_book
+				id
 			}
 		}
 	}
+	popular: books(first: 12, orderBy: { popularity: DESC }) {
+		edges {
+			node @required {
+				...Book_book
+				id
+			}
+		}
+	}
+}

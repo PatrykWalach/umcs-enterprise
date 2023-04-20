@@ -38,15 +38,13 @@
 		}
 	`);
 
-
-
 	$: data = new Book_bookStore().get(book);
 	// $: data = fragment(
 	// 	book,
 	// );
 </script>
 
-<article class="card-compact card bg-base-100 shadow xl:shadow-lg" aria-labelledby={$data?.id}>
+<article class="card card-compact bg-base-100 shadow xl:shadow-lg" aria-labelledby={$data?.id}>
 	<figure>
 		<img
 			loading="lazy"

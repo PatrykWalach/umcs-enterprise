@@ -2,8 +2,6 @@ import BasketBook from '$lib/BasketBook.server';
 import { error } from '@sveltejs/kit';
 import type { Actions } from './$houdini';
 
-
-
 export const actions: Actions = {
 	default: async ({ locals, request, cookies }) => {
 		const { id } = Object.fromEntries(await request.formData());

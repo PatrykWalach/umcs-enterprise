@@ -1,7 +1,6 @@
 import type { AfterLoadEvent, NavbarQueryVariables } from './$houdini';
 
 export const _NavbarQueryVariables: NavbarQueryVariables = (event) => {
-	
 	return {
 		id: event.cookies?.get('basket')
 	};
