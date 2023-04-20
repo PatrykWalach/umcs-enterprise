@@ -27,7 +27,7 @@ graphql(/* GraphQL */ `
 
 export const load: ServerLoad = async (event) => {
 	const { data } = await new HomeQueryStore().fetch({ event });
-	
+
 	return {
 		HomeQuery: data
 	};
