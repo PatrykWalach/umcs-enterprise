@@ -140,7 +140,7 @@ class BookDataFetcherTest {
 			)
 			.andExpect(jsonPath("data.createBook.book.price.formatted").isNotEmpty())
 			.andExpect(jsonPath("data.createBook.book.popularity").value(0))
-				.andExpect(jsonPath("data.createBook.book.databaseId").value(input.get("databaseId")))
+			.andExpect(jsonPath("data.createBook.book.databaseId").value(input.get("databaseId")))
 			.andExpect(jsonPath("data.createBook.book.covers[0].url").isNotEmpty());
 
 		Assertions.assertEquals(1L, bookRepository.count());

@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 
-	let data :import('./$types').PageData
-
- 
-
+	let data: import('./$types').PageData;
 </script>
 
 <form method="post" enctype="multipart/form-data" use:enhance>

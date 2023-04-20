@@ -19,7 +19,7 @@ export const actions: Actions = {
 		if (typeof password !== 'string') {
 			throw new Error('No password');
 		}
-		
+
 		if (typeof databaseId !== 'string') {
 			throw new Error('No uuid');
 		}

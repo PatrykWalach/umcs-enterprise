@@ -127,7 +127,6 @@ enum PurchaseStatus {
 scalar DateTime
 scalar UUID
 
-
 type PurchaseConnection {
 	edges: [PurchaseEdge]
 	pageInfo: PageInfo!

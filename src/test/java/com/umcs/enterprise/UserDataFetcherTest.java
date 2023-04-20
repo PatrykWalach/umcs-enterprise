@@ -129,32 +129,31 @@ class UserDataFetcherTest {
 	void register_idempotent() {
 		//        given
 		var input = RegisterInput
-				.newBuilder()
-				.password("user")
-				.username("user")
-				.databaseId(UUID.randomUUID())
-				.build();
+			.newBuilder()
+			.password("user")
+			.username("user")
+			.databaseId(UUID.randomUUID())
+			.build();
 
 		this.graphQlTester.documentName("UserDataFetcherTest_register")
-				.variable("input", input)
-				.execute()
-				.errors()
-				.verify()
-				.path("register.token")
-				.entity(String.class)
-				.matches(Predicate.not(String::isBlank));
-
+			.variable("input", input)
+			.execute()
+			.errors()
+			.verify()
+			.path("register.token")
+			.entity(String.class)
+			.matches(Predicate.not(String::isBlank));
 
 		this.graphQlTester.documentName("UserDataFetcherTest_register")
-				.variable("input", input)
-				//                when
-				.execute()
-				//                then
-				.errors()
-				.verify()
-				.path("register.token")
-				.entity(String.class)
-				.matches(Predicate.not(String::isBlank));
+			.variable("input", input)
+			//                when
+			.execute()
+			//                then
+			.errors()
+			.verify()
+			.path("register.token")
+			.entity(String.class)
+			.matches(Predicate.not(String::isBlank));
 	}
 
 	@Test
