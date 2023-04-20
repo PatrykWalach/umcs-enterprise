@@ -1,0 +1,25 @@
+	query NavbarQuery($id: ID) {
+		basket(id: $id) {
+			books(first: 3) {
+				edges {
+					node {
+						covers(transformations: [{ width: 50 }]) {
+							url
+							width
+						}
+						id
+						title
+					}
+				}
+			}
+			id
+			price {
+				formatted
+			}
+			quantity
+		}
+		viewer {
+			__typename
+			id
+		}
+	}

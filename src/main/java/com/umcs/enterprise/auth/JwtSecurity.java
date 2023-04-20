@@ -12,12 +12,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
-public class JwtSecurity {
+public class JwtSecurity implements WebMvcConfigurer {
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
@@ -28,9 +30,14 @@ public class JwtSecurity {
 	@NonNull
 	private final JwtFilter jwtFilter;
 
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**");
+	}
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
+		http.cors().and()
 			.csrf()
 			.disable()
 			.authorizeHttpRequests()

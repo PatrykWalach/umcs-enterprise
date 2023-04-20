@@ -1,5 +1,5 @@
-import { graphql } from '$gql';
-import type { Cookies } from '@sveltejs/kit';
+import { graphql } from '$houdini';
+import type { RequestEvent } from '../routes/$houdini';
 
 const UnbasketBook = graphql(`
 	mutation UnbasketBook($input: UnbasketBookInput!) {
@@ -11,22 +11,22 @@ const UnbasketBook = graphql(`
 	}
 `);
 
-export default async function unbasketBook(
-	event: { locals: App.Locals; cookies: Cookies },
-	variables: { id: string }
-) {
+export default async function unbasketBook(event: RequestEvent, variables: { id: string }) {
 	const basketId = event.cookies.get('basket');
 
-	const data = await event.locals.client.request(UnbasketBook, {
-		input: {
-			book: variables,
-			...(basketId && {
-				basket: { id: basketId }
-			})
-		}
-	});
+	const response = await UnbasketBook.mutate(
+		{
+			input: {
+				book: variables,
+				...(basketId && {
+					basket: { id: basketId }
+				})
+			}
+		},
+		{ event }
+	);
 
-	event.cookies.set('basket', data.unbasketBook?.basket?.id ?? '', {
+	event.cookies.set('basket', response.data?.unbasketBook?.basket?.id ?? '', {
 		path: '/'
 	});
 }

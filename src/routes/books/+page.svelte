@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Book from '../Book.svelte';
-	import type { PageData } from './$types';
+	import type { PageData } from './$houdini';
 
 	export let data: PageData;
 

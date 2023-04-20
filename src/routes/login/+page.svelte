@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 
-	export let form: import('./$types').ActionData;
+	export let form: import('./$houdini').ActionData;
 </script>
 
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">

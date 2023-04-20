@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { graphql, useFragment, type FragmentType } from '$gql';
+	import { Book_bookStore, graphql, type Book_book } from '$houdini';
 	import { isNotNull } from '$lib/isNotNull';
 
-	let Book_book = graphql(`
+	export let book: Book_book;
+
+	const book_book = graphql(`
 		fragment Book_book on Book {
 			id
 			covers(
@@ -25,8 +27,8 @@
 					{ width: 2000 }
 				]
 			) {
-				width
-				url
+				width @required
+				url @required
 			}
 			price {
 				formatted
@@ -36,17 +38,20 @@
 		}
 	`);
 
-	export let book: FragmentType<typeof Book_book>;
 
-	$: data = useFragment(Book_book, book);
+
+	$: data = new Book_bookStore().get(book);
+	// $: data = fragment(
+	// 	book,
+	// );
 </script>
 
-<article class="card card-compact bg-base-100 shadow xl:shadow-lg" aria-labelledby={data.id}>
+<article class="card-compact card bg-base-100 shadow xl:shadow-lg" aria-labelledby={$data?.id}>
 	<figure>
 		<img
 			loading="lazy"
 			class="aspect-[3/4] h-auto w-full object-contain mix-blend-darken"
-			srcset={data.covers
+			srcset={$data?.covers
 				?.filter(isNotNull)
 				.map((cover) => `${cover.url} ${cover.width}w`)
 				.join(', ')}
@@ -56,20 +61,20 @@
 	</figure>
 	<div class="card-body justify-between gap-4">
 		<div>
-			<h3 id={data.id} class="card-title line-clamp-3 md:line-clamp-2" title={data?.title}>
-				<a href="/book/{data.id}" class="link-hover link">{data?.title}</a>
+			<h3 id={$data?.id} class="card-title line-clamp-3 md:line-clamp-2" title={$data?.title}>
+				<a href="/book/{$data?.id}" class="link-hover link">{$data?.title}</a>
 			</h3>
-			{#if data?.author}
+			{#if $data?.author}
 				<div class="truncate">
-					{data.author}
+					{$data.author}
 				</div>
 			{/if}
 		</div>
 		<div>
 			<form method="post" use:enhance class="flex items-center justify-between">
-				<input type="hidden" name="id" value={data.id} />
+				<input type="hidden" name="id" value={$data?.id} />
 				<div class="font-bold text-lg">
-					{data?.price?.formatted}
+					{$data?.price?.formatted}
 				</div>
 				<!-- <button type="submit" class="btn-primary btn w-full">do koszyka</button> -->
 				<button

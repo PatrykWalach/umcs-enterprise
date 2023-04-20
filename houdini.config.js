@@ -4,7 +4,10 @@ const config = {
 		url: 'http://localhost:8080/graphql'
 	},
 	plugins: {
-		'houdini-svelte': {}
+		'houdini-svelte': {
+			defaultRouteBlocking: true,
+			framework: 'kit'
+		}
 	},
 	scalars: {
 		Upload: {
@@ -12,8 +15,8 @@ const config = {
 		},
 		DateTime: {
 			type: 'Date',
-			marshal: /** @param {Date} date */ (date) => date.toISOString(),
-			unmarshal: /** @param {number} value */ (value) => new Date(value)
+			marshal: /** @param {Date} date */ (date) => date?.toISOString(),
+			unmarshal: /** @param {string} value */ (value) => (value ? new Date(value) : null)
 		}
 	}
 };

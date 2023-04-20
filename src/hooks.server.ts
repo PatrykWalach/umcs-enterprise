@@ -1,6 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
 
-import { GraphQLClient } from 'graphql-request';
 import { setSession } from '$houdini';
 
 export const handle: Handle = ({ event, resolve }) => {

@@ -1,7 +1,7 @@
-import { graphql } from '$gql';
+import { graphql } from '$houdini';
 import BasketBook from '$lib/BasketBook.server';
 import { error, type ServerLoad } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions } from './$houdini';
 
 export const load: ServerLoad = async ({ locals, params }) => {
 	if (!params.id) {

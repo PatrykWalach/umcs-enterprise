@@ -1,4 +1,4 @@
-import { graphql } from '$gql';
+import { graphql } from '$houdini';
 import type { Actions } from '@sveltejs/kit';
 
 export const actions: Actions = {
