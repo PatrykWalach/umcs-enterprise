@@ -4,7 +4,7 @@ import type { Actions } from '@sveltejs/kit';
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const data = await request.formData();
-		const { cover, author, price, title, url } = Object.fromEntries(data);
+		const { cover, author, price, title, url, databaseId, releasedAt } = Object.fromEntries(data);
 
 		if (!(cover instanceof File) || !(typeof url === 'string')) {
 			throw new Error('cover not uploaded');
@@ -27,7 +27,8 @@ export const actions: Actions = {
 						file: cover,
 						url
 					},
-					releasedAt: new Date().toISOString()
+					releasedAt: String(releasedAt),
+					databaseId: String(databaseId)
 				}
 			},
 			{

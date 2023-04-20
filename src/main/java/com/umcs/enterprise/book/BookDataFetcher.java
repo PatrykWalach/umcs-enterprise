@@ -101,7 +101,7 @@ public class BookDataFetcher {
 	@DgsMutation
 	public Book createBook(@InputArgument CreateBookInput input) throws IOException {
 		var book = new Book();
-		book.setDatabaseId(UUID.fromString(input.getDatabaseId()));
+		book.setDatabaseId((input.getDatabaseId()));
 		book.setAuthor(input.getAuthor());
 		book.setPrice(BigDecimal.valueOf(input.getPrice().getRaw()));
 

@@ -66,7 +66,7 @@ public class UserDataFetcher {
 			User user = userRepository.save(
 				User
 					.newBuilder()
-					.databaseId(UUID.fromString(input.getDatabaseId()))
+					.databaseId((input.getDatabaseId()))
 					.authorities(Collections.singletonList("USER"))
 					.username(input.getUsername())
 					.password(input.getPassword())

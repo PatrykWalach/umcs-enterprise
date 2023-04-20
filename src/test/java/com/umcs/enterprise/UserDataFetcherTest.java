@@ -85,7 +85,7 @@ class UserDataFetcherTest {
 			.newBuilder()
 			.password("user")
 			.username("user")
-			.databaseId(UUID.randomUUID().toString())
+			.databaseId(UUID.randomUUID())
 			.build();
 		userRepository.save(User.newBuilder().username("user").build());
 
@@ -109,7 +109,7 @@ class UserDataFetcherTest {
 			.newBuilder()
 			.password("user")
 			.username("user")
-			.databaseId(UUID.randomUUID().toString())
+			.databaseId(UUID.randomUUID())
 			.build();
 
 		this.graphQlTester.documentName("UserDataFetcherTest_register")
@@ -123,6 +123,38 @@ class UserDataFetcherTest {
 			.entity(String.class)
 			.matches(Predicate.not(String::isBlank));
 		//		Assertions.assertEquals(1L, userRepository.count());
+	}
+
+	@Test
+	void register_idempotent() {
+		//        given
+		var input = RegisterInput
+				.newBuilder()
+				.password("user")
+				.username("user")
+				.databaseId(UUID.randomUUID())
+				.build();
+
+		this.graphQlTester.documentName("UserDataFetcherTest_register")
+				.variable("input", input)
+				.execute()
+				.errors()
+				.verify()
+				.path("register.token")
+				.entity(String.class)
+				.matches(Predicate.not(String::isBlank));
+
+
+		this.graphQlTester.documentName("UserDataFetcherTest_register")
+				.variable("input", input)
+				//                when
+				.execute()
+				//                then
+				.errors()
+				.verify()
+				.path("register.token")
+				.entity(String.class)
+				.matches(Predicate.not(String::isBlank));
 	}
 
 	@Test

@@ -3,12 +3,14 @@ import { redirect, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const load: ServerLoad = ({ locals }) => {
-	return {};
+	return {
+		databaseId: crypto.randomUUID()
+	};
 };
 
 export const actions: Actions = {
 	default: async ({ locals, request, cookies }) => {
-		const { username, password } = Object.fromEntries(await request.formData());
+		const { username, password, databaseId } = Object.fromEntries(await request.formData());
 
 		if (typeof username !== 'string') {
 			throw new Error('No username');
@@ -16,6 +18,10 @@ export const actions: Actions = {
 
 		if (typeof password !== 'string') {
 			throw new Error('No password');
+		}
+
+		if (typeof databaseId !== 'string') {
+			throw new Error('No uuid');
 		}
 
 		const data = await locals.client.request(
@@ -35,7 +41,8 @@ export const actions: Actions = {
 			{
 				input: {
 					username,
-					password
+					password,
+					databaseId
 				}
 			}
 		);
