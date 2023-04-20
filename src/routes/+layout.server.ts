@@ -1,41 +1,44 @@
 import { graphql } from '$gql';
+import { NavbarQueryStore } from '$houdini';
 import type { ServerLoad } from '@sveltejs/kit';
 
-export const load: ServerLoad = async ({ locals, cookies }) => {
-	const data = await locals.client.request(
-		graphql(/* GraphQL */ `
-			query NavbarQuery($id: ID) {
-				basket(id: $id) {
-					books(first: 3) {
-						edges {
-							node {
-								covers(transformations: [{ width: 50 }]) {
-									url
-									width
-								}
-								id
-								title
-							}
+graphql(/* GraphQL */ `
+	query NavbarQuery($id: ID) {
+		basket(id: $id) {
+			books(first: 3) {
+				edges {
+					node {
+						covers(transformations: [{ width: 50 }]) {
+							url
+							width
 						}
+						id
+						title
 					}
-					id
-					price {
-						formatted
-					}
-					quantity
-				}
-				viewer {
-					__typename
-					id
 				}
 			}
-		`),
-		{
-			id: cookies.get('basket')
+			id
+			price {
+				formatted
+			}
+			quantity
 		}
-	);
+		viewer {
+			__typename
+			id
+		}
+	}
+`);
 
-	cookies.set('basket', data?.basket?.id ?? '', {
+export const load: ServerLoad = async (event) => {
+	const { data } = await new NavbarQueryStore().fetch({
+		event,
+		variables: {
+			id: event.cookies.get('basket')
+		}
+	});
+
+	event.cookies.set('basket', data?.basket?.id ?? '', {
 		path: '/'
 	});
 

@@ -1,66 +1,70 @@
 import { graphql } from '$gql';
+import { BasketQueryStore } from '$houdini';
 import BasketBook from '$lib/BasketBook.server';
 import UnbasketBook from '$lib/UnbasketBook.server';
 import { error, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
-export const load: ServerLoad = ({ locals, url, cookies }) => {
-	return {
-		BasketQuery: locals.client.request(
-			graphql(/* GraphQL */ `
-				query BasketQuery($after: String, $id: ID) {
-					basket(id: $id) {
-						books(after: $after, first: 10) {
-							edges {
-								node {
-									author
-									covers(
-										transformations: [
-											{ width: 100 }
-											{ width: 200 }
-											{ width: 300 }
-											{ width: 400 }
-											{ width: 500 }
-											{ width: 600 }
-											{ width: 700 }
-											{ width: 800 }
-											{ width: 900 }
-											{ width: 1000 }
-											{ width: 1200 }
-											{ width: 1400 }
-											{ width: 1600 }
-											{ width: 1800 }
-											{ width: 2000 }
-										]
-									) {
-										url
-										width
-									}
-									id
-									title
-								}
-								price {
-									formatted
-								}
-								quantity
-							}
-							pageInfo {
-								endCursor
-								hasNextPage
-							}
+graphql(/* GraphQL */ `
+	query BasketQuery($after: String, $id: ID) {
+		basket(id: $id) {
+			books(after: $after, first: 10) {
+				edges {
+					node {
+						author
+						covers(
+							transformations: [
+								{ width: 100 }
+								{ width: 200 }
+								{ width: 300 }
+								{ width: 400 }
+								{ width: 500 }
+								{ width: 600 }
+								{ width: 700 }
+								{ width: 800 }
+								{ width: 900 }
+								{ width: 1000 }
+								{ width: 1200 }
+								{ width: 1400 }
+								{ width: 1600 }
+								{ width: 1800 }
+								{ width: 2000 }
+							]
+						) {
+							url
+							width
 						}
 						id
-						price {
-							formatted
-						}
+						title
 					}
+					price {
+						formatted
+					}
+					quantity
 				}
-			`),
-			{
-				after: url.searchParams.get('after'),
-				id: cookies.get('basket')
+				pageInfo {
+					endCursor
+					hasNextPage
+				}
 			}
-		)
+			id
+			price {
+				formatted
+			}
+		}
+	}
+`);
+export const load: ServerLoad = async (event) => {
+	const { data } = await new BasketQueryStore().fetch({
+		event,
+		variables: {
+			after: event.url.searchParams.get('after'),
+			id: event.cookies.get('basket')
+		}
+	});
+
+	return {
+		BasketQuery: data
 	};
 };
 
