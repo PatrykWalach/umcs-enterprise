@@ -5,11 +5,15 @@ import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.purchase.BookPurchase;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Builder(builderMethodName = "newBuilder")
@@ -17,12 +21,13 @@ import org.hibernate.Hibernate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Book implements Node {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "database_id", nullable = false)
-	private Long databaseId;
+	@Column(nullable = false)
+	private UUID databaseId;
 
 	private String author;
 
@@ -38,7 +43,9 @@ public class Book implements Node {
 	@Column(precision = 19, scale = 4)
 	private BigDecimal price;
 
-	private ZonedDateTime createdAt;
+	@CreatedDate
+	@Column(nullable = false)
+	private Instant createdAt;
 
 	private ZonedDateTime releasedAt;
 

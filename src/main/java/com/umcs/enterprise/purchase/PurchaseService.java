@@ -1,6 +1,7 @@
 package com.umcs.enterprise.purchase;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class PurchaseService {
 	@PostFilter(
 		"hasRole('ADMIN') or filterObject.user.databaseId == authentication.principal.databaseId"
 	)
-	public List<Purchase> findAllById(Iterable<Long> ids) {
+	public List<Purchase> findAllById(Iterable<UUID> ids) {
 		return purchaseRepository.findAllById(ids);
 	}
 

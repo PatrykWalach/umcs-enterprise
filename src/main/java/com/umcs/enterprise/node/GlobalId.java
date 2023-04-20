@@ -1,8 +1,10 @@
 package com.umcs.enterprise.node;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
-public record GlobalId(String className, Long databaseId) {
+public record GlobalId(String className, UUID databaseId) {
 	public String encode() {
 		return java.util.Base64
 			.getEncoder()
@@ -19,8 +21,6 @@ public record GlobalId(String className, Long databaseId) {
 		}
 
 		String className = split[0];
-		Long databaseId = Long.parseLong(split[1]);
-
-		return new GlobalId(className, databaseId);
+		return new GlobalId(className, UUID.fromString(split[1]));
 	}
 }

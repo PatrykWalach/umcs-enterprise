@@ -5,8 +5,10 @@ import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedBy;
 
 @Entity
 @Getter
@@ -18,11 +20,12 @@ public class Purchase implements Node {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "database_id", nullable = false)
-	private Long databaseId;
+	@Column(nullable = false)
+	private UUID databaseId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@CreatedBy
 	private User user;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")
