@@ -8,10 +8,12 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			client: GraphQLClient;
+			formData<T extends ParsedQuery<string | boolean | number>>(): Promise<T>;
 		}
 		// interface PageData {}
 		// interface Platform {}
 	}
 }
 
-export {};
+export { };
+

@@ -55,7 +55,7 @@ export const load: ServerLoad = ({ locals, url }) => {
 
 export const actions: Actions = {
 	default: async ({ locals, request, cookies }) => {
-		const { id } = Object.fromEntries(await request.formData());
+		const { id } = await locals.formData();
 
 		if (typeof id !== 'string') {
 			throw error(500, 'No book id');

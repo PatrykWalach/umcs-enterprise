@@ -66,7 +66,7 @@ export const load: ServerLoad = ({ locals, url, cookies }) => {
 
 export const actions: Actions = {
 	basket_book: async ({ locals, request, cookies }) => {
-		const { id } = Object.fromEntries(await request.formData());
+		const { id } = await locals.formData();
 		if (typeof id !== 'string') {
 			throw error(500, 'No book id');
 		}
@@ -78,7 +78,7 @@ export const actions: Actions = {
 		return {};
 	},
 	unbasket_book: async ({ locals, request, cookies }) => {
-		const { id } = Object.fromEntries(await request.formData());
+		const { id } = await locals.formData();
 		if (typeof id !== 'string') {
 			throw new Error('No book id');
 		}

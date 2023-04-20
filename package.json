@@ -50,6 +50,7 @@
 	"dependencies": {
 		"daisyui": "^2.51.5",
 		"graphql": "^16.6.0",
-		"graphql-request": "^5.2.0"
+		"graphql-request": "^5.2.0",
+		"query-string": "^8.1.0"
 	}
 }

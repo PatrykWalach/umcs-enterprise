@@ -1,6 +1,7 @@
 import type { Handle } from '@sveltejs/kit';
 
 import { GraphQLClient } from 'graphql-request';
+import qs from 'query-string';
 
 export const handle: Handle = ({ event, resolve }) => {
 	const token = event.cookies.get('enterprise-token');
@@ -14,5 +15,9 @@ export const handle: Handle = ({ event, resolve }) => {
 		})
 	});
 	event.locals.client = client;
+	event.locals.formData = async <T>() => {
+		return qs.parse(await event.request.text(), { parseBooleans: true, parseNumbers: true }) as T;
+	};
+
 	return resolve(event);
 };

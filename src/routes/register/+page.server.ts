@@ -8,7 +8,7 @@ export const load: ServerLoad = ({ locals }) => {
 
 export const actions: Actions = {
 	default: async ({ locals, request, cookies }) => {
-		const { username, password } = Object.fromEntries(await request.formData());
+		const { username, password } = await locals.formData();
 
 		if (typeof username !== 'string') {
 			throw new Error('No username');
