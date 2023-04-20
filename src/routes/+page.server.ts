@@ -32,7 +32,7 @@ export const load: ServerLoad = ({ locals }) => {
 
 export const actions: Actions = {
 	default: async ({ locals, request, cookies }) => {
-		const { id } = (await locals.formData());
+		const { id } = await locals.formData();
 
 		if (typeof id !== 'string') {
 			throw error(500, 'No book id');
