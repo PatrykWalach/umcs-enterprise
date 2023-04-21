@@ -4,14 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.auth.JwtService;
+import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,8 @@ public class BasketService {
 			Map.of("http://localhost:8080/graphql/basket", new ObjectMapper().writeValueAsString(basket))
 		);
 	}
+@NonNull
+private final BookRepository bookRepository;
 
 	public Map<UUID, Integer> getBasket(String Authorization) throws JsonProcessingException {
 		if (Authorization == null) {
@@ -65,7 +68,10 @@ public class BasketService {
 				return new HashMap<>();
 			}
 
-			return new ObjectMapper().readValue(basket, new TypeReference<>() {});
+			Map<UUID, Integer> parsed = new ObjectMapper().readValue(basket, new TypeReference<>() {
+			});
+
+			return bookRepository.findAllById(parsed.keySet()).stream().map(Book::getDatabaseId).collect(Collectors.toMap(Function.identity(), parsed::get));
 		} catch (IllegalArgumentException e) {
 			return new HashMap<>();
 		}
