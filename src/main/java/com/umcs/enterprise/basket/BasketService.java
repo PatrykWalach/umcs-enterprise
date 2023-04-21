@@ -51,8 +51,9 @@ public class BasketService {
 			Map.of("http://localhost:8080/graphql/basket", new ObjectMapper().writeValueAsString(basket))
 		);
 	}
-@NonNull
-private final BookRepository bookRepository;
+
+	@NonNull
+	private final BookRepository bookRepository;
 
 	public Map<UUID, Integer> getBasket(String Authorization) throws JsonProcessingException {
 		if (Authorization == null) {
@@ -68,10 +69,13 @@ private final BookRepository bookRepository;
 				return new HashMap<>();
 			}
 
-			Map<UUID, Integer> parsed = new ObjectMapper().readValue(basket, new TypeReference<>() {
-			});
+			Map<UUID, Integer> parsed = new ObjectMapper().readValue(basket, new TypeReference<>() {});
 
-			return bookRepository.findAllById(parsed.keySet()).stream().map(Book::getDatabaseId).collect(Collectors.toMap(Function.identity(), parsed::get));
+			return bookRepository
+				.findAllById(parsed.keySet())
+				.stream()
+				.map(Book::getDatabaseId)
+				.collect(Collectors.toMap(Function.identity(), parsed::get));
 		} catch (IllegalArgumentException e) {
 			return new HashMap<>();
 		}
