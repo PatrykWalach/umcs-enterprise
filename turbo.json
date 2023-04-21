@@ -29,7 +29,6 @@
 			"outputs": ["$houdini/**"],
 			"inputs": [
 				"src/**/*.svelte",
-				"src/**/*.graphqls",
 				"src/**/*.graphql",
 				"src/**/*.gql",
 				"src/**/*.ts",
