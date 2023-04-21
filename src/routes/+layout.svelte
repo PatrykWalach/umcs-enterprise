@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { isNotNull } from '$lib/isNotNull';
 	import '../app.css';
-	import type { LayoutData } from './$types';
+	import type { LayoutData } from './$houdini';
 
 	export let data: LayoutData;
 
 	const pluralRules = new Intl.PluralRules();
+
+	$: ({ NavbarQuery } = data);
 </script>
 
 <div class="container mx-auto">
-	<div class="shadow-xl">
+	<div class="">
 		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
 				<a class="btn-ghost btn normal-case text-3xl" href="/">Bookstore</a>
@@ -33,17 +35,17 @@
 								/>
 							</svg>
 							<span class="badge badge-sm indicator-item">
-								{data.NavbarQuery.basket?.quantity ?? 0}
+								{$NavbarQuery.data?.basket?.quantity ?? 0}
 							</span>
 						</div>
 					</button>
 					<div
 						tabindex="-1"
-						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow"
+						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow-xl"
 					>
 						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">
-								{data.NavbarQuery.basket?.quantity || 'Brak'}
+								{$NavbarQuery.data?.basket?.quantity || 'Brak'}
 								{(() => ({
 									one: 'Książka',
 									many: 'Książek',
@@ -51,10 +53,10 @@
 									other: null,
 									zero: 'Książek',
 									two: 'Książki'
-								}))()[pluralRules.select(data.NavbarQuery.basket?.quantity ?? 0)] ?? 'Książek'}
+								}))()[pluralRules.select($NavbarQuery.data?.basket?.quantity ?? 0)] ?? 'Książek'}
 							</span>
 							<ul class="grid gap-4">
-								{#each data.NavbarQuery.basket?.books?.edges
+								{#each $NavbarQuery.data?.basket?.books?.edges
 									?.map((edge) => edge?.node)
 									.filter(isNotNull) ?? [] as node (node.id)}
 									<li class="grid grid-cols-3 gap-2">
@@ -78,14 +80,14 @@
 							</ul>
 							<div class="card-actions">
 								<span class="font-semibold text-info text-lg">
-									Total: {data.NavbarQuery.basket?.price?.formatted ?? 0}
+									Total: {$NavbarQuery.data?.basket?.price?.formatted ?? 0}
 								</span>
 								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
 							</div>
 						</div>
 					</div>
 				</div>
-				{#if data.NavbarQuery.viewer?.__typename === 'User'}
+				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
 					<div class="dropdown-end dropdown">
 						<button type="button" aria-label="Show menu" class="btn-ghost btn-square avatar btn">
 							<!--
@@ -110,7 +112,7 @@
 						</button>
 						<ul
 							tabindex="-1"
-							class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow"
+							class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow-xl"
 						>
 							<li>
 								<a class="justify-between" href="">

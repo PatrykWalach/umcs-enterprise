@@ -1,40 +1,53 @@
-import { graphql } from '$gql';
-import type { Actions } from '@sveltejs/kit';
+import { graphql } from '$houdini';
+import { fail, type Actions } from '@sveltejs/kit';
+import { z } from 'zod';
+
+const Input = z.object({
+	releasedAt: z.coerce.date(),
+	title: z.string(),
+	author: z.string(),
+	price: z.coerce.number().safe().positive(),
+	cover: z.instanceof(File)
+});
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
-		const data = await request.formData();
-		const { cover, author, price, title, url } = Object.fromEntries(data);
+	default: async (event) => {
+		const data = Object.fromEntries(await event.request.formData());
+		const input = Input.safeParse(data);
 
-		if (!(cover instanceof File) || !(typeof url === 'string')) {
-			throw new Error('cover not uploaded');
+		if (!input.success) {
+			return fail(403, {
+				data: {
+					releasedAt: data.releasedAt,
+					title: data.title,
+					author: data.author,
+					price: data.price
+				},
+				errors: input.error.format()
+			});
 		}
 
-		await locals.client.request(
-			graphql(`
-				mutation AddBook($input: CreateBookInput!) {
-					createBook(input: $input) {
-						__typename
-					}
+		const result = await graphql(`
+			mutation AddBook($input: CreateBookInput!) {
+				createBook(input: $input) {
+					__typename
 				}
-			`),
+			}
+		`).mutate(
 			{
 				input: {
-					title: String(title),
-					author: String(author),
-					price: { raw: Number(price) },
+					title: input.data.title,
+					author: input.data.author,
+					price: { raw: input.data.price },
 					cover: {
-						file: cover,
-						url
+						file: input.data.cover
 					},
-					releasedAt: new Date().toISOString()
+					releasedAt: input.data.releasedAt
 				}
 			},
-			{
-				'graphql-require-preflight': ''
-			}
+			{ event }
 		);
 
-		return {};
+		console.log(result);
 	}
 };

@@ -14,7 +14,7 @@
 			],
 			"dependsOn": ["generate"]
 		},
-		"lint": {},
+		"lint": { "dependsOn": ["generate"] },
 		"test": {
 			"outputs": ["playwright-report", "test-results"],
 			"dependsOn": ["build"],
@@ -26,13 +26,13 @@
 		},
 		"sync": { "outputs": [".svelte-kit/**"] },
 		"generate": {
-			"outputs": [".gql/**"],
+			"outputs": ["$houdini/**"],
 			"inputs": [
 				"src/**/*.svelte",
-				"src/**/*.graphqls",
+				"src/**/*.graphql",
+				"src/**/*.gql",
 				"src/**/*.ts",
-				"codegen.cts",
-				".graphqlrc.json"
+				"houdini.config.js"
 			]
 		},
 		"dev": {

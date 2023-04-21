@@ -1,0 +1,25 @@
+query NavbarQuery @cache(policy: CacheAndNetwork) {
+	basket {
+		books(first: 3) {
+			edges {
+				node @required {
+					covers(transformations: [{ width: 50 }]) {
+						url @required
+						width @required
+					}
+					id
+					title @required
+				}
+			}
+		}
+
+		price {
+			formatted
+		}
+		quantity
+	}
+	viewer {
+		__typename
+		id
+	}
+}

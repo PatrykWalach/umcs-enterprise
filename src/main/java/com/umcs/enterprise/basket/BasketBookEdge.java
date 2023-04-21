@@ -9,7 +9,7 @@ import lombok.*;
 @Builder(builderMethodName = "newBuilder")
 @AllArgsConstructor
 @NoArgsConstructor
-public class BasketBooksEdge implements Edge<Book> {
+public class BasketBookEdge implements Edge<Book> {
 
 	private ConnectionCursor cursor;
 	private Book node;

@@ -11,13 +11,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
-public class JwtSecurity {
+public class JwtSecurity implements WebMvcConfigurer {
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
@@ -28,9 +31,16 @@ public class JwtSecurity {
 	@NonNull
 	private final JwtFilter jwtFilter;
 
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**");
+	}
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
+			.cors()
+			.and()
 			.csrf()
 			.disable()
 			.authorizeHttpRequests()
@@ -47,6 +57,7 @@ public class JwtSecurity {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		//		http.addFilter(BearerTokenAuthenticationFilter.class);
 
 		return http.build();
 		// ...

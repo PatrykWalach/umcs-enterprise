@@ -1,0 +1,22 @@
+query BooksQuery(
+	$after: String
+	$before: String
+	$first: Int
+	$last: Int
+	$orderBy: [BookOrderBy]
+) {
+	books(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy) {
+		edges {
+			node @required {
+				...Book_book
+				id
+			}
+		}
+		pageInfo {
+			endCursor
+			hasNextPage
+			hasPreviousPage
+			startCursor
+		}
+	}
+}

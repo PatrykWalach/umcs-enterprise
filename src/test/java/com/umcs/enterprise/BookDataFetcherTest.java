@@ -20,6 +20,7 @@ import com.umcs.enterprise.user.UserService;
 import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -87,7 +88,10 @@ class BookDataFetcherTest {
 				.build()
 		);
 		String token = jwtService.signToken(
-			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
+			Jwts
+				.builder()
+				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();
@@ -164,7 +168,10 @@ class BookDataFetcherTest {
 		);
 
 		String token = jwtService.signToken(
-			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
+			Jwts
+				.builder()
+				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();

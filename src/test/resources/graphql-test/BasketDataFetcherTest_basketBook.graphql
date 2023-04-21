@@ -13,11 +13,11 @@ mutation BasketDataFetcherTestBasketBook($input: BasketBookInput!) {
 					quantity
 				}
 			}
-			id
 			price {
 				formatted
 				raw
 			}
 		}
+		token
 	}
 }

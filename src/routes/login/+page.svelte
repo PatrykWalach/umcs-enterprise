@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 
-	export let form: import('./$types').ActionData;
+	export let form: import('./$houdini').ActionData;
 </script>
 
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">
@@ -14,11 +14,7 @@
 			</p>
 		</div>
 		<div class="grid gap-4">
-			<form
-				method="POST"
-				use:enhance
-				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-2xl"
-			>
+			<form method="POST" use:enhance class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow">
 				<div class="card-body">
 					<div class="form-control">
 						<label class="label" for="username">
@@ -34,7 +30,7 @@
 						/>
 						<label class="label" for="username">
 							<span class="label-text-alt text-error">
-								{form?.username.error || ''}
+								{form?.username?.error || ''}
 							</span>
 						</label>
 					</div>

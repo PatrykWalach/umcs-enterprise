@@ -11,7 +11,7 @@ module.exports = {
 			processor: '@graphql-eslint/graphql'
 		},
 		{
-			files: ['*.graphqls'],
+			files: ['src/main/resources/schema/**/*.graphql'],
 			extends: ['plugin:@graphql-eslint/schema-all', 'plugin:@graphql-eslint/relay'],
 			rules: {
 				'@graphql-eslint/require-description': 'off',
@@ -21,7 +21,7 @@ module.exports = {
 					{
 						exceptions: {
 							suffixes: ['Connection', 'Edge', 'Result', 'Success', 'Error'],
-							types: ['PageInfo', 'Price', 'Cover']
+							types: ['PageInfo', 'Price', 'Cover', 'Basket']
 						}
 					}
 				]
@@ -29,6 +29,7 @@ module.exports = {
 		},
 		{
 			files: ['*.graphql', '*.gql'],
+			excludedFiles: ['src/main/resources/schema/**/*.graphql'],
 			extends: ['plugin:@graphql-eslint/operations-all'],
 			rules: {
 				'@graphql-eslint/match-document-filename': 'off',

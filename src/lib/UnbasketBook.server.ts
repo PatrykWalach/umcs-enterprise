@@ -1,32 +1,26 @@
-import { graphql } from '$gql';
-import type { Cookies } from '@sveltejs/kit';
+import { graphql, setSession, type UnbasketBook$input } from '$houdini';
+import type { RequestEvent } from '@sveltejs/kit';
 
 const UnbasketBook = graphql(`
 	mutation UnbasketBook($input: UnbasketBookInput!) {
 		unbasketBook(input: $input) {
-			basket {
-				id
-			}
+			token
 		}
 	}
 `);
 
-export default async function unbasketBook(
-	event: { locals: App.Locals; cookies: Cookies },
-	variables: { id: string }
-) {
-	const basketId = event.cookies.get('basket');
+export default async function unbasketBook(variables: UnbasketBook$input, event: RequestEvent) {
+	const response = await UnbasketBook.mutate(variables, { event });
 
-	const data = await event.locals.client.request(UnbasketBook, {
-		input: {
-			book: variables,
-			...(basketId && {
-				basket: { id: basketId }
-			})
-		}
-	});
+	const token = response.data?.unbasketBook?.token || '';
 
-	event.cookies.set('basket', data.unbasketBook?.basket?.id ?? '', {
+	event.cookies.set('enterprise-token', token, {
 		path: '/'
 	});
+
+	setSession(event, {
+		token
+	});
+
+	return response;
 }

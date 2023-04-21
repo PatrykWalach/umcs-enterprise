@@ -1,21 +1,27 @@
 package com.umcs.enterprise.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.auth.JwtService;
+import com.umcs.enterprise.basket.BasketService;
 import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
 import io.jsonwebtoken.Jwts;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -24,15 +30,27 @@ public class UserDataFetcher {
 	@NonNull
 	private final AuthenticationManager authenticationManager;
 
+	@NonNull
+	private final BasketService basketService;
+
 	@DgsMutation
-	public LoginResult login(@InputArgument LoginInput input) {
+	public LoginResult login(
+		@InputArgument LoginInput input,
+		@RequestHeader(required = false) String Authorization
+	) throws JsonProcessingException {
 		try {
 			Authentication auth = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
 			);
 
-			String token = jwtService.signToken(
-				Jwts.builder().setClaims(new HashMap<>()).setSubject(auth.getName())
+			String token = basketService.setBasket(
+				jwtService.signToken(
+					Jwts
+						.builder()
+						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+						.setSubject(auth.getName())
+				),
+				basketService.getBasket(Authorization)
 			);
 
 			return LoginSuccess.newBuilder().token(token).build();
@@ -60,7 +78,10 @@ public class UserDataFetcher {
 	private final JwtService jwtService;
 
 	@DgsMutation
-	public RegisterResult register(@InputArgument RegisterInput input) {
+	public RegisterResult register(
+		@InputArgument RegisterInput input,
+		@RequestHeader(required = false) String Authorization
+	) throws JsonProcessingException {
 		try {
 			User user = userRepository.save(
 				User
@@ -71,8 +92,14 @@ public class UserDataFetcher {
 					.build()
 			);
 
-			String token = jwtService.signToken(
-				Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
+			String token = basketService.setBasket(
+				jwtService.signToken(
+					Jwts
+						.builder()
+						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+						.setSubject(user.getUsername())
+				),
+				basketService.getBasket(Authorization)
 			);
 
 			return RegisterSuccess.newBuilder().token(token).build();

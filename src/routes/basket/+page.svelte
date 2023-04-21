@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
-	import type { PageData } from './$types';
+	import type { PageData } from './$houdini';
 
 	export let data: PageData;
+
+	$: ({ BasketQuery } = data);
 </script>
 
 <svelte:head>
@@ -24,9 +26,7 @@
 		<div class="card card-compact bg-base-100 lg:col-span-2">
 			<div class="card-body">
 				<table class="">
-					{#each data.BasketQuery.basket?.books?.edges
-						?.map((edge) => edge?.node && { ...edge, node: edge.node })
-						.filter(isNotNull) ?? [] as edge (edge.node.id)}
+					{#each $BasketQuery.data?.basket?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}
 						{#if true}
 							<tr class="p-2">
 								<td class="p-2">
@@ -73,7 +73,7 @@
 						<td class="p-2"><span class="text-base">Total</span></td>
 						<td class="hidden p-2 xl:table-cell" />
 						<td class="p-2">
-							<span class="font-semibold">{data.BasketQuery.basket?.price?.formatted}</span>
+							<span class="font-semibold">{$BasketQuery.data?.basket?.price?.formatted}</span>
 						</td>
 					</tr>
 				</table>

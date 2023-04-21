@@ -1,52 +1,56 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { graphql, useFragment, type FragmentType } from '$gql';
+	import { fragment, graphql, type Book_book } from '$houdini';
 	import { isNotNull } from '$lib/isNotNull';
 
-	let Book_book = graphql(`
-		fragment Book_book on Book {
-			id
-			covers(
-				transformations: [
-					{ width: 100 }
-					{ width: 200 }
-					{ width: 300 }
-					{ width: 400 }
-					{ width: 500 }
-					{ width: 600 }
-					{ width: 700 }
-					{ width: 800 }
-					{ width: 900 }
-					{ width: 1000 }
-					{ width: 1200 }
-					{ width: 1400 }
-					{ width: 1600 }
-					{ width: 1800 }
-					{ width: 2000 }
-				]
-			) {
-				width
-				url
-			}
-			price {
-				formatted
-			}
-			title
-			author
-		}
-	`);
+	export let book: Book_book;
 
-	export let book: FragmentType<typeof Book_book>;
-
-	$: data = useFragment(Book_book, book);
+	$: data = fragment(
+		book,
+		graphql(`
+			fragment Book_book on Book {
+				id
+				covers(
+					transformations: [
+						{ width: 100 }
+						{ width: 200 }
+						{ width: 300 }
+						{ width: 400 }
+						{ width: 500 }
+						{ width: 600 }
+						{ width: 700 }
+						{ width: 800 }
+						{ width: 900 }
+						{ width: 1000 }
+						{ width: 1200 }
+						{ width: 1400 }
+						{ width: 1600 }
+						{ width: 1800 }
+						{ width: 2000 }
+					]
+				) {
+					width @required
+					url @required
+				}
+				price {
+					formatted
+				}
+				title @required
+				author
+			}
+		`)
+	);
+	// $: data = fragment(
+	// 	book,
+	// );
 </script>
 
-<article class="card card-compact bg-base-100 shadow xl:shadow-lg" aria-labelledby={data.id}>
+<article class="card card-compact bg-base-100 shadow" aria-labelledby={$data?.id}>
 	<figure>
 		<img
 			loading="lazy"
 			class="aspect-[3/4] h-auto w-full object-contain mix-blend-darken"
-			srcset={data.covers
+			srcset={$data?.covers
 				?.filter(isNotNull)
 				.map((cover) => `${cover.url} ${cover.width}w`)
 				.join(', ')}
@@ -56,20 +60,20 @@
 	</figure>
 	<div class="card-body justify-between gap-4">
 		<div>
-			<h3 id={data.id} class="card-title line-clamp-3 md:line-clamp-2" title={data?.title}>
-				<a href="/book/{data.id}" class="link-hover link">{data?.title}</a>
+			<h3 id={$data?.id} class="card-title line-clamp-3 md:line-clamp-2" title={$data?.title}>
+				<a href="/book/{$data?.id}" class="link-hover link">{$data?.title}</a>
 			</h3>
-			{#if data?.author}
+			{#if $data?.author}
 				<div class="truncate">
-					{data.author}
+					{$data.author}
 				</div>
 			{/if}
 		</div>
 		<div>
 			<form method="post" use:enhance class="flex items-center justify-between">
-				<input type="hidden" name="id" value={data.id} />
+				<input type="hidden" name="id" value={$data?.id} />
 				<div class="font-bold text-lg">
-					{data?.price?.formatted}
+					{$data?.price?.formatted}
 				</div>
 				<!-- <button type="submit" class="btn-primary btn w-full">do koszyka</button> -->
 				<button
