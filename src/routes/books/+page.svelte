@@ -5,6 +5,8 @@
 
 	export let data: PageData;
 
+	$: ({BooksQuery}=data)
+
 	$: url = new URL($page.url);
 </script>
 
@@ -23,7 +25,7 @@
 	</form>
 
 	<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
-		{#each data.BooksQuery.books?.edges ?? [] as book (book?.node?.id)}
+		{#each $BooksQuery.data?.books?.edges ?? [] as book (book?.node?.id)}
 			{#if book?.node}
 				<li class="grid">
 					<Book book={book.node} />
@@ -34,25 +36,25 @@
 
 	<footer class="flex">
 		<div class="btn-group grid grid-cols-2">
-			{#if data.BooksQuery.books?.pageInfo?.hasPreviousPage && data.BooksQuery.books.pageInfo.startCursor}
+			{#if $BooksQuery.data?.books?.pageInfo?.hasPreviousPage && $BooksQuery.data?.books.pageInfo.startCursor}
 				<a
 					class="btn"
 					href="/books?{new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
 						purchase: $page.url.searchParams.get('purchase') ?? '',
-						before: data.BooksQuery.books.pageInfo.startCursor
+						before: $BooksQuery.data?.books.pageInfo.startCursor
 					})}"
 				>
 					Previous
 				</a>
 			{/if}
-			{#if data.BooksQuery.books?.pageInfo?.hasNextPage && data.BooksQuery.books.pageInfo.endCursor}
+			{#if $BooksQuery.data?.books?.pageInfo?.hasNextPage && $BooksQuery.data?.books.pageInfo.endCursor}
 				<a
 					class="btn"
 					href="/books?{new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
 						purchase: $page.url.searchParams.get('purchase') ?? '',
-						after: data.BooksQuery.books.pageInfo.endCursor
+						after: $BooksQuery.data?.books.pageInfo.endCursor
 					})}"
 				>
 					Next

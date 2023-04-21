@@ -1,5 +1,5 @@
 import { graphql } from '$houdini';
-import type { RequestEvent } from '../routes/$houdini';
+import type { RequestEvent } from '@sveltejs/kit';
 
 const UnbasketBook = graphql(`
 	mutation UnbasketBook($input: UnbasketBookInput!) {
@@ -11,7 +11,10 @@ const UnbasketBook = graphql(`
 	}
 `);
 
-export default async function unbasketBook(event: RequestEvent, variables: { id: string }) {
+export default async function unbasketBook(
+	event: RequestEvent,
+	variables: { id: string }
+) {
 	const basketId = event.cookies.get('basket');
 
 	const response = await UnbasketBook.mutate(

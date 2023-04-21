@@ -44,6 +44,7 @@
 	"type": "module",
 	"dependencies": {
 		"daisyui": "^2.51.5",
-		"houdini-svelte": "^1.2.0"
+		"houdini-svelte": "^1.2.0",
+		"zod": "^3.21.4"
 	}
 }

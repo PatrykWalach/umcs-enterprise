@@ -1,50 +1,51 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { Book_bookStore, graphql, type Book_book } from '$houdini';
+	import { fragment, graphql, type Book_book } from '$houdini';
 	import { isNotNull } from '$lib/isNotNull';
 
 	export let book: Book_book;
 
-	const book_book = graphql(`
-		fragment Book_book on Book {
-			id
-			covers(
-				transformations: [
-					{ width: 100 }
-					{ width: 200 }
-					{ width: 300 }
-					{ width: 400 }
-					{ width: 500 }
-					{ width: 600 }
-					{ width: 700 }
-					{ width: 800 }
-					{ width: 900 }
-					{ width: 1000 }
-					{ width: 1200 }
-					{ width: 1400 }
-					{ width: 1600 }
-					{ width: 1800 }
-					{ width: 2000 }
-				]
-			) {
-				width @required
-				url @required
+	$: data = fragment(
+		book,
+		graphql(`
+			fragment Book_book on Book {
+				id
+				covers(
+					transformations: [
+						{ width: 100 }
+						{ width: 200 }
+						{ width: 300 }
+						{ width: 400 }
+						{ width: 500 }
+						{ width: 600 }
+						{ width: 700 }
+						{ width: 800 }
+						{ width: 900 }
+						{ width: 1000 }
+						{ width: 1200 }
+						{ width: 1400 }
+						{ width: 1600 }
+						{ width: 1800 }
+						{ width: 2000 }
+					]
+				) {
+					width @required
+					url @required
+				}
+				price {
+					formatted
+				}
+				title @required
+				author
 			}
-			price {
-				formatted
-			}
-			title
-			author
-		}
-	`);
-
-	$: data = new Book_bookStore().get(book);
+		`)
+	);
 	// $: data = fragment(
 	// 	book,
 	// );
 </script>
 
-<article class="card card-compact bg-base-100 shadow xl:shadow-lg" aria-labelledby={$data?.id}>
+<article class="card card-compact bg-base-100 shadow" aria-labelledby={$data?.id}>
 	<figure>
 		<img
 			loading="lazy"

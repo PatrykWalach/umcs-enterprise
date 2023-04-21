@@ -5,7 +5,6 @@ const config = {
 	},
 	plugins: {
 		'houdini-svelte': {
-			defaultRouteBlocking: true,
 			framework: 'kit'
 		}
 	},
@@ -15,8 +14,8 @@ const config = {
 		},
 		DateTime: {
 			type: 'Date',
-			marshal: /** @param {Date} date */ (date) => date?.toISOString(),
-			unmarshal: /** @param {string} value */ (value) => (value ? new Date(value) : null)
+			marshal: /** @param {Date} date */ (date) => date.toISOString(),
+			unmarshal: /** @param {string} value */ (value) => new Date(value)
 		}
 	}
 };

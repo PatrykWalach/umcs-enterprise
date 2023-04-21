@@ -2,13 +2,13 @@ query NavbarQuery($id: ID) {
 	basket(id: $id) {
 		books(first: 3) {
 			edges {
-				node {
+				node @required {
 					covers(transformations: [{ width: 50 }]) {
-						url
-						width
+						url @required
+						width @required
 					}
 					id
-					title
+					title @required
 				}
 			}
 		}

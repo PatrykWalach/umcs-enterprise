@@ -7,7 +7,7 @@ query BooksQuery(
 ) {
 	books(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy) {
 		edges {
-			node {
+			node @required {
 				...Book_book
 				id
 			}

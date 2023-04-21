@@ -11,7 +11,7 @@
 </script>
 
 <div class="container mx-auto">
-	<div class="shadow-xl">
+	<div class="">
 		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
 				<a class="btn-ghost btn normal-case text-3xl" href="/">Bookstore</a>
@@ -41,7 +41,7 @@
 					</button>
 					<div
 						tabindex="-1"
-						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow"
+						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow-xl"
 					>
 						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">
@@ -112,7 +112,7 @@
 						</button>
 						<ul
 							tabindex="-1"
-							class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow"
+							class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow-xl"
 						>
 							<li>
 								<a class="justify-between" href="">
