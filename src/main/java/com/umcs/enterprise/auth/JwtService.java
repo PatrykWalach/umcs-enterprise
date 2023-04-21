@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import javax.crypto.SecretKey;
-
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ public class JwtService {
 		return builder
 			.setIssuedAt(new Date())
 			.setNotBefore(new Date())
-
 			.signWith(getKey(), SignatureAlgorithm.HS512)
 			.compact();
 	}
@@ -31,14 +29,11 @@ public class JwtService {
 		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
 	}
 
-
-	public Claims parseAuthorizationHeader(@NonNull  String header){
+	public Claims parseAuthorizationHeader(@NonNull String header) {
 		return (parseToken(header.replaceFirst("Bearer ", "")));
 	}
 
-	private Claims parseToken(String token){
-
-
+	private Claims parseToken(String token) {
 		SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
 
 		final JwtParser parser = Jwts.parserBuilder().setSigningKey(key).build();

@@ -25,8 +25,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-
-
 	@NonNull
 	private final UserDetailsService userDetailsService;
 
@@ -45,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		var subject = jwtService. parseAuthorizationHeader(header).getSubject();
+		var subject = jwtService.parseAuthorizationHeader(header).getSubject();
 
 		if (subject == null) {
 			chain.doFilter(request, response);

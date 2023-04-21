@@ -12,7 +12,7 @@ const UnbasketBook = graphql(`
 export default async function unbasketBook(variables: UnbasketBook$input, event: RequestEvent) {
 	const response = await UnbasketBook.mutate(variables, { event });
 
-	const token = response.data?.unbasketBook?.token || ''
+	const token = response.data?.unbasketBook?.token || '';
 
 	event.cookies.set('enterprise-token', token, {
 		path: '/'
@@ -20,7 +20,7 @@ export default async function unbasketBook(variables: UnbasketBook$input, event:
 
 	setSession(event, {
 		token
-	})
+	});
 
 	return response;
 }

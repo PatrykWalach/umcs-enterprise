@@ -1,6 +1,5 @@
 mutation BasketDataFetcherTestBasketBook($input: BasketBookInput!) {
 	basketBook(input: $input) {
-		
 		basket {
 			books(first: 10) {
 				edges {

@@ -7,7 +7,6 @@ import com.umcs.enterprise.basket.BasketService;
 import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
 import io.jsonwebtoken.Jwts;
-
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -31,20 +30,28 @@ public class UserDataFetcher {
 	@NonNull
 	private final AuthenticationManager authenticationManager;
 
-
 	@NonNull
-	private  final BasketService basketService;
+	private final BasketService basketService;
 
 	@DgsMutation
-	public LoginResult login(@InputArgument LoginInput input, @RequestHeader(required = false) String Authorization) throws JsonProcessingException {
+	public LoginResult login(
+		@InputArgument LoginInput input,
+		@RequestHeader(required = false) String Authorization
+	) throws JsonProcessingException {
 		try {
 			Authentication auth = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
 			);
 
-			String token = basketService.setBasket(jwtService.signToken(
-				Jwts.builder().setExpiration(Date.from(Instant.now().plusSeconds(60 * 24))).setSubject(auth.getName())
-			), basketService.getBasket(Authorization));
+			String token = basketService.setBasket(
+				jwtService.signToken(
+					Jwts
+						.builder()
+						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+						.setSubject(auth.getName())
+				),
+				basketService.getBasket(Authorization)
+			);
 
 			return LoginSuccess.newBuilder().token(token).build();
 		} catch (AuthenticationException e) {
@@ -71,7 +78,10 @@ public class UserDataFetcher {
 	private final JwtService jwtService;
 
 	@DgsMutation
-	public RegisterResult register(@InputArgument RegisterInput input, @RequestHeader(required = false) String Authorization) throws JsonProcessingException {
+	public RegisterResult register(
+		@InputArgument RegisterInput input,
+		@RequestHeader(required = false) String Authorization
+	) throws JsonProcessingException {
 		try {
 			User user = userRepository.save(
 				User
@@ -82,9 +92,15 @@ public class UserDataFetcher {
 					.build()
 			);
 
-			String token = basketService.setBasket(jwtService.signToken(
-					Jwts.builder().setExpiration(Date.from(Instant.now().plusSeconds(60 * 24))).setSubject(user.getUsername())
-			), basketService.getBasket(Authorization));
+			String token = basketService.setBasket(
+				jwtService.signToken(
+					Jwts
+						.builder()
+						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+						.setSubject(user.getUsername())
+				),
+				basketService.getBasket(Authorization)
+			);
 
 			return RegisterSuccess.newBuilder().token(token).build();
 		} catch (DataIntegrityViolationException e) {

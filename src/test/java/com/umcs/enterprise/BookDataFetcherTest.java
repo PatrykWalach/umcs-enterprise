@@ -88,7 +88,10 @@ class BookDataFetcherTest {
 				.build()
 		);
 		String token = jwtService.signToken(
-			Jwts.builder().setExpiration(Date.from(Instant.now().plusSeconds(60 * 24))).setSubject(user.getUsername())
+			Jwts
+				.builder()
+				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();
@@ -165,7 +168,10 @@ class BookDataFetcherTest {
 		);
 
 		String token = jwtService.signToken(
-			Jwts.builder().setExpiration(Date.from(Instant.now().plusSeconds(60 * 24))).setSubject(user.getUsername())
+			Jwts
+				.builder()
+				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();

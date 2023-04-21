@@ -14,7 +14,7 @@ export default async function basketBook(variables: BasketBook$input, event: Req
 		event
 	});
 
-	const token = response.data?.basketBook?.token || ''
+	const token = response.data?.basketBook?.token || '';
 
 	event.cookies.set('enterprise-token', token, {
 		path: '/'
@@ -22,7 +22,7 @@ export default async function basketBook(variables: BasketBook$input, event: Req
 
 	setSession(event, {
 		token
-	})
+	});
 
 	return response;
 }

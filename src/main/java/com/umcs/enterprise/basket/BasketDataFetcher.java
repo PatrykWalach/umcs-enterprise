@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import javax.crypto.SecretKey;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
@@ -38,12 +37,10 @@ public class BasketDataFetcher {
 	@Value("${spring.security.authentication.jwt.secret}")
 	private String secret;
 
-
-
 	@DgsQuery
 	public Map<UUID, Integer> basket(@RequestHeader(required = false) String Authorization)
 		throws JsonProcessingException {
-		return basketService. getBasket(Authorization);
+		return basketService.getBasket(Authorization);
 	}
 
 	@DgsData(parentType = "Basket")
@@ -94,7 +91,7 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		Map<UUID, Integer> books = basketService. getBasket(Authorization);
+		Map<UUID, Integer> books = basketService.getBasket(Authorization);
 
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
@@ -103,15 +100,12 @@ public class BasketDataFetcher {
 		return BasketBookResult
 			.newBuilder()
 			.basket(books)
-			.token(
-					basketService.setBasket(Authorization,
-							books)
-			)
+			.token(basketService.setBasket(Authorization, books))
 			.build();
 	}
 
 	@NonNull
-	private  final BasketService basketService;
+	private final BasketService basketService;
 
 	@DgsMutation
 	public UnbasketBookResult unbasketBook(
@@ -119,7 +113,7 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		Map<UUID, Integer> books = basketService. getBasket(Authorization);
+		Map<UUID, Integer> books = basketService.getBasket(Authorization);
 
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
@@ -137,11 +131,7 @@ public class BasketDataFetcher {
 		return UnbasketBookResult
 			.newBuilder()
 			.basket(books)
-			.token(
-				basketService.setBasket(Authorization,
-			 books)
-
-			)
+			.token(basketService.setBasket(Authorization, books))
 			.build();
 	}
 
