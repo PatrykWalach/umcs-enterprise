@@ -1,8 +1,6 @@
 /** @type {import('houdini').ConfigFile} */
 const config = {
-	watchSchema: {
-		url: 'http://localhost:8080/graphql'
-	},
+	schemaPath: 'src/main/resources/schema/schema.graphql',
 	plugins: {
 		'houdini-svelte': {
 			framework: 'kit'

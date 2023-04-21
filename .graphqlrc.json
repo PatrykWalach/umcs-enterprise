@@ -1,4 +1,4 @@
 {
-	"schema": ["src/main/resources/schema/schema.graphqls", "./$houdini/graphql/schema.graphql"],
-	"documents": "src/**/*.{svelte,ts,gql,graphql}"
+	"schema": ["src/main/resources/schema/schema.graphql", "./$houdini/graphql/schema.graphql"],
+	"documents": ["src/**/*.{svelte,ts,gql,graphql}", "!src/main/resources/schema/schema.graphql"]
 }
