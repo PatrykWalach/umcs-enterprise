@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -65,6 +66,7 @@ public class UserDataFetcher {
 			User user = userRepository.save(
 				User
 					.newBuilder()
+					.databaseId((input.getDatabaseId()))
 					.authorities(Collections.singletonList("USER"))
 					.username(input.getUsername())
 					.password(input.getPassword())

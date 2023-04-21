@@ -94,6 +94,7 @@ type Book implements Node {
 	author: String
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
 	covers(transformations: [Transformation]): [Cover]
+	databaseId: UUID
 	id: ID!
 	popularity: Int
 	price: Price
@@ -108,6 +109,7 @@ interface Viewer implements Node {
 }
 
 type User implements Viewer & Node {
+	databaseId: UUID
 	id: ID!
 	name: String
 	purchases(after: String, before: String, first: Int, last: Int): PurchaseConnection
@@ -123,6 +125,8 @@ enum PurchaseStatus {
 }
 
 scalar DateTime
+scalar UUID
+
 type PurchaseConnection {
 	edges: [PurchaseEdge]
 	pageInfo: PageInfo!
@@ -250,6 +254,7 @@ input CreateCoverInput {
 input CreateBookInput {
 	author: String!
 	cover: CreateCoverInput!
+	databaseId: UUID!
 	price: CreatePriceInput!
 	releasedAt: DateTime!
 	title: String!
@@ -364,6 +369,7 @@ input LoginInput {
 }
 
 input RegisterInput {
+	databaseId: UUID!
 	password: String!
 	username: String!
 }

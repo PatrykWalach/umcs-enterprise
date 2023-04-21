@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 
 	export let form: import('./$types').ActionData;
+	let data: import('./$types').PageData;
 </script>
 
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">
@@ -19,6 +20,7 @@
 				use:enhance
 				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-2xl"
 			>
+				<input type="hidden" name="databaseId" value={data.databaseId} />
 				<div class="card-body">
 					<div class="form-control">
 						<label class="label" for="username">

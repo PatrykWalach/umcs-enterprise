@@ -93,6 +93,7 @@ class BookDataFetcherTest {
 		var input = new LinkedHashMap<>();
 		var coverInput = new LinkedHashMap<>();
 		coverInput.put("file", null);
+		input.put("databaseId", UUID.randomUUID().toString());
 		input.put("title", ("The Book"));
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
@@ -139,6 +140,7 @@ class BookDataFetcherTest {
 			)
 			.andExpect(jsonPath("data.createBook.book.price.formatted").isNotEmpty())
 			.andExpect(jsonPath("data.createBook.book.popularity").value(0))
+			.andExpect(jsonPath("data.createBook.book.databaseId").value(input.get("databaseId")))
 			.andExpect(jsonPath("data.createBook.book.covers[0].url").isNotEmpty());
 
 		Assertions.assertEquals(1L, bookRepository.count());
@@ -170,6 +172,7 @@ class BookDataFetcherTest {
 		var input = new LinkedHashMap<>();
 		var coverInput = new LinkedHashMap<>();
 		coverInput.put("file", null);
+		input.put("databaseId", UUID.randomUUID().toString());
 		input.put("title", ("The Book"));
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
