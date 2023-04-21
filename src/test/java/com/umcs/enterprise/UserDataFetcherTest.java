@@ -8,7 +8,10 @@ import com.umcs.enterprise.types.RegisterInput;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
 import io.jsonwebtoken.Jwts;
+
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
@@ -126,7 +129,7 @@ class UserDataFetcherTest {
 				.build()
 		);
 		String token = jwtService.signToken(
-			Jwts.builder().setClaims(new HashMap<>()).setSubject(user.getUsername())
+			Jwts.builder().setExpiration(Date.from(Instant.now().plusSeconds(60 * 24))).setSubject(user.getUsername())
 		);
 
 		this.graphQlTester.mutate()

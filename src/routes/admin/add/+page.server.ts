@@ -27,7 +27,7 @@ export const actions: Actions = {
 			});
 		}
 
-		await graphql(`
+		const result = await graphql(`
 			mutation AddBook($input: CreateBookInput!) {
 				createBook(input: $input) {
 					__typename
@@ -48,6 +48,6 @@ export const actions: Actions = {
 			{ event }
 		);
 
-		return {};
+		console.log(result);
 	}
 };

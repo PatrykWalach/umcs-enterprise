@@ -11,7 +11,7 @@ export const actions: Actions = {
 			throw error(500, 'No book id');
 		}
 
-		await BasketBook(event, { id });
+		await BasketBook({ input: { book: { id } } }, event);
 
 		return {};
 	}

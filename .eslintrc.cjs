@@ -21,7 +21,7 @@ module.exports = {
 					{
 						exceptions: {
 							suffixes: ['Connection', 'Edge', 'Result', 'Success', 'Error'],
-							types: ['PageInfo', 'Price', 'Cover']
+							types: ['PageInfo', 'Price', 'Cover', 'Basket']
 						}
 					}
 				]

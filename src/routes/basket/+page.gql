@@ -1,5 +1,5 @@
-query BasketQuery($after: String, $id: ID) {
-	basket(id: $id) {
+query BasketQuery($after: String) {
+	basket {
 		books(after: $after, first: 10) {
 			edges {
 				node @required {
@@ -39,7 +39,7 @@ query BasketQuery($after: String, $id: ID) {
 				hasNextPage
 			}
 		}
-		id
+		
 		price {
 			formatted
 		}

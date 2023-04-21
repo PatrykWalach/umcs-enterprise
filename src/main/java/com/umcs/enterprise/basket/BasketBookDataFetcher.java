@@ -12,6 +12,7 @@ import graphql.relay.Edge;
 import graphql.schema.DataFetchingEnvironment;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
@@ -20,14 +21,14 @@ import org.dataloader.DataLoader;
 
 @DgsComponent
 @RequiredArgsConstructor
-public class BasketBooksDataFetcher {
+public class BasketBookDataFetcher {
 
 	@NonNull
 	private final ConnectionService connectionService;
 
-	@DgsData(parentType = "BasketBooksEdge")
+	@DgsData(parentType = "BasketBookEdge")
 	public BigDecimal price(DataFetchingEnvironment env) {
-		var edge = env.<BasketBooksEdge>getSource();
+		var edge = env.<BasketBookEdge>getSource();
 
 		return edge.getNode().getPrice().multiply(BigDecimal.valueOf(edge.getQuantity()));
 	}
@@ -47,7 +48,7 @@ public class BasketBooksDataFetcher {
 						.getEdges()
 						.stream()
 						.map(edge -> {
-							Edge<Book> basketBookEdge = new BasketBooksEdge(
+							Edge<Book> basketBookEdge = new BasketBookEdge(
 								edge.getCursor(),
 								edge.getNode(),
 								basket.get(edge.getNode().getDatabaseId())

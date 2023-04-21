@@ -1,5 +1,5 @@
-query NavbarQuery($id: ID) {
-	basket(id: $id) {
+query NavbarQuery {
+	basket {
 		books(first: 3) {
 			edges {
 				node @required {
@@ -12,7 +12,7 @@ query NavbarQuery($id: ID) {
 				}
 			}
 		}
-		id
+		
 		price {
 			formatted
 		}

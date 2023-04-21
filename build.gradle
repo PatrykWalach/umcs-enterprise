@@ -44,7 +44,7 @@ dependencies {
 generateJava {
     schemaPaths = ["${projectDir}/src/main/resources/schema"]
     packageName = 'com.umcs.enterprise'
-    typeMapping = ["Upload": "org.springframework.web.multipart.MultipartFile"]
+    typeMapping = ["Upload": "org.springframework.web.multipart.MultipartFile", "UUID":"java.util.UUID", "Basket":" Map<java.util.UUID, Integer>"]
 }
 
 tasks.named('test') {

@@ -25,11 +25,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-	@Value("${spring.security.authentication.jwt.secret}")
-	private String secret;
+
 
 	@NonNull
 	private final UserDetailsService userDetailsService;
+
+	@NonNull
+	private final JwtService jwtService;
 
 	@Override
 	protected void doFilterInternal(
@@ -42,15 +44,15 @@ public class JwtFilter extends OncePerRequestFilter {
 			chain.doFilter(request, response);
 			return;
 		}
-		String token = header.replaceFirst("Bearer ", "");
 
-		SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+		var subject = jwtService. parseAuthorizationHeader(header).getSubject();
 
-		final JwtParser parser = Jwts.parserBuilder().setSigningKey(key).build();
+		if (subject == null) {
+			chain.doFilter(request, response);
+			return;
+		}
 
-		UserDetails user = userDetailsService.loadUserByUsername(
-			parser.parseClaimsJws(token).getBody().getSubject()
-		);
+		UserDetails user = userDetailsService.loadUserByUsername(subject);
 
 		UsernamePasswordAuthenticationToken state = new UsernamePasswordAuthenticationToken(
 			user,

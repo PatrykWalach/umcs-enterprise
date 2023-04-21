@@ -140,7 +140,7 @@ type PurchaseEdge {
 	node: Purchase
 }
 type Purchase implements Node {
-	books(after: String, before: String, first: Int, last: Int): PurchaseBooksConnection
+	books(after: String, before: String, first: Int, last: Int): PurchaseBookConnection
 	createdAt: DateTime
 	id: ID!
 	price: Price
@@ -148,33 +148,32 @@ type Purchase implements Node {
 	user: User
 }
 
-type PurchaseBooksEdge {
+type PurchaseBookEdge {
 	cursor: String
 	node: Book
 	price: Price
 	quantity: Int
 }
 
-type PurchaseBooksConnection {
-	edges: [PurchaseBooksEdge]
+type PurchaseBookConnection {
+	edges: [PurchaseBookEdge]
 	pageInfo: PageInfo!
 }
 
-type BasketBooksEdge {
+type BasketBookEdge {
 	cursor: String
 	node: Book
 	price: Price
 	quantity: Int
 }
 
-type BasketBooksConnection {
-	edges: [BasketBooksEdge]
+type BasketBookConnection {
+	edges: [BasketBookEdge]
 	pageInfo: PageInfo!
 }
 
 type Basket {
-	books(after: String, before: String, first: Int, last: Int): BasketBooksConnection
-	id: ID!
+	books(after: String, before: String, first: Int, last: Int): BasketBookConnection
 	price: Price
 	quantity: Int
 }
@@ -198,7 +197,7 @@ type Query {
 	"""
 	3.5
 	"""
-	basket(id: ID): Basket
+	basket: Basket
 	"""
 	3
 	"""
@@ -257,10 +256,14 @@ input CreateBookInput {
 
 type BasketBookResult {
 	basket: Basket
+	edge: BasketBookEdge
+	token: String
 }
 
 type UnbasketBookResult {
 	basket: Basket
+	edge: BasketBookEdge
+	token: String
 }
 
 type UpdateStatusResult {
@@ -276,12 +279,10 @@ input WhereUniqueBookInput {
 }
 
 input BasketBookInput {
-	basket: WhereUniqueBasketInput
 	book: WhereUniqueBookInput!
 }
 
 input UnbasketBookInput {
-	basket: WhereUniqueBasketInput
 	book: WhereUniqueBookInput!
 }
 

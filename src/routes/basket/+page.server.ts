@@ -10,7 +10,7 @@ export const actions: Actions = {
 			throw error(500, 'No book id');
 		}
 
-		const data = await BasketBook(event, { id });
+		await BasketBook({ input: { book: { id } } }, event);
 
 		return {};
 	},
@@ -20,7 +20,7 @@ export const actions: Actions = {
 			throw new Error('No book id');
 		}
 
-		const data = await UnbasketBook(event, { id });
+		await UnbasketBook({ input: { book: { id } } }, event);
 
 		return {};
 	}

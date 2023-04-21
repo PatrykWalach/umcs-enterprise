@@ -4,40 +4,46 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.*;
+import com.netflix.graphql.dgs.internal.DgsWebMvcRequestData;
+import com.umcs.enterprise.auth.JwtService;
+import com.umcs.enterprise.auth.UserDetailsService;
 import com.umcs.enterprise.book.BookDataLoader;
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import javax.crypto.SecretKey;
+
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.context.request.ServletWebRequest;
 
 @DgsComponent
 @RequiredArgsConstructor
 public class BasketDataFetcher {
 
-	private Map<UUID, Integer> getBasket(String basket) throws JsonProcessingException {
-		if (basket == null) {
-			return new HashMap<>();
-		}
+	@Value("${spring.security.authentication.jwt.secret}")
+	private String secret;
 
-		try {
-			return new ObjectMapper()
-				.readValue(
-					new String(Base64.getDecoder().decode(basket.getBytes()), StandardCharsets.UTF_8),
-					new TypeReference<>() {}
-				);
-		} catch (IllegalArgumentException e) {
-			return new HashMap<>();
-		}
-	}
+
 
 	@DgsQuery
-	public Map<UUID, Integer> basket(@InputArgument String id) throws JsonProcessingException {
-		return getBasket(id);
+	public Map<UUID, Integer> basket(@RequestHeader(required = false) String Authorization)
+		throws JsonProcessingException {
+		return basketService. getBasket(Authorization);
 	}
 
 	@DgsData(parentType = "Basket")
@@ -78,29 +84,42 @@ public class BasketDataFetcher {
 			);
 	}
 
+	private String setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
+		return new ObjectMapper().writeValueAsString(basket);
+	}
+
 	@DgsMutation
-	public Map<UUID, Integer> basketBook(@InputArgument BasketBookInput input)
-		throws JsonProcessingException {
-		Map<UUID, Integer> books = getBasket(input.getBasket().getId());
+	public BasketBookResult basketBook(
+		@InputArgument BasketBookInput input,
+		@RequestHeader(required = false) String Authorization,
+		DgsDataFetchingEnvironment dfe
+	) throws JsonProcessingException {
+		Map<UUID, Integer> books = basketService. getBasket(Authorization);
 
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 		books.merge(globalId.databaseId(), 1, Integer::sum);
 
-		return books;
+		return BasketBookResult
+			.newBuilder()
+			.basket(books)
+			.token(
+					basketService.setBasket(Authorization,
+							books)
+			)
+			.build();
 	}
 
-	@DgsData.List(
-		{ @DgsData(parentType = "UnbasketBookResult"), @DgsData(parentType = "BasketBookResult") }
-	)
-	public Map<Long, Integer> basket(DataFetchingEnvironment env) {
-		return env.getSource();
-	}
+	@NonNull
+	private  final BasketService basketService;
 
 	@DgsMutation
-	public Map<UUID, Integer> unbasketBook(@InputArgument UnbasketBookInput input)
-		throws JsonProcessingException {
-		Map<UUID, Integer> books = getBasket(input.getBasket().getId());
+	public UnbasketBookResult unbasketBook(
+		@InputArgument UnbasketBookInput input,
+		@RequestHeader(required = false) String Authorization,
+		DgsDataFetchingEnvironment dfe
+	) throws JsonProcessingException {
+		Map<UUID, Integer> books = basketService. getBasket(Authorization);
 
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
@@ -115,6 +134,16 @@ public class BasketDataFetcher {
 			}
 		);
 
-		return books;
+		return UnbasketBookResult
+			.newBuilder()
+			.basket(books)
+			.token(
+				basketService.setBasket(Authorization,
+			 books)
+
+			)
+			.build();
 	}
+
+	private final JwtService jwtService;
 }

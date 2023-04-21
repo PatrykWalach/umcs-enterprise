@@ -33,9 +33,6 @@ class BasketDataFetcherTest {
 			//                then
 			.errors()
 			.verify()
-			.path("basket.id")
-			.entity(String.class)
-			.matches(Predicate.not(String::isBlank))
 			.path("basket.books.edges")
 			.entity(List.class)
 			.isEqualTo(Collections.emptyList());
@@ -50,12 +47,6 @@ class BasketDataFetcherTest {
 	@Test
 	void basketBook() {
 		//        given
-		var id =
-			this.graphQlTester.documentName("BasketDataFetcherTest_basket")
-				.execute()
-				.path("basket.id")
-				.entity(String.class)
-				.get();
 
 		var book = bookRepository.save(
 			Book
@@ -65,14 +56,21 @@ class BasketDataFetcherTest {
 				.build()
 		);
 
+		String token = null;
+		var tester = this.graphQlTester;
+
 		for (int i = 1; i < 3; i++) {
-			id =
-				this.graphQlTester.documentName("BasketDataFetcherTest_basketBook")
+			if (token != null) {
+				tester = this.graphQlTester.mutate().header("Authorization", "Bearer " + token).build();
+			}
+
+			token =
+				tester
+					.documentName("BasketDataFetcherTest_basketBook")
 					.variable(
 						"input",
 						BasketBookInput
 							.newBuilder()
-							.basket(WhereUniqueBasketInput.newBuilder().id(id).build())
 							.book(WhereUniqueBookInput.newBuilder().id(book.getId()).build())
 							.build()
 					)
@@ -81,34 +79,15 @@ class BasketDataFetcherTest {
 					//                then
 					.errors()
 					.verify()
-					.path("basketBook.basket.id")
-					.entity(String.class)
-					.matches(Predicate.not(String::isBlank))
 					.path("basketBook.basket.books.edges[*].node.id")
 					.entity(List.class)
 					.isEqualTo(Collections.singletonList(book.getId()))
 					.path("basketBook.basket.books.edges[*].quantity")
 					.entity(List.class)
 					.isEqualTo(Collections.singletonList(i))
-					.path("basketBook.basket.id")
+					.path("basketBook.token")
 					.entity(String.class)
 					.get();
 		}
-	}
-
-	@Test
-	void unbasketBook() {
-		this.graphQlTester.documentName("BasketDataFetcherTest_basket")
-			//        when
-			.execute()
-			//                then
-			.errors()
-			.verify()
-			.path("basket.id")
-			.entity(String.class)
-			.matches(Predicate.not(String::isBlank))
-			.path("basket.books.edges")
-			.entity(List.class)
-			.isEqualTo(Collections.emptyList());
 	}
 }
