@@ -3,8 +3,6 @@ import BasketBook from '$lib/BasketBook.server';
 import { error, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$houdini';
 
- 
-
 export const actions: Actions = {
 	default: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());

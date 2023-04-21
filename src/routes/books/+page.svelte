@@ -5,7 +5,7 @@
 
 	export let data: PageData;
 
-	$: ({BooksQuery}=data)
+	$: ({ BooksQuery } = data);
 
 	$: url = new URL($page.url);
 </script>

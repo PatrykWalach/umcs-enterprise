@@ -14,11 +14,7 @@
 			</p>
 		</div>
 		<div class="grid gap-4">
-			<form
-				method="POST"
-				use:enhance
-				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow"
-			>
+			<form method="POST" use:enhance class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow">
 				<div class="card-body">
 					<div class="form-control">
 						<label class="label" for="username">

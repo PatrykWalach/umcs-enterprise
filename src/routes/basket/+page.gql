@@ -2,7 +2,7 @@ query BasketQuery($after: String, $id: ID) {
 	basket(id: $id) {
 		books(after: $after, first: 10) {
 			edges {
-				node  @required {
+				node @required {
 					author
 					covers(
 						transformations: [
