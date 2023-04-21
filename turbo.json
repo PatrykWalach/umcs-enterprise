@@ -14,7 +14,7 @@
 			],
 			"dependsOn": ["generate"]
 		},
-		"lint": {},
+		"lint": { "dependsOn": ["generate"] },
 		"test": {
 			"outputs": ["playwright-report", "test-results"],
 			"dependsOn": ["build"],
