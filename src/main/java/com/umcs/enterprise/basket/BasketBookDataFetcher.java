@@ -30,33 +30,35 @@ public class BasketBookDataFetcher {
 	@DgsData(parentType = "BasketBookEdge")
 	public BigDecimal price(DataFetchingEnvironment env) {
 		var edge = env.<Edge<Book>>getSource();
-		Map<UUID, Integer> basket  = env.getLocalContext();
+		Map<UUID, Integer> basket = env.getLocalContext();
 
-		return edge.getNode().getPrice().multiply(BigDecimal.valueOf(basket.get(edge.getNode().getDatabaseId())));
+		return edge
+			.getNode()
+			.getPrice()
+			.multiply(BigDecimal.valueOf(basket.get(edge.getNode().getDatabaseId())));
 	}
 
 	@DgsData(parentType = "BasketBookEdge")
 	public Integer quantity(DgsDataFetchingEnvironment env) {
 		var edge = env.<Edge<Book>>getSource();
-		Map<UUID, Integer> basket  = env.getLocalContext();
+		Map<UUID, Integer> basket = env.getLocalContext();
 
 		return basket.get(edge.getNode().getDatabaseId());
 	}
 
 	@DgsData(parentType = "Basket")
-	public CompletableFuture<DataFetcherResult<Connection<Book>>> books(DgsDataFetchingEnvironment env) {
+	public CompletableFuture<DataFetcherResult<Connection<Book>>> books(
+		DgsDataFetchingEnvironment env
+	) {
 		DataLoader<UUID, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
 
 		Map<UUID, Integer> basket = env.getSource();
 
-
-
 		return dataLoader
-				.loadMany(basket.keySet().stream().toList())
-				.thenApply(books -> connectionService.getConnection(books, env))
-				.thenApply(
-						books->DataFetcherResult.<Connection<Book>>newResult().data(books).localContext(basket).build()
-
-		) ;
+			.loadMany(basket.keySet().stream().toList())
+			.thenApply(books -> connectionService.getConnection(books, env))
+			.thenApply(books ->
+				DataFetcherResult.<Connection<Book>>newResult().data(books).localContext(basket).build()
+			);
 	}
 }
