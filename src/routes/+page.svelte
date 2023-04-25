@@ -8,6 +8,11 @@
 	$: ({ HomeQuery } = data);
 </script>
 
+<svelte:head>
+	<title>Home</title>
+	<meta name="description" content="All bestseller books avalible in our shop. Buy them now!" />
+</svelte:head>
+
 <main class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
 	<!-- <pre>{JSON.stringify(data)}</pre> -->
 	<section class="grid gap-2 sm:gap-4" aria-labelledby="bestsellers">

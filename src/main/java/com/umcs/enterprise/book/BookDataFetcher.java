@@ -71,6 +71,7 @@ public class BookDataFetcher {
 							);
 							fields.put("popularity", order.getPopularity());
 							fields.put("releasedAt", order.getReleasedAt());
+							fields.put("createdAt", order.getCreatedAt());
 						}
 					)
 				),

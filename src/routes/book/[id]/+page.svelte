@@ -48,10 +48,14 @@
 
 				<form method="post" use:enhance class="grid gap-2 md:gap-4">
 					<input type="hidden" name="id" value={$BookQuery.data.node.id} />
-					<button type="submit" class="btn-secondary btn-lg btn">To cart</button>
-					<button type="submit" class="btn-primary btn-lg btn" formaction="?buy_now">
-						Buy now
-					</button>
+					{#if $BookQuery.data.viewer?.__typename === 'Admin'}
+						<button type="submit" class="btn-error btn-lg btn" formaction="?/delete">Delete</button>
+					{:else}
+						<button type="submit" class="btn-secondary btn-lg btn" formaction="?/basket_book">To cart</button>
+						<button type="submit" class="btn-primary btn-lg btn" formaction="?/buy_now">
+							Buy now
+						</button>
+					{/if}
 				</form>
 			</div>
 

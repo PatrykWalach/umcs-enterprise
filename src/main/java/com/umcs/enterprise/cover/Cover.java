@@ -23,4 +23,6 @@ public class Cover {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	private Book book;
+
+
 }

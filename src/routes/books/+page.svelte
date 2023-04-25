@@ -17,7 +17,7 @@
 			<option value="popularity">Popularity</option>
 			<option value="price">Price</option>
 		</select>
-		<select name="purchase" id="" class="select">
+		<select name="order" id="" class="select">
 			<option value="asc">Ascending</option>
 			<option value="desc" selected>Descending</option>
 		</select>

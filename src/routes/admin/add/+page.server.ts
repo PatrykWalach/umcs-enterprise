@@ -1,5 +1,5 @@
 import { graphql } from '$houdini';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 
 const Input = z.object({
@@ -31,6 +31,9 @@ export const actions: Actions = {
 			mutation AddBook($input: CreateBookInput!) {
 				createBook(input: $input) {
 					__typename
+					book {
+						id
+					}
 				}
 			}
 		`).mutate(
@@ -48,6 +51,19 @@ export const actions: Actions = {
 			{ event }
 		);
 
-		console.log(result);
+		if (result.data?.createBook?.book?.id) {
+			throw redirect(303, `/book/${result.data.createBook.book.id}`);
+		}
+
+		return fail(403, {
+			data: {
+				releasedAt: data.releasedAt,
+				title: data.title,
+				author: data.author,
+				price: data.price
+			},
+			// internal error?
+			errors: {}
+		});
 	}
 };

@@ -94,13 +94,14 @@ type Book implements Node {
 	author: String
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
 	covers(transformations: [Transformation]): [Cover]
+	createdAt: DateTime
 	id: ID!
 	popularity: Int
 	price: Price
 	recommended(after: String, before: String, first: Int, last: Int): BookConnection
 	releasedAt: DateTime
 	synopsis: String
-	title: String
+		title: String
 }
 
 interface Viewer implements Node {
@@ -188,6 +189,7 @@ input PriceOrderBy {
 }
 
 input BookOrderBy {
+	createdAt: Order
 	popularity: Order
 	price: PriceOrderBy
 	releasedAt: Order
@@ -295,7 +297,7 @@ type CreateBookResult {
 }
 
 type DeleteResult {
-	node: Node
+	id: ID
 }
 
 input MakePurchaseInput {

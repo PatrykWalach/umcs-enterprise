@@ -4,6 +4,7 @@
 	import { isNotNull } from '$lib/isNotNull';
 
 	export let book: Book_book;
+ 
 
 	$: data = fragment(
 		book,
@@ -40,6 +41,8 @@
 			}
 		`)
 	);
+	
+
 	// $: data = fragment(
 	// 	book,
 	// );
@@ -70,7 +73,7 @@
 			{/if}
 		</div>
 		<div>
-			<form method="post" use:enhance class="flex items-center justify-between">
+			<form method="post" action="?/basket_book" use:enhance class="flex items-center justify-between">
 				<input type="hidden" name="id" value={$data?.id} />
 				<div class="font-bold text-lg">
 					{$data?.price?.formatted}

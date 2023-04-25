@@ -41,4 +41,8 @@ query BookQuery($id: ID!) {
 			title @required
 		}
 	}
+	viewer {
+		__typename
+		id
+	}
 }

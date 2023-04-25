@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 import type { Actions } from './$houdini';
 
 export const actions: Actions = {
-	default: async (event) => {
+	basket_book: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());
 
 		if (typeof id !== 'string') {
