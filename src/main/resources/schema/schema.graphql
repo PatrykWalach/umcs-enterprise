@@ -101,7 +101,7 @@ type Book implements Node {
 	recommended(after: String, before: String, first: Int, last: Int): BookConnection
 	releasedAt: DateTime
 	synopsis: String
-		title: String
+	title: String
 }
 
 interface Viewer implements Node {

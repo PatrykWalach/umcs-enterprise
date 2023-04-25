@@ -78,10 +78,9 @@ public class UserDataFetcher {
 	@NonNull
 	private final JwtService jwtService;
 
-
-	@DgsTypeResolver(name="Viewer")
-	public  String resolveViewer(User user){
-		if(user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))){
+	@DgsTypeResolver(name = "Viewer")
+	public String resolveViewer(User user) {
+		if (user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
 			return "Admin";
 		}
 

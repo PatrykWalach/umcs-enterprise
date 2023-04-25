@@ -33,8 +33,8 @@ export const test = base.extend<
 	async login({ page }, use) {
 		await use(async (username: string, password: string) => {
 			await page.goto('/login');
-			await page.getByLabel('Username', ).fill(username);
-			await page.getByLabel('Password', ).fill(password);
+			await page.getByLabel('Username').fill(username);
+			await page.getByLabel('Password').fill(password);
 			await page.getByRole('button', { name: 'login' }).click();
 		});
 	},

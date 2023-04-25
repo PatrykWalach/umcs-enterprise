@@ -51,7 +51,9 @@
 					{#if $BookQuery.data.viewer?.__typename === 'Admin'}
 						<button type="submit" class="btn-error btn-lg btn" formaction="?/delete">Delete</button>
 					{:else}
-						<button type="submit" class="btn-secondary btn-lg btn" formaction="?/basket_book">To cart</button>
+						<button type="submit" class="btn-secondary btn-lg btn" formaction="?/basket_book">
+							To cart
+						</button>
 						<button type="submit" class="btn-primary btn-lg btn" formaction="?/buy_now">
 							Buy now
 						</button>
