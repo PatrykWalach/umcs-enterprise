@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import type { ActionData } from './$houdini';
 
 	export let form: ActionData;
 
@@ -24,11 +24,11 @@
 					class="input-bordered input"
 					id="title"
 					type="text"
-					value={form?.data?.title ?? ''}
+					value={form?.title?.value ?? ''}
 					name="title"
 				/>
 				<label class="label" for="title">
-					<span class="label-text-alt text-error">{form?.errors?.title?._errors.at(0) ?? ''}</span>
+					<span class="label-text-alt text-error">{form?.title?.errors?.at(0) ?? ''}</span>
 				</label>
 			</div>
 			<div class="form-control">
@@ -38,11 +38,11 @@
 					class="input-bordered input"
 					id="author"
 					type="text"
-					value={form?.data?.author ?? ''}
+					value={form?.author?.value ?? ''}
 					name="author"
 				/>
 				<label class="label" for="title">
-					<span class="label-text-alt text-error">{form?.errors?.author?._errors.at(0) ?? ''}</span>
+					<span class="label-text-alt text-error">{form?.author?.errors?.at(0) ?? ''}</span>
 				</label>
 			</div>
 			<div class="form-control">
@@ -54,11 +54,11 @@
 					type="number"
 					min="0"
 					step="0.01"
-					value={form?.data?.price ?? ''}
+					value={form?.price?.value ?? ''}
 					name="price"
 				/>
 				<label class="label" for="title">
-					<span class="label-text-alt text-error">{form?.errors?.price?._errors.at(0) ?? ''}</span>
+					<span class="label-text-alt text-error">{form?.price?.errors?.at(0) ?? ''}</span>
 				</label>
 			</div>
 			<div class="form-control">
@@ -68,12 +68,12 @@
 					class="input-bordered input"
 					id="releasedAt"
 					type="date"
-					value={form?.data?.releasedAt ?? ''}
+					value={form?.releasedAt?.value ?? ''}
 					name="releasedAt"
 				/>
 				<label class="label" for="title">
 					<span class="label-text-alt text-error">
-						{form?.errors?.releasedAt?._errors.at(0) ?? ''}
+						{form?.releasedAt?.errors?.at(0) ?? ''}
 					</span>
 				</label>
 			</div>
@@ -88,7 +88,7 @@
 					accept="image/*"
 				/>
 				<label class="label" for="title">
-					<span class="label-text-alt text-error">{form?.errors?.cover?._errors.at(0) ?? ''}</span>
+					<span class="label-text-alt text-error">{form?.cover?.errors?.at(0) ?? ''}</span>
 				</label>
 			</div>
 			<div class="form-control mt-6">

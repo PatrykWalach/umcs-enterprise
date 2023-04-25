@@ -16,14 +16,13 @@ export const actions: Actions = {
 		const input = Input.safeParse(data);
 
 		if (!input.success) {
+			const errors = input.error.format();
 			return fail(403, {
-				data: {
-					releasedAt: data.releasedAt,
-					title: data.title,
-					author: data.author,
-					price: data.price
-				},
-				errors: input.error.format()
+				releasedAt: { value: data.releasedAt, errors: errors.releasedAt?._errors },
+				title: { value: data.title, errors: errors.title?._errors },
+				author: { value: data.author, errors: errors.author?._errors },
+				price: { value: data.price, errors: errors.price?._errors },
+				cover: { value: null, errors: errors.cover?._errors }
 			});
 		}
 
@@ -56,14 +55,11 @@ export const actions: Actions = {
 		}
 
 		return fail(403, {
-			data: {
-				releasedAt: data.releasedAt,
-				title: data.title,
-				author: data.author,
-				price: data.price
-			},
-			// internal error?
-			errors: {}
+			releasedAt: { value: data.releasedAt, errors: undefined },
+			title: { value: data.title, errors: undefined },
+			author: { value: data.author, errors: undefined },
+			price: { value: data.price, errors: undefined },
+			cover: { value: null, errors: undefined }
 		});
 	}
 };
