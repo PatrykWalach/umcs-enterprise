@@ -3,7 +3,7 @@ query NavbarQuery @cache(policy: CacheAndNetwork) {
 		books(first: 3) {
 			edges {
 				node @required {
-					covers(transformations: [{ width: 50 }]) {
+					covers(transformation: { quality: { auto: DEFAULT }, format: AUTO }, widths: [50]) {
 						url @required
 						width @required
 					}

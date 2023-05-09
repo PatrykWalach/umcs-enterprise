@@ -2,7 +2,7 @@ query BookControllerTestCover($id: ID!) {
 	node(id: $id) {
 		id
 		... on Book {
-			covers(transformations: [{}, { width: 100 }]) {
+			covers(widths: [null, 100]) {
 				url
 				width
 			}

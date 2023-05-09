@@ -11,23 +11,14 @@
 			fragment Book_book on Book {
 				id
 				covers(
-					transformations: [
-						{ width: 100 }
-						{ width: 200 }
-						{ width: 300 }
-						{ width: 400 }
-						{ width: 500 }
-						{ width: 600 }
-						{ width: 700 }
-						{ width: 800 }
-						{ width: 900 }
-						{ width: 1000 }
-						{ width: 1200 }
-						{ width: 1400 }
-						{ width: 1600 }
-						{ width: 1800 }
-						{ width: 2000 }
-					]
+					widths: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000]
+					transformation: {
+						aspectRatio: { width: 3, height: 4 }
+						crop: FILL_PAD
+						gravity: AUTO
+						quality: { auto: DEFAULT }
+						format: AUTO
+					}
 				) {
 					width @required
 					url @required
@@ -45,16 +36,16 @@
 	// );
 </script>
 
-<article class="card card-compact bg-base-100 shadow" aria-labelledby={$data?.id}>
+<article class="card-compact card bg-base-100 shadow" aria-labelledby={$data?.id}>
 	<figure>
 		<img
 			loading="lazy"
-			class="aspect-[3/4] h-auto w-full object-contain mix-blend-darken"
+			class="h-auto w-full mix-blend-darken"
 			srcset={$data?.covers
 				?.filter(isNotNull)
 				.map((cover) => `${cover.url} ${cover.width}w`)
 				.join(', ')}
-			sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+			sizes="(min-width: 1536px) 16.6vw, (min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw"
 			alt=""
 		/>
 	</figure>
@@ -84,7 +75,7 @@
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
+						fill_PAD="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
 						stroke="currentColor"
