@@ -19,9 +19,9 @@ input Transformation {
 enum Gravity {
 	AUTO
 }
-input AspectRatio{
-	height:Int
-	width:Int
+input AspectRatio {
+	height: Int
+	width: Int
 }
 
 enum Format {
@@ -128,7 +128,7 @@ type Cover {
 type Book implements Node {
 	author: String
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
-	covers(transformation: Transformation, widths:[Int]): [Cover]
+	covers(transformation: Transformation, widths: [Int]): [Cover]
 	id: ID!
 	popularity: Int
 	price: Price
