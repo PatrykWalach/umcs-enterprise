@@ -8,9 +8,44 @@ type Price {
 }
 
 input Transformation {
-	crop: String
+	aspectRatio: AspectRatio
+	crop: Crop
+	format: Format
+	gravity: Gravity
+	height: Int
+	quality: Quality
+	width: Int
+}
+enum Gravity {
+	AUTO
+}
+input AspectRatio {
 	height: Int
 	width: Int
+}
+
+enum Format {
+	AUTO
+	BMP
+	GIF
+	JPEG_2000
+	JPEG_XR
+	JPG
+	PNG
+	WEBP
+}
+
+input Quality {
+	auto: QualityAuto
+	percentage: Int
+}
+
+enum QualityAuto {
+	BEST
+	DEFAULT
+	ECO
+	GOOD
+	LOW
 }
 
 """
@@ -85,16 +120,16 @@ type BookEdge {
 }
 
 type Cover {
-	crop: Crop
 	height: Int
 	url: String
 	width: Int
 }
+
 type Book implements Node {
 	author: String
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
-	covers(transformations: [Transformation]): [Cover]
-	createdAt: DateTime
+	covers(transformation: Transformation, widths: [Int]): [Cover]
+  createdAt: DateTime
 	id: ID!
 	popularity: Int
 	price: Price
