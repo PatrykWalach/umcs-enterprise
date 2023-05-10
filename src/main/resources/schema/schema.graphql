@@ -129,7 +129,7 @@ type Book implements Node {
 	author: String
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
 	covers(transformation: Transformation, widths: [Int]): [Cover]
-  createdAt: DateTime
+	createdAt: DateTime
 	id: ID!
 	popularity: Int
 	price: Price
