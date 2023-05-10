@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
 
-test.only('can upload cover', async ({ page, admin }) => {
+test('can upload cover', async ({ page, admin }) => {
 	// given
 	const main = page.getByRole('main');
 	const nav = page.getByRole('navigation');
