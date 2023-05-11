@@ -1,11 +1,10 @@
 package com.umcs.enterprise.user;
 
-import java.util.*;
-
 import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.basket.BasketRepository;
 import com.umcs.enterprise.basket.BookEdgeRepository;
 import jakarta.transaction.Transactional;
+import java.util.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostFilter;
@@ -27,9 +26,10 @@ public class UserService {
 	}
 
 	@NonNull
-	private final BasketRepository basketRepository;	@NonNull
-	private final BookEdgeRepository bookEdgeRepository;
+	private final BasketRepository basketRepository;
 
+	@NonNull
+	private final BookEdgeRepository bookEdgeRepository;
 
 	@Transactional
 	public User save(User user) {
@@ -38,14 +38,12 @@ public class UserService {
 			.map(passwordEncoder::encode)
 			.ifPresent(user::setPassword);
 
-		if(user.getBasket() == null){
+		if (user.getBasket() == null) {
 			user.setBasket(basketRepository.save(new Basket()));
-		}else {
-
+		} else {
 			Basket saved = basketRepository.save(user.getBasket());
-			user.getBasket().getBooks().forEach(edge->edge.setBasket(saved));
+			user.getBasket().getBooks().forEach(edge -> edge.setBasket(saved));
 			bookEdgeRepository.saveAll(user.getBasket().getBooks());
-
 		}
 
 		return userRepository.save(user);

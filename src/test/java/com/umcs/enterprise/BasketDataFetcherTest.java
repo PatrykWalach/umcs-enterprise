@@ -8,16 +8,15 @@ import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.types.*;
+import com.umcs.enterprise.user.User;
+import com.umcs.enterprise.user.UserService;
+import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
-
-import com.umcs.enterprise.user.User;
-import com.umcs.enterprise.user.UserService;
-import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,8 +30,12 @@ import org.springframework.graphql.test.tester.HttpGraphQlTester;
 class BasketDataFetcherTest {
 
 	@Autowired
-	private HttpGraphQlTester graphQlTester;	@Autowired
-	private UserService userService;@Autowired
+	private HttpGraphQlTester graphQlTester;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private JwtService jwtService;
 
 	@Test
@@ -56,27 +59,24 @@ class BasketDataFetcherTest {
 	private CoverRepository coverRepository;
 
 	@ParameterizedTest
-	@CsvSource({
-			"true","false"
-	})
+	@CsvSource({ "true", "false" })
 	void basketBook(Boolean isUser) {
 		//        given
 
 		String token = null;
 
-
-		if(isUser){
+		if (isUser) {
 			var user = userService.save(
-					User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+				User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 			);
 
-			token = jwtService.signToken(
+			token =
+				jwtService.signToken(
 					Jwts
-							.builder()
-							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-							.setSubject(user.getUsername())
-			);
-
+						.builder()
+						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+						.setSubject(user.getUsername())
+				);
 		}
 
 		var book = bookRepository.save(
@@ -86,7 +86,6 @@ class BasketDataFetcherTest {
 				.price(BigDecimal.valueOf(10))
 				.build()
 		);
-
 
 		var tester = this.graphQlTester;
 

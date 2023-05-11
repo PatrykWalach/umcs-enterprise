@@ -11,13 +11,13 @@
 </script>
 
 <main class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
-	<form method="get" class="flex justify-end sm:gap-8 gap-2">
-		<select name="by" id="" class="select ">
+	<form method="get" class="flex justify-end gap-2 sm:gap-8">
+		<select name="by" id="" class="select">
 			<option value="realease_date" selected>Release date</option>
 			<option value="popularity">Popularity</option>
 			<option value="price">Price</option>
 		</select>
-		<select name="purchase" id="" class="select ">
+		<select name="purchase" id="" class="select">
 			<option value="asc">Ascending</option>
 			<option value="desc" selected>Descending</option>
 		</select>

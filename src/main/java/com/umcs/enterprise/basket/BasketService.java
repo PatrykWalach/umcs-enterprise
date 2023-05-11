@@ -19,12 +19,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 public interface BasketService {
+	@NonNull
+	Basket getBasket() throws JsonProcessingException;
 
-	@NonNull Basket getBasket( ) throws JsonProcessingException;
+	@NonNull
+	String basketBook(@NonNull UUID databaseId) throws JsonProcessingException;
 
-	@NonNull String basketBook( @NonNull UUID databaseId) throws JsonProcessingException;
-
-	@NonNull String unbasketBook( @NonNull UUID databaseId) throws JsonProcessingException;
+	@NonNull
+	String unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException;
 }

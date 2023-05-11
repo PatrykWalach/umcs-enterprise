@@ -15,19 +15,25 @@
 	<div class="">
 		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
-				<a class="btn-ghost max-sm:btn-square btn-primary btn normal-case text-3xl gap-2 flex" href="/">
+				<a
+					class="btn-primary btn-ghost btn flex gap-2 normal-case text-3xl max-sm:btn-square"
+					href="/"
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
 						stroke="currentColor"
-						class="h-6 sm:h-8 w-6 sm:w-8"
+						class="h-6 w-6 sm:h-8 sm:w-8"
 					>
- 
-						<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+						/>
 					</svg>
-					
+
 					<div class="hidden sm:block">Bookstore</div>
 				</a>
 			</div>

@@ -32,9 +32,8 @@ public class User implements UserDetails, Node {
 	@Column(unique = true)
 	private String username;
 
-
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(nullable=false, name = "basket_id")
+	@JoinColumn(nullable = false, name = "basket_id")
 	private Basket basket;
 
 	@Override

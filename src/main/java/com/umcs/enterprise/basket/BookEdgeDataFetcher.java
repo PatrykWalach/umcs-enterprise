@@ -12,7 +12,6 @@ import graphql.schema.DataFetchingEnvironment;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
@@ -26,26 +25,20 @@ public class BookEdgeDataFetcher {
 
 	@DgsData(parentType = "BasketBookEdge")
 	public CompletableFuture<BigDecimal> price(DgsDataFetchingEnvironment env) {
-
 		var edge = env.<Edge<BookEdge>>getSource();
 
 		DataLoader<UUID, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
-		return dataLoader.load(edge.getNode().getBook().getDatabaseId()).thenApply(
-				book -> book.getPrice().multiply(BigDecimal.valueOf(edge.getNode().getQuantity()))
-		);
-
-
+		return dataLoader
+			.load(edge.getNode().getBook().getDatabaseId())
+			.thenApply(book -> book.getPrice().multiply(BigDecimal.valueOf(edge.getNode().getQuantity()))
+			);
 	}
 
 	@DgsData(parentType = "BasketBookEdge")
 	public Integer quantity(DgsDataFetchingEnvironment env) {
-
 		var edge = env.<Edge<BookEdge>>getSource();
 
-
 		return edge.getNode().getQuantity();
-
-
 	}
 
 	@DgsData(parentType = "BasketBookEdge")
@@ -54,17 +47,13 @@ public class BookEdgeDataFetcher {
 
 		var edge = env.<Edge<BookEdge>>getSource();
 
-
 		return dataLoader.load(edge.getNode().getBook().getDatabaseId());
 	}
 
 	@DgsData(parentType = "Basket")
 	public Connection<BookEdge> books(DgsDataFetchingEnvironment env) {
-
 		Basket basket = env.getSource();
 
-		return  connectionService.getConnection(basket.getBooks(), env);
-
-
+		return connectionService.getConnection(basket.getBooks(), env);
 	}
 }

@@ -12,18 +12,18 @@ import lombok.*;
 @Builder(builderMethodName = "newBuilder")
 public class BookEdge {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "database_id")
-    private Long databaseId;
+	@Id
+	@GeneratedValue
+	@Column(name = "database_id")
+	private Long databaseId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "basket_id")
-    private Basket basket;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "basket_id")
+	private Basket basket;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "book_id")
+	private Book book;
 
-    private Integer quantity;
+	private Integer quantity;
 }

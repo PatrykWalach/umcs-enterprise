@@ -50,17 +50,29 @@ public class BasketDataFetcher {
 	}
 
 	@NonNull
-	private final JwtService jwtService;	@NonNull
+	private final JwtService jwtService;
 
-	private final BookRepository bookRepository;	@NonNull
-	private final BasketRepository basketRepository;	@NonNull
+	@NonNull
+	private final BookRepository bookRepository;
+
+	@NonNull
+	private final BasketRepository basketRepository;
+
+	@NonNull
 	private final BookEdgeRepository bookEdgeRepository;
 
-	private BasketService getBasketService(String Authorization ) {
-
-		if(Authorization != null &&		jwtService
-				.parseAuthorizationHeader(Authorization).getSubject() != null){
-			return new UserBasketService(jwtService, basketRepository, bookEdgeRepository, Authorization, bookRepository);
+	private BasketService getBasketService(String Authorization) {
+		if (
+			Authorization != null &&
+			jwtService.parseAuthorizationHeader(Authorization).getSubject() != null
+		) {
+			return new UserBasketService(
+				jwtService,
+				basketRepository,
+				bookEdgeRepository,
+				Authorization,
+				bookRepository
+			);
 		}
 
 		return new AnonymousBasketService(jwtService, Authorization, bookRepository);
@@ -74,14 +86,12 @@ public class BasketDataFetcher {
 
 		Basket basket = env.getSource();
 
-		return basket.getBooks()
-					.stream()
-					.filter(Objects::nonNull)
-					.map(edge ->
-						edge.getBook().getPrice().multiply(BigDecimal.valueOf(edge.getQuantity()))
-					)
-					.reduce(BigDecimal.ZERO, BigDecimal::add)
-			;
+		return basket
+			.getBooks()
+			.stream()
+			.filter(Objects::nonNull)
+			.map(edge -> edge.getBook().getPrice().multiply(BigDecimal.valueOf(edge.getQuantity())))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	@DgsData(parentType = "Basket")
@@ -89,10 +99,6 @@ public class BasketDataFetcher {
 		Basket basket = env.getSource();
 		return basket.getBooks().size();
 	}
-
-
-
-
 
 	@DgsMutation
 	public BasketBookResult basketBook(
@@ -103,22 +109,11 @@ public class BasketDataFetcher {
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 
-
 		BasketService service = getBasketService(Authorization);
-		String token = service.basketBook( globalId.databaseId());
+		String token = service.basketBook(globalId.databaseId());
 
-
-
-
-		return BasketBookResult
-			.newBuilder()
-
-			.token(token)
-				.basket( service.getBasket())
-			.build();
+		return BasketBookResult.newBuilder().token(token).basket(service.getBasket()).build();
 	}
-
-
 
 	@DgsMutation
 	public UnbasketBookResult unbasketBook(
@@ -126,24 +121,13 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-
-
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 
-
 		BasketService service = getBasketService(Authorization);
 
-		String token = service.unbasketBook( globalId.databaseId());
+		String token = service.unbasketBook(globalId.databaseId());
 
-
-
-
-		return UnbasketBookResult
-				.newBuilder()
-				.token(token)
-				.basket( service.getBasket())
-				.build();
+		return UnbasketBookResult.newBuilder().token(token).basket(service.getBasket()).build();
 	}
-
 }

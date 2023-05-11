@@ -15,7 +15,6 @@ public class CleanDb implements BeforeEachCallback {
 
 	@Override
 	public void beforeEach(ExtensionContext context) throws Exception {
-
 		SpringExtension
 			.getApplicationContext(context)
 			.getBean(BookPurchaseRepository.class)
@@ -24,10 +23,7 @@ public class CleanDb implements BeforeEachCallback {
 
 		SpringExtension.getApplicationContext(context).getBean(UserRepository.class).deleteAll();
 
-		SpringExtension
-				.getApplicationContext(context)
-				.getBean(BookEdgeRepository.class)
-				.deleteAll();
+		SpringExtension.getApplicationContext(context).getBean(BookEdgeRepository.class).deleteAll();
 		SpringExtension.getApplicationContext(context).getBean(BasketRepository.class).deleteAll();
 
 		SpringExtension.getApplicationContext(context).getBean(BookRepository.class).deleteAll();
