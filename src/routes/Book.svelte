@@ -61,7 +61,7 @@
 			{/if}
 		</div>
 		<div>
-			<form method="post" use:enhance class="flex items-center justify-between">
+			<form method="POST" use:enhance class="flex items-center justify-between">
 				<input type="hidden" name="id" value={$data?.id} />
 				<div class="font-bold text-lg">
 					{$data?.price?.formatted}

@@ -1,5 +1,6 @@
 package com.umcs.enterprise.user;
 
+import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.purchase.Purchase;
 import jakarta.persistence.*;
@@ -30,6 +31,11 @@ public class User implements UserDetails, Node {
 
 	@Column(unique = true)
 	private String username;
+
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(nullable=false, name = "basket_id")
+	private Basket basket;
 
 	@Override
 	public boolean isAccountNonExpired() {

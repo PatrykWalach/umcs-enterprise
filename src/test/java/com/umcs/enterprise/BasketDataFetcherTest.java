@@ -2,17 +2,26 @@ package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.types.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.umcs.enterprise.user.User;
+import com.umcs.enterprise.user.UserService;
+import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
@@ -22,7 +31,9 @@ import org.springframework.graphql.test.tester.HttpGraphQlTester;
 class BasketDataFetcherTest {
 
 	@Autowired
-	private HttpGraphQlTester graphQlTester;
+	private HttpGraphQlTester graphQlTester;	@Autowired
+	private UserService userService;@Autowired
+	private JwtService jwtService;
 
 	@Test
 	void basket() {
@@ -44,9 +55,29 @@ class BasketDataFetcherTest {
 	@Autowired
 	private CoverRepository coverRepository;
 
-	@Test
-	void basketBook() {
+	@ParameterizedTest
+	@CsvSource({
+			"true","false"
+	})
+	void basketBook(Boolean isUser) {
 		//        given
+
+		String token = null;
+
+
+		if(isUser){
+			var user = userService.save(
+					User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+			);
+
+			token = jwtService.signToken(
+					Jwts
+							.builder()
+							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+							.setSubject(user.getUsername())
+			);
+
+		}
 
 		var book = bookRepository.save(
 			Book
@@ -56,7 +87,7 @@ class BasketDataFetcherTest {
 				.build()
 		);
 
-		String token = null;
+
 		var tester = this.graphQlTester;
 
 		for (int i = 1; i < 3; i++) {

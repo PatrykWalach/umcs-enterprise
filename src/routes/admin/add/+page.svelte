@@ -7,7 +7,7 @@
 	$: isSubmitting = (void form, false);
 </script>
 
-<form method="post" encType="multipart/form-data" use:enhance class="grid grid-cols-3">
+<form method="POST" encType="multipart/form-data" use:enhance class="grid grid-cols-3">
 	<fieldset disabled={isSubmitting} class="">
 		<legend>Add book</legend>
 		<div class="form-control">

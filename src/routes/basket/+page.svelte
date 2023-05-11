@@ -54,7 +54,7 @@
 									</div>
 								</td>
 								<td class="hidden p-2 xl:table-cell">
-									<form action="" class="" method="post" use:enhance>
+									<form action="" class="" method="POST" use:enhance>
 										<input type="hidden" value={edge.node.id} name="id" />
 										<div class="btn-group">
 											<button class="btn-outline btn" formaction="/basket?/unbasket_book">-</button>

@@ -31,6 +31,8 @@ public class Purchase implements Node {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")
 	private List<BookPurchase> books;
 
+
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

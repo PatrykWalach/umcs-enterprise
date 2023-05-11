@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
 	import '../app.css';
 	import type { LayoutData } from './$houdini';
@@ -14,7 +15,21 @@
 	<div class="">
 		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
-				<a class="btn-ghost btn normal-case text-3xl" href="/">Bookstore</a>
+				<a class="btn-ghost max-sm:btn-square btn-primary btn normal-case text-3xl gap-2 flex" href="/">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="h-6 sm:h-8 w-6 sm:w-8"
+					>
+ 
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+					</svg>
+					
+					<div class="hidden sm:block">Bookstore</div>
+				</a>
 			</div>
 			<nav class="flex flex-none gap-1">
 				<div class="dropdown-end dropdown">
@@ -110,23 +125,27 @@
 								/>
 							</svg>
 						</button>
-						<ul
-							tabindex="-1"
-							class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow-xl"
-						>
-							<li>
-								<a class="justify-between" href="">
-									Profile
-									<span class="badge">New</span>
-								</a>
-							</li>
-							<li><a href="">Settings</a></li>
-							<li><a href="/logout">Logout</a></li>
-						</ul>
+						<form action="/logout" method="POST" use:enhance>
+							<ul
+								tabindex="-1"
+								class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow-xl"
+							>
+								<li>
+									<a class="justify-between" href="">
+										Profile
+										<span class="badge">New</span>
+									</a>
+								</li>
+								<li><a href="">Settings</a></li>
+								<li>
+									<button type="submit">Logout</button>
+								</li>
+							</ul>
+						</form>
 					</div>
 				{:else}
 					<a href="/login" class="btn-ghost btn">Login</a>
-					<a href="/register" class="btn-ghost hidden md:btn">Register</a>
+					<a href="/register" class="btn-ghost btn">Register</a>
 				{/if}
 			</nav>
 		</header>

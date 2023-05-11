@@ -10,6 +10,7 @@ interface User {
 export const test = base.extend<
 	{
 		register: (options?: Partial<User>) => Promise<User>;
+		login: (options: User) => Promise<User>;
 	},
 	{
 		app: PreviewServer;
@@ -32,7 +33,7 @@ export const test = base.extend<
 	async register(
 		{
 			page
-			//, login
+			// , login
 		},
 		use
 	) {
@@ -57,5 +58,17 @@ export const test = base.extend<
 		 *   await main.getByRole('button', { name: 'delete' }).click();
 		 * }
 		 * */
+	},
+	async login({ page }, use) {
+		await use(async ({ name, password }) => {
+			const main = page.getByRole('main');
+			const nav = page.getByRole('navigation');
+			await nav.getByRole('link', { name: 'login' }).click();
+			await main.getByLabel('Username').fill(name);
+			await main.getByLabel('Password').fill(password);
+			await main.getByRole('button', { name: 'login' }).click();
+
+			return { name, password };
+		});
 	}
 });

@@ -1,4 +1,4 @@
-query NavbarQuery @cache(policy: CacheAndNetwork) {
+query NavbarQuery {
 	basket {
 		books(first: 3) {
 			edges {
