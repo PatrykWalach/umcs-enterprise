@@ -5,7 +5,7 @@ const config: PlaywrightTestConfig = {
 		command: './gradlew bootRun',
 		url: 'http://localhost:8080/graphiql',
 		timeout: 3 * 60 * 1000,
-		reuseExistingServer: !process.env.CI,
+		reuseExistingServer: !process.env.CI
 	},
 	snapshotDir: './__snapshots__',
 	maxFailures: 100,
