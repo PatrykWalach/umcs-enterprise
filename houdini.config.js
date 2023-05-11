@@ -6,6 +6,7 @@ const config = {
 			framework: 'kit'
 		}
 	},
+	defaultCachePolicy: 'CacheAndNetwork',
 	scalars: {
 		Upload: {
 			type: 'File'

@@ -9,7 +9,7 @@
 
 <main>
 	<form
-		method="post"
+		method="POST"
 		aria-labelledby="add-book"
 		encType="multipart/form-data"
 		use:enhance

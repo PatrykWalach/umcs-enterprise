@@ -9,8 +9,9 @@ interface Viewer {
 
 export const test = base.extend<
 	{
+		register: (options?: Partial<Viewer>) => Promise<Viewer>;
+		login: (options: Viewer) => Promise<Viewer>;
 		admin: Viewer;
-		login(username: string, password: string): Promise<void>;
 	},
 	{
 		app: PreviewServer;
@@ -30,16 +31,48 @@ export const test = base.extend<
 		const [address] = app.resolvedUrls.local ?? [];
 		await use(address);
 	},
-	async login({ page }, use) {
-		await use(async (username: string, password: string) => {
-			await page.goto('/login');
-			await page.getByLabel('Username').fill(username);
-			await page.getByLabel('Password').fill(password);
-			await page.getByRole('button', { name: 'login' }).click();
-		});
+	async admin({login}, use){
+		await use(await login({name:'admin', password:'admin'}))
 	},
-	async admin({ login }, use) {
-		await login('admin', 'admin');
-		await use({ name: 'admin', password: 'admin' });
+	async register(
+		{
+			page
+			// , login
+		},
+		use
+	) {
+		const users: Viewer[] = [];
+
+		await use(async ({ name = crypto.randomUUID(), password = crypto.randomUUID() } = {}) => {
+			const main = page.getByRole('main');
+			const nav = page.getByRole('navigation');
+			await nav.getByRole('link', { name: 'register' }).click();
+			await main.getByLabel('Username').fill(name);
+			await main.getByLabel('Password').fill(password);
+			await main.getByRole('button', { name: 'register' }).click();
+			users.push({ name, password });
+			return { name, password };
+		});
+
+		/**
+		 * @TODO delete account
+		 * for (const user of users) {
+		 * 	 await login(user);
+		 *   await nav.getByRole('link', { name: 'profile' }).click();
+		 *   await main.getByRole('button', { name: 'delete' }).click();
+		 * }
+		 * */
+	},
+	async login({ page }, use) {
+		await use(async ({ name, password }) => {
+			const main = page.getByRole('main');
+			const nav = page.getByRole('navigation');
+			await nav.getByRole('link', { name: 'login' }).click();
+			await main.getByLabel('Username').fill(name);
+			await main.getByLabel('Password').fill(password);
+			await main.getByRole('button', { name: 'login' }).click();
+
+			return { name, password };
+		});
 	}
 });

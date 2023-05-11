@@ -8,7 +8,9 @@ import com.netflix.graphql.dgs.internal.DgsWebMvcRequestData;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.auth.UserDetailsService;
 import com.umcs.enterprise.book.BookDataLoader;
+import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
+import com.umcs.enterprise.purchase.BookPurchase;
 import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
 import io.jsonwebtoken.JwtParser;
@@ -23,8 +25,12 @@ import java.util.concurrent.CompletableFuture;
 import javax.crypto.SecretKey;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.descriptor.web.ContextHandler;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.dataloader.DataLoader;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -38,51 +44,60 @@ public class BasketDataFetcher {
 	private String secret;
 
 	@DgsQuery
-	public Map<UUID, Integer> basket(@RequestHeader(required = false) String Authorization)
+	public Basket basket(@RequestHeader(required = false) String Authorization)
 		throws JsonProcessingException {
-		return basketService.getBasket(Authorization);
+		return getBasketService(Authorization).getBasket();
+	}
+
+	@NonNull
+	private final JwtService jwtService;
+
+	@NonNull
+	private final BookRepository bookRepository;
+
+	@NonNull
+	private final BasketRepository basketRepository;
+
+	@NonNull
+	private final BookEdgeRepository bookEdgeRepository;
+
+	private BasketService getBasketService(String Authorization) {
+		if (
+			Authorization != null &&
+			jwtService.parseAuthorizationHeader(Authorization).getSubject() != null
+		) {
+			return new UserBasketService(
+				jwtService,
+				basketRepository,
+				bookEdgeRepository,
+				Authorization,
+				bookRepository
+			);
+		}
+
+		return new AnonymousBasketService(jwtService, Authorization, bookRepository);
 	}
 
 	@DgsData(parentType = "Basket")
-	public CompletableFuture<BigDecimal> price(DgsDataFetchingEnvironment env) {
+	public BigDecimal price(DgsDataFetchingEnvironment env) {
 		DataLoader<UUID, com.umcs.enterprise.book.Book> dataLoader = env.getDataLoader(
 			BookDataLoader.class
 		);
 
-		Map<UUID, Integer> basket = env.getSource();
+		Basket basket = env.getSource();
 
-		return dataLoader
-			.loadMany(basket.keySet().stream().toList())
-			.thenApply(books ->
-				books
-					.stream()
-					.filter(Objects::nonNull)
-					.map(book ->
-						book.getPrice().multiply(BigDecimal.valueOf(basket.get(book.getDatabaseId())))
-					)
-					.reduce(BigDecimal.ZERO, BigDecimal::add)
-			);
+		return basket
+			.getBooks()
+			.stream()
+			.filter(Objects::nonNull)
+			.map(edge -> edge.getBook().getPrice().multiply(BigDecimal.valueOf(edge.getQuantity())))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	@DgsData(parentType = "Basket")
 	public Integer quantity(DgsDataFetchingEnvironment env) {
-		Map<Long, Integer> basket = env.getSource();
-		return basket.values().stream().reduce(0, Integer::sum);
-	}
-
-	@DgsData(parentType = "Basket")
-	public String id(DataFetchingEnvironment env) throws JsonProcessingException {
-		return Base64
-			.getEncoder()
-			.encodeToString(
-				new ObjectMapper()
-					.writeValueAsString(env.<Map<Long, Integer>>getSource())
-					.getBytes(StandardCharsets.UTF_8)
-			);
-	}
-
-	private String setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
-		return new ObjectMapper().writeValueAsString(basket);
+		Basket basket = env.getSource();
+		return basket.getBooks().size();
 	}
 
 	@DgsMutation
@@ -91,21 +106,14 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		Map<UUID, Integer> books = basketService.getBasket(Authorization);
-
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
-		books.merge(globalId.databaseId(), 1, Integer::sum);
 
-		return BasketBookResult
-			.newBuilder()
-			.basket(books)
-			.token(basketService.setBasket(Authorization, books))
-			.build();
+		BasketService service = getBasketService(Authorization);
+		String token = service.basketBook(globalId.databaseId());
+
+		return BasketBookResult.newBuilder().token(token).basket(service.getBasket()).build();
 	}
-
-	@NonNull
-	private final BasketService basketService;
 
 	@DgsMutation
 	public UnbasketBookResult unbasketBook(
@@ -113,27 +121,13 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		Map<UUID, Integer> books = basketService.getBasket(Authorization);
-
 		GlobalId globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 
-		books.computeIfPresent(
-			globalId.databaseId(),
-			(k, v) -> {
-				if (v < 2) {
-					return null;
-				}
-				return v - 1;
-			}
-		);
+		BasketService service = getBasketService(Authorization);
 
-		return UnbasketBookResult
-			.newBuilder()
-			.basket(books)
-			.token(basketService.setBasket(Authorization, books))
-			.build();
+		String token = service.unbasketBook(globalId.databaseId());
+
+		return UnbasketBookResult.newBuilder().token(token).basket(service.getBasket()).build();
 	}
-
-	private final JwtService jwtService;
 }

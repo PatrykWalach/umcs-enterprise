@@ -46,7 +46,7 @@
 					</figure>
 				</div>
 
-				<form method="post" use:enhance class="grid gap-2 md:gap-4">
+				<form method="POST" use:enhance class="grid gap-2 md:gap-4">
 					<input type="hidden" name="id" value={$BookQuery.data.node.id} />
 					{#if $BookQuery.data.viewer?.__typename === 'Admin'}
 						<button type="submit" class="btn-error btn-lg btn" formaction="?/delete">Delete</button>
@@ -72,9 +72,9 @@
 								{$BookQuery.data.node.author}
 							</address>
 						{/if}
-						<div class="font-medium text-xl">
+						<b class="font-medium text-xl">
 							{$BookQuery.data.node.price?.formatted}
-						</div>
+						</b>
 					</div>
 				</div>
 			</header>
