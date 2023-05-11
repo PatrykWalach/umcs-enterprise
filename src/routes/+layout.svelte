@@ -80,7 +80,7 @@
 							</ul>
 							<div class="card-actions">
 								<span class="font-semibold text-info text-lg">
-									Total: {$NavbarQuery.data?.basket?.price?.formatted ?? 0}
+									Total: <strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
 								</span>
 								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
 							</div>

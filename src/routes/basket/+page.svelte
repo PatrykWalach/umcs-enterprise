@@ -73,7 +73,7 @@
 						<td class="p-2"><span class="text-base">Total</span></td>
 						<td class="hidden p-2 xl:table-cell" />
 						<td class="p-2">
-							<span class="font-semibold">{$BasketQuery.data?.basket?.price?.formatted}</span>
+							<strong class="font-semibold">{$BasketQuery.data?.basket?.price?.formatted}</strong>
 						</td>
 					</tr>
 				</table>
