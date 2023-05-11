@@ -11,7 +11,7 @@ test('can upload cover', async ({ page, admin }) => {
 
 	await form.getByLabel('Title').fill('Foo');
 	await form.getByLabel('Author').fill('Bar');
-	await form.getByLabel('Price').type('12,5');
+	await form.getByLabel('Price').type('12.5');
 	await form.getByLabel('Release date').fill('2023-04-24');
 	await form.getByLabel('Cover').setInputFiles('src/test/resources/cover.jpg');
 
