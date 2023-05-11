@@ -1,5 +1,6 @@
 import { graphql } from '$houdini';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import type { Actions } from './$houdini';
 import { z } from 'zod';
 
 const Input = z.object({

@@ -2,8 +2,16 @@ import { test as base } from '@playwright/test';
 
 import { preview, type PreviewServer } from 'vite';
 
+interface User {
+	name: string;
+	password: string;
+}
+
 export const test = base.extend<
-	Record<never, never>,
+	{
+		register: (options?: Partial<User>) => Promise<User>;
+		login: (options: User) => Promise<User>;
+	},
 	{
 		app: PreviewServer;
 	}
@@ -21,5 +29,46 @@ export const test = base.extend<
 	async baseURL({ app }, use) {
 		const [address] = app.resolvedUrls.local ?? [];
 		await use(address);
+	},
+	async register(
+		{
+			page
+			// , login
+		},
+		use
+	) {
+		const users: User[] = [];
+
+		await use(async ({ name = crypto.randomUUID(), password = crypto.randomUUID() } = {}) => {
+			const main = page.getByRole('main');
+			const nav = page.getByRole('navigation');
+			await nav.getByRole('link', { name: 'register' }).click();
+			await main.getByLabel('Username').fill(name);
+			await main.getByLabel('Password').fill(password);
+			await main.getByRole('button', { name: 'register' }).click();
+			users.push({ name, password });
+			return { name, password };
+		});
+
+		/**
+		 * @TODO delete account
+		 * for (const user of users) {
+		 * 	 await login(user);
+		 *   await nav.getByRole('link', { name: 'profile' }).click();
+		 *   await main.getByRole('button', { name: 'delete' }).click();
+		 * }
+		 * */
+	},
+	async login({ page }, use) {
+		await use(async ({ name, password }) => {
+			const main = page.getByRole('main');
+			const nav = page.getByRole('navigation');
+			await nav.getByRole('link', { name: 'login' }).click();
+			await main.getByLabel('Username').fill(name);
+			await main.getByLabel('Password').fill(password);
+			await main.getByRole('button', { name: 'login' }).click();
+
+			return { name, password };
+		});
 	}
 });

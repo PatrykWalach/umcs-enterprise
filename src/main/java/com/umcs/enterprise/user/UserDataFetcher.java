@@ -3,10 +3,13 @@ package com.umcs.enterprise.user;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.auth.JwtService;
-import com.umcs.enterprise.basket.BasketService;
+import com.umcs.enterprise.basket.*;
+import com.umcs.enterprise.basket.Basket;
+import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
 import io.jsonwebtoken.Jwts;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -30,9 +33,6 @@ public class UserDataFetcher {
 	@NonNull
 	private final AuthenticationManager authenticationManager;
 
-	@NonNull
-	private final BasketService basketService;
-
 	@DgsMutation
 	public LoginResult login(
 		@InputArgument LoginInput input,
@@ -43,15 +43,24 @@ public class UserDataFetcher {
 				new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
 			);
 
-			String token = basketService.setBasket(
-				jwtService.signToken(
-					Jwts
-						.builder()
-						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-						.setSubject(auth.getName())
-				),
-				basketService.getBasket(Authorization)
-			);
+			Basket basket = new AnonymousBasketService(jwtService, Authorization, bookRepository)
+				.getBasket();
+
+			if (basket.getBooks().size() > 0) {
+				Basket saved = basketRepository.findByUser_Username(auth.getName());
+				basket.getBooks().forEach(edge -> edge.setBasket(saved));
+				bookEdgeRepository.saveAll(basket.getBooks());
+			}
+
+			String token =
+				(
+					jwtService.signToken(
+						Jwts
+							.builder()
+							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+							.setSubject(auth.getName())
+					)
+				);
 
 			return LoginSuccess.newBuilder().token(token).build();
 		} catch (AuthenticationException e) {
@@ -77,6 +86,15 @@ public class UserDataFetcher {
 	@NonNull
 	private final JwtService jwtService;
 
+	@NonNull
+	private final BasketRepository basketRepository;
+
+	@NonNull
+	private final BookRepository bookRepository;
+
+	@NonNull
+	private final BookEdgeRepository bookEdgeRepository;
+
 	@DgsMutation
 	public RegisterResult register(
 		@InputArgument RegisterInput input,
@@ -92,15 +110,21 @@ public class UserDataFetcher {
 					.build()
 			);
 
-			String token = basketService.setBasket(
-				jwtService.signToken(
-					Jwts
-						.builder()
-						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-						.setSubject(user.getUsername())
-				),
-				basketService.getBasket(Authorization)
-			);
+			Basket basket = new AnonymousBasketService(jwtService, Authorization, bookRepository)
+				.getBasket();
+
+			basket.getBooks().forEach(edge -> edge.setBasket(user.getBasket()));
+			bookEdgeRepository.saveAll(basket.getBooks());
+
+			String token =
+				(
+					jwtService.signToken(
+						Jwts
+							.builder()
+							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+							.setSubject(user.getUsername())
+					)
+				);
 
 			return RegisterSuccess.newBuilder().token(token).build();
 		} catch (DataIntegrityViolationException e) {

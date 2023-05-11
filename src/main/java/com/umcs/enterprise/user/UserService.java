@@ -1,5 +1,9 @@
 package com.umcs.enterprise.user;
 
+import com.umcs.enterprise.basket.Basket;
+import com.umcs.enterprise.basket.BasketRepository;
+import com.umcs.enterprise.basket.BookEdgeRepository;
+import jakarta.transaction.Transactional;
 import java.util.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +25,26 @@ public class UserService {
 		return userRepository.findByUsername(username);
 	}
 
+	@NonNull
+	private final BasketRepository basketRepository;
+
+	@NonNull
+	private final BookEdgeRepository bookEdgeRepository;
+
+	@Transactional
 	public User save(User user) {
 		Optional
 			.ofNullable(user.getPassword())
 			.map(passwordEncoder::encode)
 			.ifPresent(user::setPassword);
+
+		if (user.getBasket() == null) {
+			user.setBasket(basketRepository.save(new Basket()));
+		} else {
+			Basket saved = basketRepository.save(user.getBasket());
+			user.getBasket().getBooks().forEach(edge -> edge.setBasket(saved));
+			bookEdgeRepository.saveAll(user.getBasket().getBooks());
+		}
 
 		return userRepository.save(user);
 	}
