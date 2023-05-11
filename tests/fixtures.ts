@@ -31,8 +31,8 @@ export const test = base.extend<
 		const [address] = app.resolvedUrls.local ?? [];
 		await use(address);
 	},
-	async admin({login}, use){
-		await use(await login({name:'admin', password:'admin'}))
+	async admin({ login }, use) {
+		await use(await login({ name: 'admin', password: 'admin' }));
 	},
 	async register(
 		{
