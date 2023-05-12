@@ -84,16 +84,16 @@ public interface TransformationMapper {
 	)
 	String qualityAutoToString(com.umcs.enterprise.types.QualityAuto value);
 
-   default String qualityToString(com.umcs.enterprise.types.Quality quality){
-	   if (quality == null) {
-		   return null;
-	   }
+	default String qualityToString(com.umcs.enterprise.types.Quality quality) {
+		if (quality == null) {
+			return null;
+		}
 
-        if(quality.getPercentage() !=null){
-            return  quality.getPercentage().toString();
-        }
-        return  qualityAutoToString(quality.getAuto());
-    }
+		if (quality.getPercentage() != null) {
+			return quality.getPercentage().toString();
+		}
+		return qualityAutoToString(quality.getAuto());
+	}
 
 	default String aspectRationToString(com.umcs.enterprise.types.AspectRatio value) {
 		if (value == null) {
