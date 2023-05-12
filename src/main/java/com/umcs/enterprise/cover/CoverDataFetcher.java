@@ -1,7 +1,6 @@
 package com.umcs.enterprise.cover;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.Transformation;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
@@ -17,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
+import org.mapstruct.factory.Mappers;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -38,100 +38,12 @@ public class CoverDataFetcher {
 				cloudinary
 					.url()
 					.transformation(
-						new Transformation<>()
-							.gravity(getGravity(transformation.getGravity()))
-							.aspectRatio(
-								Optional
-									.ofNullable(transformation.getAspectRatio())
-									.map(aspect -> "" + aspect.getWidth() + ":" + aspect.getHeight())
-									.orElse(null)
-							)
-							.width(transformation.getWidth())
-							.height(transformation.getHeight())
-							.crop(getCrop(transformation.getCrop()))
-							.quality(new QualityAdapter(transformation.getQuality()).transform())
-							.fetchFormat(getFormat(transformation.getFormat()))
+							Mappers.getMapper(TransformationMapper.class).map(transformation)
 					)
 					.generate(cover.getUuid())
 			);
 	}
 
-	@RequiredArgsConstructor
-	static class QualityAdapter {
-
-		private final Quality quality;
-
-		public Object transform() {
-			if (quality == null) {
-				return null;
-			}
-
-			if (quality.getPercentage() != null) {
-				return quality.getPercentage();
-			}
-
-			if (quality.getAuto() == null) {
-				return null;
-			}
-
-			return switch (quality.getAuto()) {
-				case DEFAULT -> "auto";
-				case BEST -> "auto:best";
-				case ECO -> "auto:eco";
-				case GOOD -> "auto:good";
-				case LOW -> "auto:low";
-			};
-		}
-	}
-
-	public String getGravity(Gravity gravity) {
-		if (gravity == null) {
-			return null;
-		}
-		return switch (gravity) {
-			case AUTO -> "auto";
-		};
-	}
-
-	public String getCrop(Crop crop) {
-		if (crop == null) {
-			return null;
-		}
-
-		return switch (crop) {
-			case FILL -> " fill";
-			case FIT -> " fit";
-			case FILL_PAD -> " fill_pad";
-			case IMAGGA_CROP -> " imagga_crop";
-			case IMAGGA_SCALE -> " imagga_scale";
-			case CROP -> "  crop";
-			case LFILL -> " lfill";
-			case LIMIT -> "  limit";
-			case LPAD -> " lpad";
-			case MFIT -> " mfit";
-			case MPAD -> " mpad";
-			case PAD -> " pad";
-			case SCALE -> " scale";
-			case THUMB -> " thumb";
-		};
-	}
-
-	public String getFormat(Format format) {
-		if (format == null) {
-			return null;
-		}
-
-		return switch (format) {
-			case BMP -> "bmp";
-			case GIF -> "gif";
-			case JPEG_2000 -> "jp2";
-			case JPEG_XR -> "jxr";
-			case AUTO -> "auto";
-			case JPG -> "jpg";
-			case PNG -> "png";
-			case WEBP -> "webp";
-		};
-	}
 
 	@DgsData(parentType = "Book")
 	public DataFetcherResult<List<com.umcs.enterprise.types.Transformation>> covers(
@@ -139,28 +51,18 @@ public class CoverDataFetcher {
 		@InputArgument com.umcs.enterprise.types.Transformation transformation,
 		@InputArgument List<Integer> widths
 	) {
-		if (transformation == null) {
-			transformation = new com.umcs.enterprise.types.Transformation();
-		}
-
-		com.umcs.enterprise.types.Transformation finalTransformation = transformation;
+	 
 
 		return DataFetcherResult
 			.<List<com.umcs.enterprise.types.Transformation>>newResult()
 			.data(
 				widths
 					.stream()
-					.map(width ->
-						com.umcs.enterprise.types.Transformation
-							.newBuilder()
-							.crop(finalTransformation.getCrop())
-							.gravity(finalTransformation.getGravity())
-							.format(finalTransformation.getFormat())
-							.height(finalTransformation.getHeight())
-							.width(width)
-							.quality(finalTransformation.getQuality())
-							.aspectRatio(finalTransformation.getAspectRatio())
-							.build()
+					.map(width -> {
+						Transformation copy = Mappers.getMapper(TransformationMapper.class).copy(transformation);
+						copy.setWidth(width);
+						return  copy;
+							}
 					)
 					.collect(Collectors.toList())
 			)
