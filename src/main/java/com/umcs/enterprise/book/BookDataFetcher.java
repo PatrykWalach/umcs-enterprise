@@ -9,7 +9,6 @@ import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
 import java.util.*;
-
 import lombok.*;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Sort;
@@ -86,18 +85,15 @@ public class BookDataFetcher {
 
 	@Secured("ADMIN")
 	@DgsMutation
-	public Book createBook(@InputArgument com.umcs.enterprise.types.CreateBookInput input) throws IOException {
-
+	public Book createBook(@InputArgument com.umcs.enterprise.types.CreateBookInput input)
+		throws IOException {
 		Book book = Mappers.getMapper(CreateBookInputMapper.class).createBookInputToBook(input);
-
 
 		if (input.getCover().getFile() != null) {
 			book.setCover(coverService.upload(input.getCover().getFile()));
 		} else {
 			book.setCover(coverService.upload(input.getCover().getUrl()));
 		}
-
-
 
 		return bookRepository.save(book);
 	}

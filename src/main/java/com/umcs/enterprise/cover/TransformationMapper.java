@@ -54,7 +54,9 @@ public interface TransformationMapper {
 	@Mapping(target = "fetchFormat", source = "format")
 	com.cloudinary.Transformation map(com.umcs.enterprise.types.Transformation value);
 
-    com.umcs.enterprise.types.Transformation copy(com.umcs.enterprise.types.Transformation transformation);
+	com.umcs.enterprise.types.Transformation copy(
+		com.umcs.enterprise.types.Transformation transformation
+	);
 
 	@ValueMappings(
 		{

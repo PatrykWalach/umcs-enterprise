@@ -37,13 +37,10 @@ public class CoverDataFetcher {
 			.thenApply(cover ->
 				cloudinary
 					.url()
-					.transformation(
-							Mappers.getMapper(TransformationMapper.class).map(transformation)
-					)
+					.transformation(Mappers.getMapper(TransformationMapper.class).map(transformation))
 					.generate(cover.getUuid())
 			);
 	}
-
 
 	@DgsData(parentType = "Book")
 	public DataFetcherResult<List<com.umcs.enterprise.types.Transformation>> covers(
@@ -51,8 +48,6 @@ public class CoverDataFetcher {
 		@InputArgument com.umcs.enterprise.types.Transformation transformation,
 		@InputArgument List<Integer> widths
 	) {
-	 
-
 		return DataFetcherResult
 			.<List<com.umcs.enterprise.types.Transformation>>newResult()
 			.data(
@@ -63,9 +58,8 @@ public class CoverDataFetcher {
 								Optional.ofNullable(transformation).orElse(new Transformation())
 						);
 						copy.setWidth(width);
-						return  copy;
-							}
-					)
+						return copy;
+					})
 					.collect(Collectors.toList())
 			)
 			.localContext(env.<Book>getSource())
