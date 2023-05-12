@@ -3,7 +3,7 @@ package com.umcs.enterprise.book;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.*;
 import com.umcs.enterprise.cover.CoverService;
-import com.umcs.enterprise.types.*;
+
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
@@ -11,7 +11,9 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.BiConsumer;
+
 import lombok.*;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 
@@ -58,7 +60,7 @@ public class BookDataFetcher {
 	@DgsQuery
 	public graphql.relay.Connection<Book> books(
 		DataFetchingEnvironment env,
-		@InputArgument List<BookOrderBy> orderBy
+		@InputArgument List<com.umcs.enterprise.types.BookOrderBy> orderBy
 	) {
 		return connectionService.getConnection(
 			this.bookRepository.findAll(
@@ -67,7 +69,7 @@ public class BookDataFetcher {
 						(fields, order) -> {
 							fields.put(
 								"price",
-								Optional.ofNullable(order.getPrice()).map(PriceOrderBy::getRaw).orElse(null)
+								Optional.ofNullable(order.getPrice()).map(com.umcs.enterprise.types.PriceOrderBy::getRaw).orElse(null)
 							);
 							fields.put("popularity", order.getPopularity());
 							fields.put("releasedAt", order.getReleasedAt());
@@ -99,10 +101,10 @@ public class BookDataFetcher {
 
 	@Secured("ADMIN")
 	@DgsMutation
-	public Book createBook(@InputArgument CreateBookInput input) throws IOException {
-		var book = new Book();
-		book.setAuthor(input.getAuthor());
-		book.setPrice(BigDecimal.valueOf(input.getPrice().getRaw()));
+	public Book createBook(@InputArgument com.umcs.enterprise.types.CreateBookInput input) throws IOException {
+
+		Book book = Mappers.getMapper(CreateBookInputMapper.class).createBookInputToBook(input);
+
 
 		if (input.getCover().getFile() != null) {
 			book.setCover(coverService.upload(input.getCover().getFile()));
@@ -110,8 +112,7 @@ public class BookDataFetcher {
 			book.setCover(coverService.upload(input.getCover().getUrl()));
 		}
 
-		book.setPopularity(0L);
-		book.setTitle(input.getTitle());
+
 
 		return bookRepository.save(book);
 	}

@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     implementation 'com.netflix.graphql.dgs:graphql-dgs-pagination'
     implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
@@ -36,7 +37,9 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5',
             'io.jsonwebtoken:jjwt-jackson:0.11.5'
     runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.graphql:spring-graphql-test'
 }

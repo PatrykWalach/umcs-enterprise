@@ -6,10 +6,12 @@ import com.umcs.enterprise.purchase.BookPurchase;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
@@ -31,6 +33,7 @@ public class Book implements Node {
 
 	private String author;
 
+
 	private String title;
 
 	@Column(length = 2_000)
@@ -47,7 +50,7 @@ public class Book implements Node {
 	@Column(nullable = false)
 	private Instant createdAt;
 
-	private ZonedDateTime releasedAt;
+	private OffsetDateTime releasedAt;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
 	private List<BookPurchase> purchases;

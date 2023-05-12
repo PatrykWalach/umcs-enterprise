@@ -4,6 +4,7 @@ query BasketDataFetcherTestBasket {
 			edges {
 				node {
 					id
+					title
 				}
 				price {
 					formatted

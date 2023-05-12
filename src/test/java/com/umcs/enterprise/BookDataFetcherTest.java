@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -144,6 +144,80 @@ class BookDataFetcherTest {
 			.andExpect(jsonPath("data.createBook.book.price.formatted").isNotEmpty())
 			.andExpect(jsonPath("data.createBook.book.popularity").value(0))
 			.andExpect(jsonPath("data.createBook.book.covers[0].url").isNotEmpty());
+
+		Assertions.assertEquals(1L, bookRepository.count());
+		Assertions.assertEquals(1L, coverRepository.count());
+	}
+
+
+	@Test
+	void createBook_admin_validation() throws Exception {
+		//        given
+		var user = userRepository.save(
+				User
+						.newBuilder()
+						.authorities(Collections.singletonList(("ADMIN")))
+						.password("user")
+						.username("user")
+						.build()
+		);
+		String token = jwtService.signToken(
+				Jwts
+						.builder()
+						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+						.setSubject(user.getUsername())
+		);
+
+		var input = new LinkedHashMap<>();
+		var coverInput = new LinkedHashMap<>();
+		coverInput.put("file", null);
+		input.put("title", (""));
+		input.put("author", ("The Author"));
+		input.put("releasedAt", (OffsetDateTime.now().toString()));
+		input.put("cover", (coverInput));
+		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+
+		Resource file = new ClassPathResource("cover.jpg");
+
+		String query = new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
+				.getContentAsString(StandardCharsets.UTF_8);
+
+		//        when
+		this.mvc.perform(
+						multipart("/graphql")
+								.file(
+										new MockMultipartFile(
+												"0",
+												file.getFilename(),
+												MediaType.IMAGE_JPEG_VALUE,
+												file.getInputStream()
+										)
+								)
+								.param(
+										"operations",
+										new ObjectMapper()
+												.writeValueAsString(Map.of("query", query, "variables", Map.of("input", input)))
+								)
+								.param(
+										"map",
+										new ObjectMapper()
+												.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
+								)
+								.header("Authorization", "Bearer " + token)
+								.header("graphql-require-preflight", "")
+				)
+				//                then
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("errors").doesNotExist())
+				.andExpect(jsonPath("data.createBook.book.title").value(input.get("title")))
+				.andExpect(jsonPath("data.createBook.book.author").value(input.get("author")))
+				.andExpect(
+						jsonPath("data.createBook.book.price.raw")
+								.value(((CreatePriceInput) input.get("price")).getRaw())
+				)
+				.andExpect(jsonPath("data.createBook.book.price.formatted").isNotEmpty())
+				.andExpect(jsonPath("data.createBook.book.popularity").value(0))
+				.andExpect(jsonPath("data.createBook.book.covers[0].url").isNotEmpty());
 
 		Assertions.assertEquals(1L, bookRepository.count());
 		Assertions.assertEquals(1L, coverRepository.count());
@@ -422,10 +496,10 @@ class BookDataFetcherTest {
 		book2.setTitle("Book:2");
 		book3.setTitle("Book:3");
 
-		book2.setReleasedAt(ZonedDateTime.now());
-		book3.setReleasedAt(ZonedDateTime.now().plusDays(1));
-		book1.setReleasedAt(ZonedDateTime.now().plusDays(2));
-		book0.setReleasedAt(ZonedDateTime.now().plusDays(3));
+		book2.setReleasedAt(OffsetDateTime.now());
+		book3.setReleasedAt(OffsetDateTime.now().plusDays(1));
+		book1.setReleasedAt(OffsetDateTime.now().plusDays(2));
+		book0.setReleasedAt(OffsetDateTime.now().plusDays(3));
 
 		book3.setPrice(BigDecimal.valueOf(50));
 		book0.setPrice(BigDecimal.valueOf(60));
