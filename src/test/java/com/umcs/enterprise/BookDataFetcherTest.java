@@ -149,8 +149,6 @@ class BookDataFetcherTest {
 		Assertions.assertEquals(1L, coverRepository.count());
 	}
 
- 
-
 	@Autowired
 	private UserService userRepository;
 
