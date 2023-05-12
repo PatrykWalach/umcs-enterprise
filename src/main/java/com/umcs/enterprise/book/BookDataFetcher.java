@@ -3,7 +3,6 @@ package com.umcs.enterprise.book;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.*;
 import com.umcs.enterprise.cover.CoverService;
-
 import com.umcs.enterprise.types.BookOrderBy;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
@@ -21,7 +20,6 @@ public class BookDataFetcher {
 	@NonNull
 	private final BookRepository bookRepository;
 
-
 	@NonNull
 	private final ConnectionService connectionService;
 
@@ -30,37 +28,17 @@ public class BookDataFetcher {
 		DataFetchingEnvironment env,
 		@InputArgument List<BookOrderBy> orderBy
 	) {
-
-
-
-		List<Sort.Order> orders = Mappers.getMapper(BookOrderByMapper.class).bookOrderByListToOrders(orderBy);
-
+		List<Sort.Order> orders = Mappers
+			.getMapper(BookOrderByMapper.class)
+			.bookOrderByListToOrders(orderBy);
 
 		System.out.println(orders);
 
-		if(orders !=null){
-			return connectionService.getConnection(
-					this.bookRepository.findAll(
-
-							Sort.by(orders
-
-							)
-
-
-			),
-			env
-		);
+		if (orders != null) {
+			return connectionService.getConnection(this.bookRepository.findAll(Sort.by(orders)), env);
 		}
 
-
-		return connectionService.getConnection(
-			this.bookRepository.findAll(
-
-
-
-				),
-			env
-		);
+		return connectionService.getConnection(this.bookRepository.findAll(), env);
 	}
 
 	@NonNull
@@ -76,7 +54,6 @@ public class BookDataFetcher {
 
 	@NonNull
 	private final CoverService coverService;
-
 
 	@DgsData(parentType = "CreateBookResult")
 	public Book book(DataFetchingEnvironment env) {
