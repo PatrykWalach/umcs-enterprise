@@ -83,6 +83,10 @@ public interface TransformationMapper {
 	String qualityAutoToString(com.umcs.enterprise.types.QualityAuto value);
 
    default String qualityToString(com.umcs.enterprise.types.Quality quality){
+	   if (quality == null) {
+		   return null;
+	   }
+
         if(quality.getPercentage() !=null){
             return  quality.getPercentage().toString();
         }

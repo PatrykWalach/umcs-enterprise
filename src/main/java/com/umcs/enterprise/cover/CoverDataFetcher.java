@@ -59,7 +59,9 @@ public class CoverDataFetcher {
 				widths
 					.stream()
 					.map(width -> {
-						Transformation copy = Mappers.getMapper(TransformationMapper.class).copy(transformation);
+						Transformation copy = Mappers.getMapper(TransformationMapper.class).copy(
+								Optional.ofNullable(transformation).orElse(new Transformation())
+						);
 						copy.setWidth(width);
 						return  copy;
 							}
