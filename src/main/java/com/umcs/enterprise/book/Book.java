@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,7 +31,6 @@ public class Book implements Node {
 	private UUID databaseId;
 
 	private String author;
-
 
 	private String title;
 

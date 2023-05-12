@@ -3,7 +3,6 @@ package com.umcs.enterprise.book;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.*;
 import com.umcs.enterprise.cover.CoverService;
-
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.BiConsumer;
-
 import lombok.*;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Sort;
@@ -69,7 +67,10 @@ public class BookDataFetcher {
 						(fields, order) -> {
 							fields.put(
 								"price",
-								Optional.ofNullable(order.getPrice()).map(com.umcs.enterprise.types.PriceOrderBy::getRaw).orElse(null)
+								Optional
+									.ofNullable(order.getPrice())
+									.map(com.umcs.enterprise.types.PriceOrderBy::getRaw)
+									.orElse(null)
 							);
 							fields.put("popularity", order.getPopularity());
 							fields.put("releasedAt", order.getReleasedAt());
@@ -101,18 +102,15 @@ public class BookDataFetcher {
 
 	@Secured("ADMIN")
 	@DgsMutation
-	public Book createBook(@InputArgument com.umcs.enterprise.types.CreateBookInput input) throws IOException {
-
+	public Book createBook(@InputArgument com.umcs.enterprise.types.CreateBookInput input)
+		throws IOException {
 		Book book = Mappers.getMapper(CreateBookInputMapper.class).createBookInputToBook(input);
-
 
 		if (input.getCover().getFile() != null) {
 			book.setCover(coverService.upload(input.getCover().getFile()));
 		} else {
 			book.setCover(coverService.upload(input.getCover().getUrl()));
 		}
-
-
 
 		return bookRepository.save(book);
 	}

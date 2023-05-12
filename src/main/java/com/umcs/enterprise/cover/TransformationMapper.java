@@ -54,7 +54,9 @@ public interface TransformationMapper {
 	@Mapping(target = "fetchFormat", source = "format")
 	com.cloudinary.Transformation map(com.umcs.enterprise.types.Transformation value);
 
-    com.umcs.enterprise.types.Transformation copy(com.umcs.enterprise.types.Transformation transformation);
+	com.umcs.enterprise.types.Transformation copy(
+		com.umcs.enterprise.types.Transformation transformation
+	);
 
 	@ValueMappings(
 		{
@@ -82,12 +84,12 @@ public interface TransformationMapper {
 	)
 	String qualityAutoToString(com.umcs.enterprise.types.QualityAuto value);
 
-   default String qualityToString(com.umcs.enterprise.types.Quality quality){
-        if(quality.getPercentage() !=null){
-            return  quality.getPercentage().toString();
-        }
-        return  qualityAutoToString(quality.getAuto());
-    }
+	default String qualityToString(com.umcs.enterprise.types.Quality quality) {
+		if (quality.getPercentage() != null) {
+			return quality.getPercentage().toString();
+		}
+		return qualityAutoToString(quality.getAuto());
+	}
 
 	default String aspectRationToString(com.umcs.enterprise.types.AspectRatio value) {
 		if (value == null) {
