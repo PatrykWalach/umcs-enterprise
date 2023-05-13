@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -422,10 +422,10 @@ class BookDataFetcherTest {
 		book2.setTitle("Book:2");
 		book3.setTitle("Book:3");
 
-		book2.setReleasedAt(ZonedDateTime.now());
-		book3.setReleasedAt(ZonedDateTime.now().plusDays(1));
-		book1.setReleasedAt(ZonedDateTime.now().plusDays(2));
-		book0.setReleasedAt(ZonedDateTime.now().plusDays(3));
+		book2.setReleasedAt(OffsetDateTime.now());
+		book3.setReleasedAt(OffsetDateTime.now().plusDays(1));
+		book1.setReleasedAt(OffsetDateTime.now().plusDays(2));
+		book0.setReleasedAt(OffsetDateTime.now().plusDays(3));
 
 		book3.setPrice(BigDecimal.valueOf(50));
 		book0.setPrice(BigDecimal.valueOf(60));
