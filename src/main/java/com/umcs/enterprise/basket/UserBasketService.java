@@ -71,8 +71,8 @@ public class UserBasketService implements BasketService {
 		assert token.getSubject() != null;
 
 		BookEdge bookEdge = bookEdgeRepository.findByBasket_User_UsernameAndBook_DatabaseId(
-				token.getSubject(),
-				databaseId
+			token.getSubject(),
+			databaseId
 		);
 
 		if (bookEdge == null) {
