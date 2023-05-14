@@ -60,7 +60,7 @@ public class UserDataFetcher {
 	private final UserService userRepository;
 
 	@NonNull
-	private final JwtDecoder jwtDecoder;
+	private final JwtService jwtDecoder;
 
 	@NonNull
 	private final BasketRepository basketRepository;

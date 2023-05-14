@@ -12,13 +12,13 @@ import io.jsonwebtoken.Claims;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 public class UserBasketService implements BasketService {
 
-
+	@NonNull
+	private final JwtService jwtService;
 
 	@NonNull
 	private final BasketRepository basketRepository;
@@ -26,26 +26,28 @@ public class UserBasketService implements BasketService {
 	@NonNull
 	private final BookEdgeRepository bookEdgeRepository;
 
-
+	@NonNull
+	private final String Authorization;
 
 	@Override
 	public @NonNull Basket getBasket() throws JsonProcessingException {
-		return basketRepository.findByUser_Username(SecurityContextHolder.getContext().getAuthentication().getName());
+		Claims token = jwtService.parseAuthorizationHeader(Authorization);
+		assert token.getSubject() != null;
+		return basketRepository.findByUser_Username(token.getSubject());
 	}
 
 	@NonNull
 	private final BookRepository bookRepository;
 
 	@Override
-	public @NonNull Basket basketBook(Basket basket, @NonNull UUID databaseId) throws JsonProcessingException {
-
+	public @NonNull String basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+		Claims token = jwtService.parseAuthorizationHeader(Authorization);
+		assert token.getSubject() != null;
 
 		BookEdge bookEdge = bookEdgeRepository.findByBasket_User_UsernameAndBook_DatabaseId(
-				SecurityContextHolder.getContext().getAuthentication().getName(),
+			token.getSubject(),
 			databaseId
 		);
-
-		Basket basket = getBasket();
 
 		if (bookEdge == null) {
 			bookEdge =
@@ -53,38 +55,38 @@ public class UserBasketService implements BasketService {
 					.newBuilder()
 					.quantity(0)
 					.book(bookRepository.findById(databaseId).orElseThrow(DgsEntityNotFoundException::new))
-					.basket(basket)
+					.basket(getBasket())
 					.build();
 		}
 
 		bookEdge.setQuantity(bookEdge.getQuantity() + 1);
 		bookEdgeRepository.save(bookEdge);
 
-		return bookEdge;
+		return Authorization.replaceFirst("Bearer ", "");
 	}
 
 	@Override
-	public @NonNull BookEdge unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
-
-		Basket basket = getBasket();
+	public @NonNull String unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+		Claims token = jwtService.parseAuthorizationHeader(Authorization);
+		assert token.getSubject() != null;
 
 		BookEdge bookEdge = bookEdgeRepository.findByBasket_User_UsernameAndBook_DatabaseId(
-				SecurityContextHolder.getContext().getAuthentication().getName(),
+			token.getSubject(),
 			databaseId
 		);
 
 		if (bookEdge == null) {
-			return basket.getId();
+			return Authorization.replaceFirst("Bearer ", "");
 		}
 
 		if (bookEdge.getQuantity() < 2) {
 			bookEdgeRepository.delete(bookEdge);
-			return basket.getId();
+			return Authorization.replaceFirst("Bearer ", "");
 		}
 
 		bookEdge.setQuantity(bookEdge.getQuantity() - 1);
 		bookEdgeRepository.save(bookEdge);
 
-		return basket.getId();
+		return Authorization.replaceFirst("Bearer ", "");
 	}
 }
