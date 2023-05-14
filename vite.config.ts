@@ -7,6 +7,9 @@ export default defineConfig({
 	server: {
 		fs: {
 			allow: ['.gql']
+		},
+		proxy: {
+			'/graphql': 'http://localhost:8080'
 		}
 	}
 });

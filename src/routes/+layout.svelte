@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
 	import { isNotNull } from '$lib/isNotNull';
 	import '../app.css';
 	import type { LayoutData } from './$houdini';
@@ -150,7 +151,23 @@
 						</form>
 					</div>
 				{:else}
-					<a href="/login" class="btn-ghost btn">Login</a>
+					<a
+						href={`http://localhost:8080/oauth2/authorize?${new URLSearchParams({
+							client_id: 'newClient',
+							redirect_uri: "http://localhost:5173/login",
+							response_type: 'code',
+							scope: 'openid profile read write',
+							state: $page.url.pathname,
+							// redirect_uri=${$page.url.origin}/login&
+						})}`}
+						class="btn-ghost btn"
+					>
+					<!-- <a
+						href="/login"
+						class="btn-ghost btn"
+					> -->
+						Login
+					</a>
 					<a href="/register" class="btn-ghost btn">Register</a>
 				{/if}
 			</nav>

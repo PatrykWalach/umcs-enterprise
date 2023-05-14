@@ -7,6 +7,7 @@ import com.umcs.enterprise.types.LoginInput;
 import com.umcs.enterprise.types.RegisterInput;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
+import graphql.ErrorClassification;
 import io.jsonwebtoken.Jwts;
 import java.time.Instant;
 import java.util.Collections;
@@ -160,5 +161,35 @@ class UserDataFetcherTest {
 			.verify()
 			.path("viewer")
 			.valueIsNull();
+	}
+
+	@Test
+	void viewer_expired(){
+		//given
+		var user = userRepository.save(
+				User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+		);
+
+		String token =
+				jwtService.signToken(
+						Jwts
+								.builder()
+								.setExpiration(Date.from(Instant.now().minusSeconds(60 * 24)))
+								.setSubject(user.getUsername())
+				);
+
+		this.graphQlTester.mutate()
+				.header("Authorization", "Bearer " + token)
+				.build()
+				.documentName("UserDataFetcherTest_viewer")
+				//                when
+				.execute()
+				//                then
+				.errors()
+				.expect(e->e.getExtensions().get("errorType").equals("UNAUTHORIZED"))
+				.verify()
+				.path("viewer.name")
+				.entity(String.class)
+				.isEqualTo(user.getUsername());
 	}
 }

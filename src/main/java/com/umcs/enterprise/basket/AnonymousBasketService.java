@@ -3,7 +3,7 @@ package com.umcs.enterprise.basket;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.umcs.enterprise.auth.JwtService;
+
 import com.umcs.enterprise.book.BookRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -16,34 +16,21 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2AccessTokenGenerator;
 
 @AllArgsConstructor
 public class AnonymousBasketService implements BasketService {
 
 	@NonNull
-	private final JwtService jwtService;
+	private final OAuth2AccessTokenGenerator jwtService;
 
-	private String Authorization;
+	private String id;
+
+
 
 	private String setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
-		JwtBuilder builder =
-			(
-				Jwts
-					.builder()
-					.setClaims(
-						Map.of(
-							"http://localhost:8080/graphql/basket",
-							new ObjectMapper().writeValueAsString(basket)
-						)
-					)
-			).setExpiration(Date.from(Instant.now().plusSeconds(60 * 60 * 24 * 365)));
-
-		String token = jwtService.signToken(builder);
-		this.Authorization = "Bearer " + token;
-
-		return token;
+		id = new ObjectMapper().writeValueAsString(basket);
+		return  id;
 	}
 
 	@NonNull
@@ -52,20 +39,14 @@ public class AnonymousBasketService implements BasketService {
 	@Override
 	@NonNull
 	public Basket getBasket() throws JsonProcessingException {
-		if (Authorization == null) {
+		if (id == null) {
 			return Basket.newBuilder().books(new ArrayList<>()).build();
 		}
 
 		try {
-			Claims token = jwtService.parseAuthorizationHeader(Authorization);
 
-			String basket = token.get("http://localhost:8080/graphql/basket", String.class);
 
-			if (basket == null) {
-				return Basket.newBuilder().books(new ArrayList<>()).build();
-			}
-
-			Map<UUID, Integer> parsed = new ObjectMapper().readValue(basket, new TypeReference<>() {});
+			Map<UUID, Integer> parsed = new ObjectMapper().readValue(id, new TypeReference<>() {});
 
 			return Basket
 				.newBuilder()

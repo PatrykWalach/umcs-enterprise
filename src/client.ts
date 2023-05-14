@@ -1,27 +1,14 @@
 import { HoudiniClient } from '$houdini';
-import { redirect } from '@sveltejs/kit';
-
-function isErrorType(errorType: string) {
-	return (error: unknown) =>
-		typeof error === 'object' &&
-		error &&
-		'extensions' in error &&
-		typeof error.extensions === 'object' &&
-		error.extensions &&
-		'errorType' in error.extensions &&
-		error.extensions.errorType === errorType;
-}
 
 export default new HoudiniClient({
-	url: 'http://localhost:8080/graphql',
+	url: '/graphql',
 	throwOnError: {
 		operations: ['all'],
 		error(errors) {
-			if (errors.some(isErrorType('UNAUTHENTICATED'))) {
-				throw redirect(303, '/login');
-			}
+			console.error(errors);
 		}
 	},
+
 	fetchParams({ session }) {
 		return {
 			headers: {

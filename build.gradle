@@ -26,9 +26,13 @@ dependencies {
     implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
     implementation(platform('com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:6.0.1'))
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.security:spring-security-oauth2-authorization-server:1.0.2"
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation("com.cloudinary:cloudinary-http44:1.31.0")
     compileOnly 'org.projectlombok:lombok'

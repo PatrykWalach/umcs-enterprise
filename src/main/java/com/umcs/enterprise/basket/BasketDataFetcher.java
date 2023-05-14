@@ -64,7 +64,7 @@ public class BasketDataFetcher {
 	private BasketService getBasketService(String Authorization) {
 		if (
 			Authorization != null &&
-			jwtService.parseAuthorizationHeader(Authorization).getSubject() != null
+			jwtService.parseAuthorizationHeader(Authorization).orElseThrow().getSubject() != null
 		) {
 			return new UserBasketService(
 				jwtService,

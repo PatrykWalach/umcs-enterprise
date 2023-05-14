@@ -9,6 +9,8 @@ import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.types.*;
 import graphql.schema.DataFetchingEnvironment;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.Collections;
@@ -19,56 +21,30 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+//import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+//import org.springframework.security.oauth2.client.registration.ClientRegistration;
+//import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.*;
+import org.springframework.security.oauth2.client.endpoint.DefaultPasswordTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2PasswordGrantRequest;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @DgsComponent
 @RequiredArgsConstructor
 public class UserDataFetcher {
 
-	@NonNull
-	private final AuthenticationManager authenticationManager;
-
-	@DgsMutation
-	public LoginResult login(
-		@InputArgument LoginInput input,
-		@RequestHeader(required = false) String Authorization
-	) throws JsonProcessingException {
-		try {
-			Authentication auth = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
-			);
-
-			Basket basket = new AnonymousBasketService(jwtService, Authorization, bookRepository)
-				.getBasket();
-
-			if (basket.getBooks().size() > 0) {
-				Basket saved = basketRepository.findByUser_Username(auth.getName());
-				basket.getBooks().forEach(edge -> edge.setBasket(saved));
-				bookEdgeRepository.saveAll(basket.getBooks());
-			}
-
-			String token =
-				(
-					jwtService.signToken(
-						Jwts
-							.builder()
-							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-							.setSubject(auth.getName())
-					)
-				);
-
-			return LoginSuccess.newBuilder().token(token).build();
-		} catch (AuthenticationException e) {
-			return LoginError.newBuilder().username(e.getLocalizedMessage()).build();
-		}
-	}
 
 	@DgsQuery
+
 	public Optional<User> viewer() {
 		return userRepository.findByUsername(
 			SecurityContextHolder.getContext().getAuthentication().getName()
@@ -84,7 +60,7 @@ public class UserDataFetcher {
 	private final UserService userRepository;
 
 	@NonNull
-	private final JwtService jwtService;
+	private final JwtDecoder jwtDecoder;
 
 	@NonNull
 	private final BasketRepository basketRepository;
@@ -110,23 +86,16 @@ public class UserDataFetcher {
 					.build()
 			);
 
-			Basket basket = new AnonymousBasketService(jwtService, Authorization, bookRepository)
+			Basket basket = new AnonymousBasketService(jwtDecoder, Authorization, bookRepository)
 				.getBasket();
 
 			basket.getBooks().forEach(edge -> edge.setBasket(user.getBasket()));
 			bookEdgeRepository.saveAll(basket.getBooks());
 
-			String token =
-				(
-					jwtService.signToken(
-						Jwts
-							.builder()
-							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-							.setSubject(user.getUsername())
-					)
-				);
 
-			return RegisterSuccess.newBuilder().token(token).build();
+
+
+			return RegisterSuccess.newBuilder() .build();
 		} catch (DataIntegrityViolationException e) {
 			return RegisterError.newBuilder().username("You are not original enough").build();
 		}
