@@ -15,18 +15,12 @@ export const actions: Actions = {
 			throw redirect(303, '/');
 		}
 
-		const response = await event.fetch(`http://localhost:8080/oauth2/revoke`, {
-			body: new URLSearchParams({
-				token
-			}),
+		await event.fetch(`http://localhost:8080/logout`, {
 			method: 'POST',
 			headers: new Headers({
-				'Content-type': 'application/x-www-form-urlencoded',
 				Authorization: `Bearer ${token}`
 			})
 		});
-
-		console.log(await response.json());
 
 		event.cookies.delete('enterprise-token');
 
