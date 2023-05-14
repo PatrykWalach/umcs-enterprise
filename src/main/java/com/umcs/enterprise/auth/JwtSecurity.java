@@ -32,16 +32,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 //@EnableWebSecurity
 //@EnableMethodSecurity(securedEnabled = true)
 //@RequiredArgsConstructor
-public class JwtSecurity implements WebMvcConfigurer  {
-
-
-
+public class JwtSecurity implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**").allowedMethods("*").allowedOrigins("*");
 	}
-
-
-
 }

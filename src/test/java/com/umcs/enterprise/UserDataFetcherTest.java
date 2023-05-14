@@ -164,32 +164,31 @@ class UserDataFetcherTest {
 	}
 
 	@Test
-	void viewer_expired(){
+	void viewer_expired() {
 		//given
 		var user = userRepository.save(
-				User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 		);
 
-		String token =
-				jwtService.signToken(
-						Jwts
-								.builder()
-								.setExpiration(Date.from(Instant.now().minusSeconds(60 * 24)))
-								.setSubject(user.getUsername())
-				);
+		String token = jwtService.signToken(
+			Jwts
+				.builder()
+				.setExpiration(Date.from(Instant.now().minusSeconds(60 * 24)))
+				.setSubject(user.getUsername())
+		);
 
 		this.graphQlTester.mutate()
-				.header("Authorization", "Bearer " + token)
-				.build()
-				.documentName("UserDataFetcherTest_viewer")
-				//                when
-				.execute()
-				//                then
-				.errors()
-				.expect(e->e.getExtensions().get("errorType").equals("UNAUTHORIZED"))
-				.verify()
-				.path("viewer.name")
-				.entity(String.class)
-				.isEqualTo(user.getUsername());
+			.header("Authorization", "Bearer " + token)
+			.build()
+			.documentName("UserDataFetcherTest_viewer")
+			//                when
+			.execute()
+			//                then
+			.errors()
+			.expect(e -> e.getExtensions().get("errorType").equals("UNAUTHORIZED"))
+			.verify()
+			.path("viewer.name")
+			.entity(String.class)
+			.isEqualTo(user.getUsername());
 	}
 }

@@ -42,9 +42,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @RequiredArgsConstructor
 public class UserDataFetcher {
 
-
 	@DgsQuery
-
 	public Optional<User> viewer() {
 		return userRepository.findByUsername(
 			SecurityContextHolder.getContext().getAuthentication().getName()
@@ -92,10 +90,7 @@ public class UserDataFetcher {
 			basket.getBooks().forEach(edge -> edge.setBasket(user.getBasket()));
 			bookEdgeRepository.saveAll(basket.getBooks());
 
-
-
-
-			return RegisterSuccess.newBuilder() .build();
+			return RegisterSuccess.newBuilder().build();
 		} catch (DataIntegrityViolationException e) {
 			return RegisterError.newBuilder().username("You are not original enough").build();
 		}

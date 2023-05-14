@@ -154,15 +154,15 @@
 					<a
 						href={`http://localhost:8080/oauth2/authorize?${new URLSearchParams({
 							client_id: 'newClient',
-							redirect_uri: "http://localhost:5173/login",
+							redirect_uri: 'http://localhost:5173/login',
 							response_type: 'code',
 							scope: 'openid profile read write',
-							state: $page.url.pathname,
+							state: $page.url.pathname
 							// redirect_uri=${$page.url.origin}/login&
 						})}`}
 						class="btn-ghost btn"
 					>
-					<!-- <a
+						<!-- <a
 						href="/login"
 						class="btn-ghost btn"
 					> -->
