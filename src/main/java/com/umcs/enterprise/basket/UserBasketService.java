@@ -18,30 +18,27 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserBasketService implements BasketService {
 
-
-
 	@NonNull
 	private final BasketRepository basketRepository;
 
 	@NonNull
 	private final BookEdgeRepository bookEdgeRepository;
 
-
-
 	@Override
 	public @NonNull Basket getBasket() throws JsonProcessingException {
-		return basketRepository.findByUser_Username(SecurityContextHolder.getContext().getAuthentication().getName());
+		return basketRepository.findByUser_Username(
+			SecurityContextHolder.getContext().getAuthentication().getName()
+		);
 	}
 
 	@NonNull
 	private final BookRepository bookRepository;
 
 	@Override
-	public @NonNull Basket basketBook(Basket basket, @NonNull UUID databaseId) throws JsonProcessingException {
-
-
+	public @NonNull Basket basketBook(Basket basket, @NonNull UUID databaseId)
+		throws JsonProcessingException {
 		BookEdge bookEdge = bookEdgeRepository.findByBasket_User_UsernameAndBook_DatabaseId(
-				SecurityContextHolder.getContext().getAuthentication().getName(),
+			SecurityContextHolder.getContext().getAuthentication().getName(),
 			databaseId
 		);
 
@@ -65,11 +62,10 @@ public class UserBasketService implements BasketService {
 
 	@Override
 	public @NonNull BookEdge unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
-
 		Basket basket = getBasket();
 
 		BookEdge bookEdge = bookEdgeRepository.findByBasket_User_UsernameAndBook_DatabaseId(
-				SecurityContextHolder.getContext().getAuthentication().getName(),
+			SecurityContextHolder.getContext().getAuthentication().getName(),
 			databaseId
 		);
 

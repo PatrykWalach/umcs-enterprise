@@ -3,7 +3,6 @@ package com.umcs.enterprise.basket;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.umcs.enterprise.book.BookRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -26,11 +25,9 @@ public class AnonymousBasketService implements BasketService {
 
 	private String id;
 
-
-
 	private String setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
 		id = new ObjectMapper().writeValueAsString(basket);
-		return  id;
+		return id;
 	}
 
 	@NonNull
@@ -44,8 +41,6 @@ public class AnonymousBasketService implements BasketService {
 		}
 
 		try {
-
-
 			Map<UUID, Integer> parsed = new ObjectMapper().readValue(id, new TypeReference<>() {});
 
 			return Basket

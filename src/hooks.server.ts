@@ -12,11 +12,10 @@ export const handle: Handle = ({ event, resolve }) => {
 	return resolve(event);
 };
 
-
 // export const handleFetch: HandleFetch = ({fetch,request,event})=>{
- 
+
 // 	return fetch(request).then(async response=>{
-		
+
 // 		if(request.url .startsWith ("http://localhost:5173/graphql")){
 // 			console.log(await response.text())
 // 		}
