@@ -1,10 +1,13 @@
-import { graphql, setSession, type UnbasketBook$input } from '$houdini';
+import { graphql, type UnbasketBook$input } from '$houdini';
 import type { RequestEvent } from '@sveltejs/kit';
+import { setToken } from './setToken';
 
 const UnbasketBook = graphql(`
 	mutation UnbasketBook($input: UnbasketBookInput!) {
 		unbasketBook(input: $input) {
-			token
+			token {
+				...SetToken_token @mask_disable
+			}
 		}
 	}
 `);
@@ -12,15 +15,7 @@ const UnbasketBook = graphql(`
 export default async function unbasketBook(variables: UnbasketBook$input, event: RequestEvent) {
 	const response = await UnbasketBook.mutate(variables, { event });
 
-	const token = response.data?.unbasketBook?.token || '';
-
-	event.cookies.set('enterprise-token', token, {
-		path: '/'
-	});
-
-	setSession(event, {
-		token
-	});
+	setToken(event, response.data?.unbasketBook?.token);
 
 	return response;
 }

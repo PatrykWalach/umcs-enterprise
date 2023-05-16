@@ -1,6 +1,7 @@
 import { graphql } from '$houdini';
 import { redirect, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$houdini';
+import { setToken } from '$lib/setToken';
 
 export const load: ServerLoad = ({ locals }) => {
 	return {};
@@ -11,7 +12,9 @@ const login = graphql(`
 		login(input: $input) {
 			__typename
 			... on LoginSuccess {
-				token
+				token {
+					...SetToken_token @mask_disable
+				}
 			}
 			... on LoginError {
 				username
@@ -43,7 +46,7 @@ export const actions: Actions = {
 		);
 
 		if (response.data?.login?.__typename === 'LoginSuccess') {
-			event.cookies.set('enterprise-token', response.data?.login.token || '');
+			setToken(event, response.data?.login.token)
 			throw redirect(303, '/');
 		}
 

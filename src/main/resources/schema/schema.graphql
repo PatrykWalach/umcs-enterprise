@@ -289,16 +289,21 @@ input CreateBookInput {
 	title: String!
 }
 
+type Token {
+	expiresAt: DateTime
+	value: String
+}
+
 type BasketBookResult {
 	basket: Basket
 	edge: BasketBookEdge
-	token: String
+	token: Token
 }
 
 type UnbasketBookResult {
 	basket: Basket
 	edge: BasketBookEdge
-	token: String
+	token: Token
 }
 
 type UpdateStatusResult {
@@ -375,7 +380,7 @@ type Mutation {
 }
 
 type LoginSuccess {
-	token: String
+	token: Token
 }
 
 type LoginError {
@@ -385,7 +390,7 @@ type LoginError {
 union LoginResult = LoginSuccess | LoginError
 
 type RegisterSuccess {
-	token: String
+	token: Token
 }
 
 type RegisterError {

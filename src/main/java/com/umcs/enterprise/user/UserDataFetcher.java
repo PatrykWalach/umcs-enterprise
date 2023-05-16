@@ -11,6 +11,7 @@ import graphql.schema.DataFetchingEnvironment;
 import io.jsonwebtoken.Jwts;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,17 +53,18 @@ public class UserDataFetcher {
 				bookEdgeRepository.saveAll(basket.getBooks());
 			}
 
+			OffsetDateTime expiresAt = OffsetDateTime.now().plusSeconds(60 * 24);
 			String token =
 				(
 					jwtService.signToken(
 						Jwts
 							.builder()
-							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
+							.setExpiration(Date.from(expiresAt.toInstant()))
 							.setSubject(auth.getName())
 					)
 				);
 
-			return LoginSuccess.newBuilder().token(token).build();
+			return LoginSuccess.newBuilder().token(Token.newBuilder().value(token).expiresAt(expiresAt).build()).build();
 		} catch (AuthenticationException e) {
 			return LoginError.newBuilder().username(e.getLocalizedMessage()).build();
 		}
@@ -116,17 +118,18 @@ public class UserDataFetcher {
 			basket.getBooks().forEach(edge -> edge.setBasket(user.getBasket()));
 			bookEdgeRepository.saveAll(basket.getBooks());
 
+			OffsetDateTime expiresAt = OffsetDateTime.now().plusSeconds(60 * 24);
 			String token =
-				(
-					jwtService.signToken(
-						Jwts
-							.builder()
-							.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-							.setSubject(user.getUsername())
-					)
-				);
+					(
+							jwtService.signToken(
+									Jwts
+											.builder()
+											.setExpiration(Date.from(expiresAt.toInstant()))
+											.setSubject(user.getUsername())
+							)
+					);
 
-			return RegisterSuccess.newBuilder().token(token).build();
+			return RegisterSuccess.newBuilder().token(Token.newBuilder().value(token).expiresAt(expiresAt).build()).build();
 		} catch (DataIntegrityViolationException e) {
 			return RegisterError.newBuilder().username("You are not original enough").build();
 		}

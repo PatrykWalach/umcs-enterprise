@@ -1,10 +1,13 @@
-import { graphql, type BasketBook$input, setSession } from '$houdini';
+import { graphql, type BasketBook$input } from '$houdini';
 import type { RequestEvent } from '@sveltejs/kit';
+import { setToken } from './setToken';
 
 const BasketBook = graphql(`
 	mutation BasketBook($input: BasketBookInput!) {
 		basketBook(input: $input) {
-			token
+			token {
+				...SetToken_token @mask_disable
+			}
 		}
 	}
 `);
@@ -14,15 +17,9 @@ export default async function basketBook(variables: BasketBook$input, event: Req
 		event
 	});
 
-	const token = response.data?.basketBook?.token || '';
+	const token = response.data?.basketBook?.token;
 
-	event.cookies.set('enterprise-token', token, {
-		path: '/'
-	});
-
-	setSession(event, {
-		token
-	});
+	setToken(event, token);
 
 	return response;
 }

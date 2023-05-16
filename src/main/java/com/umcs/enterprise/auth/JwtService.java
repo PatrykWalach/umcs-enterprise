@@ -1,5 +1,6 @@
 package com.umcs.enterprise.auth;
 
+import com.umcs.enterprise.types.Token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,6 +19,8 @@ public class JwtService {
 	private String secret;
 
 	public String signToken(JwtBuilder builder) {
+
+
 		return builder
 			.setIssuedAt(new Date())
 			.setNotBefore(new Date())

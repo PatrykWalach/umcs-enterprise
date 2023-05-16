@@ -7,6 +7,7 @@ import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.purchase.BookPurchase;
+import com.umcs.enterprise.types.Token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -23,9 +24,9 @@ public interface BasketService {
 	@NonNull
 	Basket getBasket() throws JsonProcessingException;
 
-	@NonNull
-	String basketBook(@NonNull UUID databaseId) throws JsonProcessingException;
 
-	@NonNull
-	String unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException;
+	Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException;
+
+
+	Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException;
 }

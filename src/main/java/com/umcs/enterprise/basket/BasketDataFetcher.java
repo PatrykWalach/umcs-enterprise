@@ -110,7 +110,7 @@ public class BasketDataFetcher {
 		assert Objects.equals(globalId.className(), "Book");
 
 		BasketService service = getBasketService(Authorization);
-		String token = service.basketBook(globalId.databaseId());
+		Token token = service.basketBook(globalId.databaseId());
 
 		return BasketBookResult.newBuilder().token(token).basket(service.getBasket()).build();
 	}
@@ -126,7 +126,7 @@ public class BasketDataFetcher {
 
 		BasketService service = getBasketService(Authorization);
 
-		String token = service.unbasketBook(globalId.databaseId());
+		Token token = service.unbasketBook(globalId.databaseId());
 
 		return UnbasketBookResult.newBuilder().token(token).basket(service.getBasket()).build();
 	}

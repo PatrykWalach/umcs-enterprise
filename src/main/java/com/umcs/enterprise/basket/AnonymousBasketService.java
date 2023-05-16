@@ -5,10 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.types.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -27,7 +29,9 @@ public class AnonymousBasketService implements BasketService {
 
 	private String Authorization;
 
-	private String setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
+	private Token setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
+		OffsetDateTime expiresAt = (OffsetDateTime.now().plusSeconds(60 * 60 * 24 * 365));
+
 		JwtBuilder builder =
 			(
 				Jwts
@@ -38,12 +42,12 @@ public class AnonymousBasketService implements BasketService {
 							new ObjectMapper().writeValueAsString(basket)
 						)
 					)
-			).setExpiration(Date.from(Instant.now().plusSeconds(60 * 60 * 24 * 365)));
+			).setExpiration(Date.from(expiresAt.toInstant()));
 
 		String token = jwtService.signToken(builder);
 		this.Authorization = "Bearer " + token;
 
-		return token;
+		return Token.newBuilder().value(token).expiresAt(expiresAt).build();
 	}
 
 	@NonNull
@@ -83,7 +87,7 @@ public class AnonymousBasketService implements BasketService {
 	}
 
 	@Override
-	public @NonNull String basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public @NonNull Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Basket basket = getBasket();
 		Map<UUID, Integer> books = basket
 			.getBooks()
@@ -94,7 +98,7 @@ public class AnonymousBasketService implements BasketService {
 	}
 
 	@Override
-	public @NonNull String unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public @NonNull Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Basket basket = getBasket();
 		Map<UUID, Integer> books = basket
 			.getBooks()
