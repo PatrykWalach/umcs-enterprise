@@ -38,6 +38,8 @@ public class UserService {
 			.map(passwordEncoder::encode)
 			.ifPresent(user::setPassword);
 
+
+
 		if (user.getBasket() == null) {
 			user.setBasket(basketRepository.save(new Basket()));
 		} else {

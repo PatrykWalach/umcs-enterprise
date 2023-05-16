@@ -11,6 +11,7 @@ import com.umcs.enterprise.purchase.BookPurchaseRepository;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.purchase.PurchaseService;
 import com.umcs.enterprise.user.User;
+import com.umcs.enterprise.user.UserRepository;
 import com.umcs.enterprise.user.UserService;
 import io.jsonwebtoken.Jwts;
 import java.time.Instant;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.security.test.context.support.WithMockUser;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)
@@ -69,24 +71,19 @@ class NodeDataFetcherTest {
 
 	@Autowired
 	private JwtService jwtService;
+	@Autowired
+	private UserRepository userRepository;
 
 	@Test
+	@WithMockUser(username = "user")
 	void returnsViewer() {
 		//        given
 		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+				User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 		);
 
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
+		this.graphQlTester
 			.documentName("NodeControllerTest_returnsNode")
 			.variable("id", user.getId())
 			//        when
@@ -103,24 +100,16 @@ class NodeDataFetcherTest {
 	}
 
 	@Test
+	@WithMockUser
 	void doesntReturnOtherUser() {
 		//        given
-		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
-		);
+
 		var other = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("other").build()
 		);
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
+
+		this.graphQlTester
 			.documentName("NodeControllerTest_returnsNode")
 			.variable("id", other.getId())
 			//        when
@@ -134,22 +123,16 @@ class NodeDataFetcherTest {
 	}
 
 	@Test
+	@WithMockUser(username = "user")
 	void returnsPurchase() {
 		//        given
 		var user = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 		);
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(user).build());
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
+
+		this.graphQlTester
 			.documentName("NodeControllerTest_returnsNode")
 			.variable("id", purchase.getId())
 			//        when
@@ -166,26 +149,18 @@ class NodeDataFetcherTest {
 	}
 
 	@Test
+	@WithMockUser("user")
 	void doesntReturnOtherUserPurchase() {
 		//        given
-		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
-		);
+
 		var other = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("other").build()
 		);
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(other).build());
 
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
+
+		this.graphQlTester
 			.documentName("NodeControllerTest_returnsNode")
 			.variable("id", purchase.getId())
 			//        when

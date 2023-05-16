@@ -7,8 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.cloudinary.Cloudinary;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookDataFetcher;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverRepository;
@@ -27,6 +30,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,14 +39,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)
@@ -77,31 +88,21 @@ class BookDataFetcherTest {
 	private Cloudinary cloudinary;
 
 	@Test
+	@WithMockUser(roles = {"ADMIN"})
 	void createBook_admin() throws Exception {
 		//        given
-		var user = userRepository.save(
-			User
-				.newBuilder()
-				.authorities(Collections.singletonList(("ADMIN")))
-				.password("user")
-				.username("user")
-				.build()
-		);
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		var input = new LinkedHashMap<>();
+
+
+
 		var coverInput = new LinkedHashMap<>();
 		coverInput.put("file", null);
-		input.put("title", ("The Book"));
-		input.put("author", ("The Author"));
-		input.put("releasedAt", (OffsetDateTime.now().toString()));
-		input.put("cover", (coverInput));
-		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+
+		var input = Map.of("title", ("The Book"),
+				"author", ("The Author"),
+		"releasedAt", (OffsetDateTime.now().toString()),
+		"cover", (coverInput),
+		"price", (CreatePriceInput.newBuilder().raw(100.0).build()));
 
 		Resource file = new ClassPathResource("cover.jpg");
 
@@ -129,7 +130,6 @@ class BookDataFetcherTest {
 						new ObjectMapper()
 							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
-					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
 			)
 			//                then
@@ -156,23 +156,12 @@ class BookDataFetcherTest {
 	private JwtService jwtService;
 
 	@Test
+	@WithMockUser()
 	void createBook_user() throws Exception {
 		//        given
-		var user = userRepository.save(
-			User
-				.newBuilder()
-				.authorities(Collections.singletonList(("USER")))
-				.password("user")
-				.username("user")
-				.build()
-		);
 
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
+
+
 
 		var input = new LinkedHashMap<>();
 		var coverInput = new LinkedHashMap<>();
@@ -209,7 +198,6 @@ class BookDataFetcherTest {
 						new ObjectMapper()
 							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
-					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
 			)
 			//                then
@@ -354,6 +342,9 @@ class BookDataFetcherTest {
 				.map(book1 -> BookPurchase.newBuilder().book(book1).purchase(purchase).build())
 				.toList()
 		);
+
+
+
 
 		this.graphQlTester.documentName("BookControllerTest_recommended")
 			.variable("id", book.getId())

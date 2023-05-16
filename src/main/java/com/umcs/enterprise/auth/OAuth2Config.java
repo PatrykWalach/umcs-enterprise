@@ -1,5 +1,8 @@
 package com.umcs.enterprise.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.graphql.types.errors.ErrorType;
+import com.netflix.graphql.types.errors.TypedGraphQLError;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -10,6 +13,9 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
+
+import graphql.ExecutionResultImpl;
+import jakarta.servlet.ServletOutputStream;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +41,9 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Configuration
@@ -64,7 +72,28 @@ public class OAuth2Config {
 			// Redirect to the login page when not authenticated from the
 			// authorization endpoint
 			.exceptionHandling(exceptions ->
-				exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+				exceptions.accessDeniedHandler(new OAuth2AccessDeniedHandler()).authenticationEntryPoint(  (request, response, exception)->{
+
+							if(request.getHeader("Accept") == null || !request.getHeader("Accept").contains("application/json")){
+								 new LoginUrlAuthenticationEntryPoint("/login").commence(request,response,exception);
+								return;
+							}
+
+					ServletOutputStream out = response.getOutputStream();
+
+					new ObjectMapper()
+							.writeValue(out, ExecutionResultImpl
+									.newExecutionResult()
+									.addError(TypedGraphQLError
+											.newBuilder()
+											.errorType(ErrorType.UNAUTHENTICATED)
+											.message(exception
+													.getLocalizedMessage())
+											.build())
+									.build());
+
+					out.flush();
+				})
 			)
 			// Accept access tokens for User Info and/or Client Registration
 			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
@@ -87,8 +116,7 @@ public class OAuth2Config {
 			.authenticated()
 			.and()
 			.formLogin(Customizer.withDefaults())
-			.oauth2ResourceServer()
-			.jwt();
+;
 
 		return http.build();
 	}

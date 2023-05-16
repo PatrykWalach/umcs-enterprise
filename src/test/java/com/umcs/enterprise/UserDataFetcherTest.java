@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.security.test.context.support.WithMockUser;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)
@@ -118,6 +119,7 @@ class UserDataFetcherTest {
 	}
 
 	@Test
+	@WithMockUser(username = "user")
 	void viewer() {
 		//        given
 		var user = userRepository.save(
@@ -128,16 +130,9 @@ class UserDataFetcherTest {
 				.username("user")
 				.build()
 		);
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
+
+		this.graphQlTester
 			.documentName("UserDataFetcherTest_viewer")
 			//                when
 			.execute()
@@ -164,22 +159,16 @@ class UserDataFetcherTest {
 	}
 
 	@Test
+	@WithMockUser(username = "user")
 	void viewer_expired() {
 		//given
 		var user = userRepository.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 		);
 
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().minusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
+
+		this.graphQlTester
 			.documentName("UserDataFetcherTest_viewer")
 			//                when
 			.execute()
