@@ -17,21 +17,11 @@ public class ConnectionService {
 		String before = env.getArgument("before");
 
 		if (first == null && last == null) {
-			throw new IllegalArgumentException(
-				(
-					"Exactly one of 'first' or 'last' is required"
-
-				)
-			);
+			throw new IllegalArgumentException(("Exactly one of 'first' or 'last' is required"));
 		}
 
 		if (first != null && last != null) {
-			throw new IllegalArgumentException(
-				(
-					"Exactly one of 'first' or 'last' is required"
-
-				)
-			);
+			throw new IllegalArgumentException(("Exactly one of 'first' or 'last' is required"));
 		}
 		if (first != null && before != null) {
 			throw new IllegalArgumentException(

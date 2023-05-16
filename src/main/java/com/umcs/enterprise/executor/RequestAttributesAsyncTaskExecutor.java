@@ -45,11 +45,13 @@ public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 	private Runnable wrap(Runnable delegate) {
 		Callable<Exception> cleanup = wrap(() -> {
 			delegate.run();
-			return  null;
+			return null;
 		});
 
 		return () -> {
-			try { 	cleanup.call(); 	} catch (Exception ignored){ 	}
+			try {
+				cleanup.call();
+			} catch (Exception ignored) {}
 		};
 	}
 
@@ -73,9 +75,9 @@ public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 		try {
 			return Optional.ofNullable(RequestContextHolder.getRequestAttributes());
 		} catch (Exception e) {
-//			            logger.warn(
-//			                    "Unable to fetch the RequestAttributes based on the RequestContextHolder.getRequestAttributes method.",
-//			                    e);
+			//			            logger.warn(
+			//			                    "Unable to fetch the RequestAttributes based on the RequestContextHolder.getRequestAttributes method.",
+			//			                    e);
 			return Optional.empty();
 		}
 	}
@@ -90,9 +92,7 @@ public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 
 	private void resetRequestAttributes(final RequestAttributes requestAttributes) {
 		try {
-
-				RequestContextHolder.resetRequestAttributes(
-			);
+			RequestContextHolder.resetRequestAttributes();
 		} catch (Exception e) {
 			//            logger.warn("Unable to reset the RequestAttributes.", e);
 		}

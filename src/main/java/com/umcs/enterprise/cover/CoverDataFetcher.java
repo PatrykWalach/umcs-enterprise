@@ -12,7 +12,6 @@ import graphql.schema.DataFetchingEnvironment;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
