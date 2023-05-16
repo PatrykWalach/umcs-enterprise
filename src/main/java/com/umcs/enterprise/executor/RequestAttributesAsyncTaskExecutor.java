@@ -43,18 +43,13 @@ public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 	}
 
 	private Runnable wrap(Runnable delegate) {
-		Optional<RequestAttributes> optRequestAttributes = getRequestAttributes();
-		SecurityContext context = SecurityContextHolder.getContext();
+		Callable<Exception> cleanup = wrap(() -> {
+			delegate.run();
+			return  null;
+		});
 
 		return () -> {
-			SecurityContextHolder.setContext(context);
-			setRequestAttributes(optRequestAttributes);
-			try {
-				delegate.run();
-			} finally {
-				resetRequestAttributes(optRequestAttributes);
-				SecurityContextHolder.clearContext();
-			}
+			try { 	cleanup.call(); 	} catch (Exception ignored){ 	}
 		};
 	}
 
@@ -63,11 +58,12 @@ public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 		SecurityContext context = SecurityContextHolder.getContext();
 		return () -> {
 			SecurityContextHolder.setContext(context);
-			setRequestAttributes(optRequestAttributes);
+			optRequestAttributes.ifPresent(this::setRequestAttributes);
 			try {
 				return delegate.call();
 			} finally {
-				resetRequestAttributes(optRequestAttributes);
+				optRequestAttributes.ifPresent(this::resetRequestAttributes);
+
 				SecurityContextHolder.clearContext();
 			}
 		};
@@ -77,25 +73,25 @@ public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 		try {
 			return Optional.ofNullable(RequestContextHolder.getRequestAttributes());
 		} catch (Exception e) {
-			//            logger.warn(
-			//                    "Unable to fetch the RequestAttributes based on the RequestContextHolder.getRequestAttributes method.",
-			//                    e);
+//			            logger.warn(
+//			                    "Unable to fetch the RequestAttributes based on the RequestContextHolder.getRequestAttributes method.",
+//			                    e);
 			return Optional.empty();
 		}
 	}
 
-	private void setRequestAttributes(final Optional<RequestAttributes> optionalRequestAttributes) {
+	private void setRequestAttributes(final RequestAttributes requestAttributes) {
 		try {
-			optionalRequestAttributes.ifPresent(RequestContextHolder::setRequestAttributes);
+			RequestContextHolder.setRequestAttributes(requestAttributes);
 		} catch (Exception e) {
 			//            logger.warn("Unable to set the RequestAttributes.", e);
 		}
 	}
 
-	private void resetRequestAttributes(final Optional<RequestAttributes> optionalRequestAttributes) {
+	private void resetRequestAttributes(final RequestAttributes requestAttributes) {
 		try {
-			optionalRequestAttributes.ifPresent(requestAttributes ->
-				RequestContextHolder.resetRequestAttributes()
+
+				RequestContextHolder.resetRequestAttributes(
 			);
 		} catch (Exception e) {
 			//            logger.warn("Unable to reset the RequestAttributes.", e);

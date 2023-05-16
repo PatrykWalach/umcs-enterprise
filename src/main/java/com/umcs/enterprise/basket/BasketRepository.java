@@ -1,6 +1,5 @@
 package com.umcs.enterprise.basket;
 
-import com.umcs.enterprise.book.Book;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 

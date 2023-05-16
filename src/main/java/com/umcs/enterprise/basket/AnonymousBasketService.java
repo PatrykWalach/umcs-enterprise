@@ -18,8 +18,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 public class AnonymousBasketService implements BasketService {

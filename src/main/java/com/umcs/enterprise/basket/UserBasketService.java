@@ -2,18 +2,14 @@ package com.umcs.enterprise.basket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
-import com.netflix.graphql.dgs.exceptions.DgsInvalidInputArgumentException;
 import com.umcs.enterprise.auth.JwtService;
-import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.types.Token;
 import com.umcs.enterprise.user.User;
-import com.umcs.enterprise.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 public class UserBasketService implements BasketService {

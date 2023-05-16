@@ -1,6 +1,5 @@
 package com.umcs.enterprise.cover;
 
-import com.umcs.enterprise.types.Format;
 import org.mapstruct.*;
 
 @Mapper

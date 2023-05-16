@@ -18,20 +18,18 @@ public class ConnectionService {
 
 		if (first == null && last == null) {
 			throw new IllegalArgumentException(
-				format(
-					"Exactly one of 'first' or 'last' is required",
-					env.getParentType(),
-					env.getField().getName()
+				(
+					"Exactly one of 'first' or 'last' is required"
+
 				)
 			);
 		}
 
 		if (first != null && last != null) {
 			throw new IllegalArgumentException(
-				format(
-					"Exactly one of 'first' or 'last' is required",
-					env.getParentType(),
-					env.getField().getName()
+				(
+					"Exactly one of 'first' or 'last' is required"
+
 				)
 			);
 		}
