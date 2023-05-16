@@ -14,6 +14,7 @@ public interface CreateBookInputMapper {
 	@Mapping(target = "databaseId", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "price", source = "price.raw")
+	@Mapping(target = "cover", ignore = true)
 	com.umcs.enterprise.book.Book createBookInputToBook(CreateBookInput input);
 
 	default BigDecimal map(double value) {

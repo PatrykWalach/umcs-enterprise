@@ -52,7 +52,7 @@ class UserDataFetcherTest {
 			//                then
 			.errors()
 			.verify()
-			.path("login.token")
+			.path("login.token.value")
 			.entity(String.class)
 			.matches(Predicate.not(String::isBlank));
 	}
@@ -110,7 +110,7 @@ class UserDataFetcherTest {
 			//                then
 			.errors()
 			.verify()
-			.path("register.token")
+			.path("register.token.value")
 			.entity(String.class)
 			.matches(Predicate.not(String::isBlank));
 		//		Assertions.assertEquals(1L, userRepository.count());

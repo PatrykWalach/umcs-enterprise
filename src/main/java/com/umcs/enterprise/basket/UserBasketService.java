@@ -6,6 +6,7 @@ import com.netflix.graphql.dgs.exceptions.DgsInvalidInputArgumentException;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.types.Token;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -40,7 +41,7 @@ public class UserBasketService implements BasketService {
 	private final BookRepository bookRepository;
 
 	@Override
-	public @NonNull String basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Claims token = jwtService.parseAuthorizationHeader(Authorization);
 		assert token.getSubject() != null;
 
@@ -62,11 +63,11 @@ public class UserBasketService implements BasketService {
 		bookEdge.setQuantity(bookEdge.getQuantity() + 1);
 		bookEdgeRepository.save(bookEdge);
 
-		return Authorization.replaceFirst("Bearer ", "");
+		return null;
 	}
 
 	@Override
-	public @NonNull String unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Claims token = jwtService.parseAuthorizationHeader(Authorization);
 		assert token.getSubject() != null;
 
@@ -76,17 +77,17 @@ public class UserBasketService implements BasketService {
 		);
 
 		if (bookEdge == null) {
-			return Authorization.replaceFirst("Bearer ", "");
+			return null;
 		}
 
 		if (bookEdge.getQuantity() < 2) {
 			bookEdgeRepository.delete(bookEdge);
-			return Authorization.replaceFirst("Bearer ", "");
+			return null;
 		}
 
 		bookEdge.setQuantity(bookEdge.getQuantity() - 1);
 		bookEdgeRepository.save(bookEdge);
 
-		return Authorization.replaceFirst("Bearer ", "");
+		return null;
 	}
 }

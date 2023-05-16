@@ -1,13 +1,16 @@
 import { graphql } from '$houdini';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$houdini';
+import { setToken } from '$lib/setToken';
 
 const register = graphql(`
 	mutation Register($input: RegisterInput!) {
 		register(input: $input) {
 			__typename
 			... on RegisterSuccess {
-				token
+				token {
+					...SetToken_token @mask_disable
+				}
 			}
 			... on RegisterError {
 				username
@@ -39,7 +42,7 @@ export const actions: Actions = {
 		);
 
 		if (response.data?.register?.__typename === 'RegisterSuccess') {
-			event.cookies.set('enterprise-token', response.data?.register.token || '');
+			setToken(event, response.data?.register.token);
 			throw redirect(303, '/');
 		}
 
