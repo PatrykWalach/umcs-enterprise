@@ -1,6 +1,5 @@
 package com.umcs.enterprise.book;
 
-import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.types.CreateBookInput;
 import java.math.BigDecimal;
 import org.mapstruct.Mapper;

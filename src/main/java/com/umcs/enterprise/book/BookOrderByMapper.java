@@ -32,7 +32,7 @@ public interface BookOrderByMapper {
 			.orElse(null);
 	}
 
-	static record BookOrderByDTO(
+	record BookOrderByDTO(
 		Sort.Direction popularity,
 		Sort.Direction price,
 		Sort.Direction releasedAt
