@@ -60,7 +60,7 @@ public class CoverDataFetcher {
 						copy.setWidth(width);
 						return copy;
 					})
-					.collect(Collectors.toList())
+					.toList()
 			)
 			.localContext(env.<Book>getSource())
 			.build();

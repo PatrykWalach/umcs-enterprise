@@ -74,7 +74,7 @@ public class AnonymousBasketService implements BasketService {
 						.findAllById(parsed.keySet())
 						.stream()
 						.map(e -> BookEdge.newBuilder().book(e).quantity(parsed.get(e.getDatabaseId())).build())
-						.collect(Collectors.toList())
+						.toList()
 				)
 				.build();
 		} catch (IllegalArgumentException e) {
