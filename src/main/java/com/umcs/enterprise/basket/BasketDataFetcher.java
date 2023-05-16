@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.internal.DgsWebMvcRequestData;
-
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.auth.UserDetailsService;
 import com.umcs.enterprise.book.BookDataLoader;
@@ -51,7 +50,7 @@ public class BasketDataFetcher {
 	}
 
 	@NonNull
-	private final JwtService jwtService ;
+	private final JwtService jwtService;
 
 	@NonNull
 	private final BookRepository bookRepository;
@@ -63,10 +62,7 @@ public class BasketDataFetcher {
 	private final BookEdgeRepository bookEdgeRepository;
 
 	private BasketService getBasketService(String Authorization) {
-		if (
-			Authorization != null &&
-			jwtService.parseAuthorizationHeader(Authorization) != null
-		) {
+		if (Authorization != null && jwtService.parseAuthorizationHeader(Authorization) != null) {
 			return new UserBasketService(
 				jwtService,
 				basketRepository,
