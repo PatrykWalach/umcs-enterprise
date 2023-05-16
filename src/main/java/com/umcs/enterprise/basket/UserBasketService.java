@@ -41,7 +41,7 @@ public class UserBasketService implements BasketService {
 	private final BookRepository bookRepository;
 
 	@Override
-	public  Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Claims token = jwtService.parseAuthorizationHeader(Authorization);
 		assert token.getSubject() != null;
 
@@ -67,7 +67,7 @@ public class UserBasketService implements BasketService {
 	}
 
 	@Override
-	public   Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Claims token = jwtService.parseAuthorizationHeader(Authorization);
 		assert token.getSubject() != null;
 

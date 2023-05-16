@@ -19,8 +19,6 @@ public class JwtService {
 	private String secret;
 
 	public String signToken(JwtBuilder builder) {
-
-
 		return builder
 			.setIssuedAt(new Date())
 			.setNotBefore(new Date())

@@ -24,9 +24,7 @@ public interface BasketService {
 	@NonNull
 	Basket getBasket() throws JsonProcessingException;
 
-
 	Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException;
-
 
 	Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException;
 }

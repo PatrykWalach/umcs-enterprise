@@ -19,9 +19,7 @@ mutation BasketDataFetcherTestBasketBook($input: BasketBookInput!) {
 			}
 		}
 		token {
-				 value
-				 
-
+			value
 		}
 	}
 }

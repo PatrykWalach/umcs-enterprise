@@ -42,8 +42,7 @@ export const actions: Actions = {
 		);
 
 		if (response.data?.register?.__typename === 'RegisterSuccess') {
- 
-			setToken(event, response.data?.register.token)
+			setToken(event, response.data?.register.token);
 			throw redirect(303, '/');
 		}
 

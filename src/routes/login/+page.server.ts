@@ -46,7 +46,7 @@ export const actions: Actions = {
 		);
 
 		if (response.data?.login?.__typename === 'LoginSuccess') {
-			setToken(event, response.data?.login.token)
+			setToken(event, response.data?.login.token);
 			throw redirect(303, '/');
 		}
 
