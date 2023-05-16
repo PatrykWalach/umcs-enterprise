@@ -85,7 +85,7 @@ class BasketDataFetcherTest {
 			books
 				.stream()
 				.map(book -> BookEdge.newBuilder().book(book).basket(user.getBasket()).quantity(1).build())
-				.collect(Collectors.toList())
+				.toList()
 		);
 
 		String token = jwtService.signToken(
