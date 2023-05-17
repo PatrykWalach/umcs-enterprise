@@ -1,4 +1,4 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.relay;
 
 import static java.lang.String.format;
 

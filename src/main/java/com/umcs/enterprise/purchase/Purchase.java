@@ -1,6 +1,6 @@
 package com.umcs.enterprise.purchase;
 
-import com.umcs.enterprise.node.Node;
+import com.umcs.enterprise.relay.node.Node;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
 import java.util.List;

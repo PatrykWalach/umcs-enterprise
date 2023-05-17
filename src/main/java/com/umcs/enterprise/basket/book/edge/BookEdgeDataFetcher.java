@@ -1,9 +1,10 @@
-package com.umcs.enterprise.basket;
+package com.umcs.enterprise.basket.book.edge;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
-import com.umcs.enterprise.ConnectionService;
+import com.umcs.enterprise.relay.ConnectionService;
+import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookDataLoader;
 import graphql.relay.Connection;

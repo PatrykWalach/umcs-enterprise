@@ -1,11 +1,11 @@
 package com.umcs.enterprise.book;
 
 import com.netflix.graphql.dgs.*;
-import com.umcs.enterprise.*;
-import com.umcs.enterprise.cover.CoverService;
+import com.umcs.enterprise.book.cover.CoverService;
+import com.umcs.enterprise.relay.ConnectionService;
 import com.umcs.enterprise.types.BookOrderBy;
 import graphql.schema.DataFetchingEnvironment;
-import jakarta.persistence.EntityManager;
+
 import java.io.IOException;
 import java.util.*;
 import lombok.*;
@@ -41,8 +41,7 @@ public class BookDataFetcher {
 		return connectionService.getConnection(this.bookRepository.findAll(), env);
 	}
 
-	@NonNull
-	private final EntityManager manager;
+
 
 	@DgsData(parentType = "Book")
 	public graphql.relay.Connection<Book> recommended(DataFetchingEnvironment env) {

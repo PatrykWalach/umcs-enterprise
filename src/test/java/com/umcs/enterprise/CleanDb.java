@@ -1,9 +1,9 @@
 package com.umcs.enterprise;
 
 import com.umcs.enterprise.basket.BasketRepository;
-import com.umcs.enterprise.basket.BookEdgeRepository;
+import com.umcs.enterprise.basket.book.edge.BookEdgeRepository;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.CoverRepository;
+import com.umcs.enterprise.book.cover.CoverRepository;
 import com.umcs.enterprise.purchase.BookPurchaseRepository;
 import com.umcs.enterprise.purchase.PurchaseRepository;
 import com.umcs.enterprise.user.UserRepository;

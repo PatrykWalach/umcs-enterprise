@@ -1,4 +1,4 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.scalars;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsRuntimeWiring;

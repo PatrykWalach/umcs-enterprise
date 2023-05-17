@@ -1,11 +1,11 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.seed;
 
 import com.cloudinary.Cloudinary;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
-import com.umcs.enterprise.cover.CoverService;
+import com.umcs.enterprise.book.cover.Cover;
+import com.umcs.enterprise.book.cover.CoverRepository;
+import com.umcs.enterprise.book.cover.CoverService;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -36,6 +35,10 @@ public class Seed {
 	@NonNull
 	private final UserService userRepository;
 
+	@NonNull
+	private final
+	BookRepository repository;
+
 	private Cover toCover(String url, String uuid) {
 		//		try {
 		//			cloudinary.uploader().upload(url, Map.of("public_id", uuid));
@@ -49,8 +52,8 @@ public class Seed {
 	private Cloudinary cloudinary;
 
 	@Bean
-	CommandLineRunner initDatabase(BookRepository repository, CoverService coverService) {
-		return args -> {
+	public Runnable initDatabase() {
+		return () -> {
 			userRepository.save(
 				User
 					.newBuilder()

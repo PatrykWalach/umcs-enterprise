@@ -1,7 +1,6 @@
 package com.umcs.enterprise;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
+ 
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.types.LoginInput;
 import com.umcs.enterprise.types.RegisterInput;
@@ -15,10 +14,12 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+ 
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@SpringJUnitConfig
+
 @ExtendWith(CleanDb.class)
 class UserDataFetcherTest {
 

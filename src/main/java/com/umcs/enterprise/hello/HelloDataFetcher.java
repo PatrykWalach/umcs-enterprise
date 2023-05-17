@@ -1,4 +1,4 @@
-package com.umcs.enterprise;
+package com.umcs.enterprise.hello;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsQuery;

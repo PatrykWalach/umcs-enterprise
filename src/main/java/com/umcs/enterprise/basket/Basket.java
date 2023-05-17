@@ -1,6 +1,7 @@
 package com.umcs.enterprise.basket;
 
-import com.umcs.enterprise.node.Node;
+import com.umcs.enterprise.basket.book.edge.BookEdge;
+import com.umcs.enterprise.relay.node.Node;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
 import java.util.List;

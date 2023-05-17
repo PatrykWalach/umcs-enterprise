@@ -3,7 +3,7 @@ package com.umcs.enterprise.executor;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-//import static org.springframework.boot.SpringApplication.logger;
+ 
 
 import lombok.NonNull;
 import org.springframework.core.task.AsyncTaskExecutor;

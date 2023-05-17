@@ -1,4 +1,4 @@
-package com.umcs.enterprise.node;
+package com.umcs.enterprise.relay.node;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;

@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -16,8 +17,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class JwtSecurity implements WebMvcConfigurer {
 
@@ -42,16 +43,12 @@ public class JwtSecurity implements WebMvcConfigurer {
 			.and()
 			.csrf()
 			.disable()
-			.authorizeHttpRequests()
-			.requestMatchers("/admin/**")
-			.hasRole("ADMIN")
-			.requestMatchers("/graphql*", "/graphiql*", "/covers/*")
-			.permitAll()
-			.requestMatchers("/login*")
-			.anonymous()
-			.anyRequest()
-			.permitAll()
-			.and()
+			.authorizeHttpRequests(r->r.requestMatchers("/graphql*", "/graphiql*")
+					.permitAll()
+					.anyRequest()
+					.hasRole("ADMIN"))
+
+
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

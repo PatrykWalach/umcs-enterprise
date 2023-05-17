@@ -1,4 +1,4 @@
-package com.umcs.enterprise.cover;
+package com.umcs.enterprise.book.cover;
 
 import org.mapstruct.*;
 

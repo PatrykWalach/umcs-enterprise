@@ -2,7 +2,7 @@ package com.umcs.enterprise.user;
 
 import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.basket.BasketRepository;
-import com.umcs.enterprise.basket.BookEdgeRepository;
+import com.umcs.enterprise.basket.book.edge.BookEdgeRepository;
 import jakarta.transaction.Transactional;
 import java.util.*;
 import lombok.NonNull;

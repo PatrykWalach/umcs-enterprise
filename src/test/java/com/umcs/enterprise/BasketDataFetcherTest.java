@@ -1,15 +1,14 @@
 package com.umcs.enterprise;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.basket.BasketRepository;
-import com.umcs.enterprise.basket.BookEdge;
-import com.umcs.enterprise.basket.BookEdgeRepository;
+import com.umcs.enterprise.basket.book.edge.BookEdge;
+import com.umcs.enterprise.basket.book.edge.BookEdgeRepository;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
+import com.umcs.enterprise.book.cover.Cover;
+import com.umcs.enterprise.book.cover.CoverRepository;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
@@ -19,17 +18,18 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.graphql.test.tester.HttpGraphQlTester;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+
+
+@SpringJUnitConfig
+
 @ExtendWith(CleanDb.class)
 class BasketDataFetcherTest {
 

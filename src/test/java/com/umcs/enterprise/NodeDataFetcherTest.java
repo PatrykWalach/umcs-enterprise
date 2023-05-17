@@ -1,12 +1,11 @@
 package com.umcs.enterprise;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
+ 
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
+import com.umcs.enterprise.book.cover.Cover;
+import com.umcs.enterprise.book.cover.CoverRepository;
 import com.umcs.enterprise.purchase.BookPurchaseRepository;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.purchase.PurchaseService;
@@ -20,10 +19,11 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+ 
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@SpringJUnitConfig
 @ExtendWith(CleanDb.class)
 class NodeDataFetcherTest {
 

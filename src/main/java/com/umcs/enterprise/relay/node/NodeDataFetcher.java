@@ -1,9 +1,7 @@
-package com.umcs.enterprise.node;
+package com.umcs.enterprise.relay.node;
 
 import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
-import com.umcs.enterprise.node.GlobalId;
-import com.umcs.enterprise.node.Node;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;

@@ -1,6 +1,7 @@
-package com.umcs.enterprise.cover;
+package com.umcs.enterprise.book.cover;
 
-import com.umcs.enterprise.cover.Cover;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface CoverRepository extends JpaRepository<Cover, Long> {}

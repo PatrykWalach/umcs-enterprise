@@ -1,5 +1,6 @@
-package com.umcs.enterprise.basket;
+package com.umcs.enterprise.basket.book.edge;
 
+import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.book.Book;
 import jakarta.persistence.*;
 import lombok.*;

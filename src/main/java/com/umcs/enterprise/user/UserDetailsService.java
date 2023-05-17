@@ -1,4 +1,4 @@
-package com.umcs.enterprise.auth;
+package com.umcs.enterprise.user;
 
 import com.umcs.enterprise.user.UserService;
 import lombok.NonNull;

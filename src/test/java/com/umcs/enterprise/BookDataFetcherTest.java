@@ -1,6 +1,6 @@
 package com.umcs.enterprise;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
+import com.umcs.enterprise.book.cover.Cover;
+import com.umcs.enterprise.book.cover.CoverRepository;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.types.*;
@@ -33,18 +33,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StreamUtils;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@SpringJUnitConfig
 @ExtendWith(CleanDb.class)
-@AutoConfigureMockMvc
+//@AutoConfigureMockMvc
 class BookDataFetcherTest {
 
 	@Autowired
@@ -104,8 +105,8 @@ class BookDataFetcherTest {
 
 		Resource file = new ClassPathResource("cover.jpg");
 
-		String query = new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
-			.getContentAsString(StandardCharsets.UTF_8);
+		String query = StreamUtils.copyToString( new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
+				.getInputStream() ,StandardCharsets.UTF_8);
 
 		//        when
 		this.mvc.perform(
@@ -184,8 +185,8 @@ class BookDataFetcherTest {
 
 		Resource file = new ClassPathResource("cover.jpg");
 
-		String query = new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
-			.getContentAsString(StandardCharsets.UTF_8);
+		String query = StreamUtils.copyToString( new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
+				.getInputStream() ,StandardCharsets.UTF_8);
 
 		//        when
 		this.mvc.perform(

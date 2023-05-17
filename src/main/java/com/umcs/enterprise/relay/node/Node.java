@@ -1,6 +1,5 @@
-package com.umcs.enterprise.node;
+package com.umcs.enterprise.relay.node;
 
-import com.umcs.enterprise.node.GlobalId;
 import java.util.UUID;
 
 public interface Node {
