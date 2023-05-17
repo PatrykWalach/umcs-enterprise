@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
-	import Book from '../../(routes)/Book.svelte';
+	import Book from '../../Book.svelte';
 
 	import type { PageData } from './$houdini';
 
