@@ -1,6 +1,5 @@
 package com.umcs.enterprise;
 
-
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.basket.BasketRepository;
 import com.umcs.enterprise.basket.book.edge.BookEdge;
@@ -18,18 +17,14 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-
 @SpringJUnitConfig
-
 @ExtendWith(CleanDb.class)
 class BasketDataFetcherTest {
 

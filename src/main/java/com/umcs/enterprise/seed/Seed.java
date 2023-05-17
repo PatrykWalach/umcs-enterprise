@@ -36,8 +36,7 @@ public class Seed {
 	private final UserService userRepository;
 
 	@NonNull
-	private final
-	BookRepository repository;
+	private final BookRepository repository;
 
 	private Cover toCover(String url, String uuid) {
 		//		try {

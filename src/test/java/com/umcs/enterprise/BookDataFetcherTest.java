@@ -1,6 +1,5 @@
 package com.umcs.enterprise;
 
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
@@ -105,8 +103,10 @@ class BookDataFetcherTest {
 
 		Resource file = new ClassPathResource("cover.jpg");
 
-		String query = StreamUtils.copyToString( new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
-				.getInputStream() ,StandardCharsets.UTF_8);
+		String query = StreamUtils.copyToString(
+			new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql").getInputStream(),
+			StandardCharsets.UTF_8
+		);
 
 		//        when
 		this.mvc.perform(
@@ -185,8 +185,10 @@ class BookDataFetcherTest {
 
 		Resource file = new ClassPathResource("cover.jpg");
 
-		String query = StreamUtils.copyToString( new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql")
-				.getInputStream() ,StandardCharsets.UTF_8);
+		String query = StreamUtils.copyToString(
+			new ClassPathResource("graphql-test/BookControllerTest_createBook.graphql").getInputStream(),
+			StandardCharsets.UTF_8
+		);
 
 		//        when
 		this.mvc.perform(

@@ -43,12 +43,9 @@ public class JwtSecurity implements WebMvcConfigurer {
 			.and()
 			.csrf()
 			.disable()
-			.authorizeHttpRequests(r->r.requestMatchers("/graphql*", "/graphiql*")
-					.permitAll()
-					.anyRequest()
-					.hasRole("ADMIN"))
-
-
+			.authorizeHttpRequests(r ->
+				r.requestMatchers("/graphql*", "/graphiql*").permitAll().anyRequest().hasRole("ADMIN")
+			)
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

@@ -3,8 +3,6 @@ package com.umcs.enterprise.executor;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
- 
-
 import lombok.NonNull;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.security.core.context.SecurityContext;

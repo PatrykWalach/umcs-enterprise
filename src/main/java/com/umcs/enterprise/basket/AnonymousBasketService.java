@@ -10,7 +10,6 @@ import com.umcs.enterprise.types.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;

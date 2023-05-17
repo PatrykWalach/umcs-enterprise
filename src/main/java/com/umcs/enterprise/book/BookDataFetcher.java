@@ -5,7 +5,6 @@ import com.umcs.enterprise.book.cover.CoverService;
 import com.umcs.enterprise.relay.ConnectionService;
 import com.umcs.enterprise.types.BookOrderBy;
 import graphql.schema.DataFetchingEnvironment;
-
 import java.io.IOException;
 import java.util.*;
 import lombok.*;
@@ -40,8 +39,6 @@ public class BookDataFetcher {
 
 		return connectionService.getConnection(this.bookRepository.findAll(), env);
 	}
-
-
 
 	@DgsData(parentType = "Book")
 	public graphql.relay.Connection<Book> recommended(DataFetchingEnvironment env) {

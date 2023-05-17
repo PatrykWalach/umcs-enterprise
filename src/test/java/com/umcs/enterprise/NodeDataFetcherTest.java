@@ -1,6 +1,5 @@
 package com.umcs.enterprise;
 
- 
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
@@ -19,7 +18,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
- 
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 

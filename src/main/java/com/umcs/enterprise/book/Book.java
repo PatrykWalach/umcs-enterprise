@@ -1,8 +1,8 @@
 package com.umcs.enterprise.book;
 
 import com.umcs.enterprise.book.cover.Cover;
-import com.umcs.enterprise.relay.node.Node;
 import com.umcs.enterprise.purchase.BookPurchase;
+import com.umcs.enterprise.relay.node.Node;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
