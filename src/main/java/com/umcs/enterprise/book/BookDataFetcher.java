@@ -6,7 +6,6 @@ import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.types.BookOrderBy;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -70,11 +69,9 @@ public class BookDataFetcher {
 		Book book = Mappers.getMapper(CreateBookInputMapper.class).createBookInputToBook(input);
 
 		Resource resource = input.getCover().getFile().getResource();
-//		System.out.println(resource.getURI());
-//		System.out.println(resource.getURL());
-//		System.out.println(resource.getFile());
-
-
+		//		System.out.println(resource.getURI());
+		//		System.out.println(resource.getURL());
+		//		System.out.println(resource.getFile());
 
 		if (input.getCover().getFile() != null) {
 			book.setCover(coverService.upload(input.getCover().getFile().getInputStream()));

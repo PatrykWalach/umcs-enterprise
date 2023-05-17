@@ -1,7 +1,6 @@
 package com.umcs.enterprise.cover;
 
 import com.cloudinary.Cloudinary;
-
 import java.io.*;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +29,6 @@ public class CoverService {
 	}
 
 	public Cover upload(InputStream multipart) throws IOException {
-
 		return uploadAndSave((multipart));
 	}
 
