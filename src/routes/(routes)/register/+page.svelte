@@ -3,11 +3,10 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$houdini';
 
- 
 	export let data: PageData;
 
-	const form= superForm(data.form);
-	const {   delayed,  } =form;
+	const form = superForm(data.form);
+	const { delayed } = form;
 </script>
 
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">
@@ -20,16 +19,17 @@
 			</p>
 		</div>
 		<div class="grid gap-4">
-			<form method="POST" use:form.enhance class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow">
+			<form
+				method="POST"
+				use:form.enhance
+				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow"
+			>
 				<fieldset disabled={$delayed}>
 					<div class="card-body">
-			 
-
-	 
-							<TextField field="username" {form} autocomplete="username">Username</TextField>
-							<TextField field="password" {form} type="password" autocomplete="new-password">
-								Password
-							</TextField>
+						<TextField field="username" {form} autocomplete="username">Username</TextField>
+						<TextField field="password" {form} type="password" autocomplete="new-password">
+							Password
+						</TextField>
 						<div class="form-control mt-6">
 							<button class="btn-primary btn" type="submit">Register</button>
 						</div>
@@ -37,7 +37,7 @@
 				</fieldset>
 			</form>
 
-			<div class="card card-compact border border-base-content/20">
+			<div class="card-compact card border border-base-content/20">
 				<div class="card-body items-center">
 					<span class="label-text-alt label block">
 						Already have an account? <a href="/login" class="link">Login.</a>

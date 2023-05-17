@@ -62,7 +62,7 @@
 					</button>
 					<div
 						tabindex="-1"
-						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow-xl"
+						class="card-compact card dropdown-content mt-3 w-52 bg-base-100 shadow-xl"
 					>
 						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">

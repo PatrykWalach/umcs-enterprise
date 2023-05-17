@@ -53,7 +53,10 @@ export const actions: Actions = {
 			throw redirect(303, '/');
 		}
 
-		if (response.data?.register.__typename === 'RegisterError' && response.data?.register.username) {
+		if (
+			response.data?.register.__typename === 'RegisterError' &&
+			response.data?.register.username
+		) {
 			return fail(400, {
 				form: {
 					...form,
