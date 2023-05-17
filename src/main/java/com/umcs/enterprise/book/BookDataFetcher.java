@@ -67,7 +67,7 @@ public class BookDataFetcher {
 		Book book = Mappers.getMapper(CreateBookInputMapper.class).createBookInputToBook(input);
 
 		if (input.getCover().getFile() != null) {
-			book.setCover(coverService.upload(input.getCover().getFile()));
+			book.setCover(coverService.upload(input.getCover().getFile().getInputStream()));
 		} else {
 			book.setCover(coverService.upload(input.getCover().getUrl()));
 		}
