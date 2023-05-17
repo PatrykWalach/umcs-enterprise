@@ -3,12 +3,10 @@ package com.umcs.enterprise.cover;
 import com.cloudinary.Cloudinary;
 import java.io.*;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
