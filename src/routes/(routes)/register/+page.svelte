@@ -28,7 +28,7 @@
 					<div class="card-body">
 						<label for="" class="label">
 							{#each $errors._errors ?? [] as error}
-								<span class="label-text-alt text-error">{ error }</span>
+								<span class="label-text-alt text-error">{error}</span>
 							{/each}
 						</label>
 						<TextField field="username" {form} autocomplete="username">Username</TextField>
@@ -42,7 +42,7 @@
 				</fieldset>
 			</form>
 
-			<div class="card card-compact border border-base-content/20">
+			<div class="card-compact card border border-base-content/20">
 				<div class="card-body items-center">
 					<span class="label-text-alt label block">
 						Already have an account? <a href="/login" class="link">Login.</a>

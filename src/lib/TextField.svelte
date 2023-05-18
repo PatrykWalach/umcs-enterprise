@@ -12,7 +12,7 @@
 
 	$: inputId = id ?? String(field);
 
-	const { path, value, errors, constraints} = formFieldProxy(form, field);
+	const { path, value, errors, constraints } = formFieldProxy(form, field);
 </script>
 
 <div class="form-control">

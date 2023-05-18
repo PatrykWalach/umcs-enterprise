@@ -17,17 +17,17 @@
 
 		<label for="" class="label">
 			{#each $errors._errors ?? [] as error}
-				<span class="label-text-alt text-error">{ error }</span>
+				<span class="label-text-alt text-error">{error}</span>
 			{/each}
 		</label>
 
 		<TextField {form} field="title">Title</TextField>
 		<TextField {form} field="author">Author</TextField>
-		<TextField {form} field='price' type="number" step="0.01">Price</TextField>
+		<TextField {form} field="price" type="number" step="0.01">Price</TextField>
 		<TextField {form} field="releasedAt" type="date">Release date</TextField>
 		<TextField
 			{form}
-			field='cover'
+			field="cover"
 			type="file"
 			accept="image/*"
 			class="file-input-bordered file-input"

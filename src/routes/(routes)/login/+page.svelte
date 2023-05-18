@@ -29,7 +29,7 @@
 					<div class="card-body">
 						<label for="" class="label">
 							{#each $errors._errors ?? [] as error}
-								<span class="label-text-alt text-error">{ error }</span>
+								<span class="label-text-alt text-error">{error}</span>
 							{/each}
 						</label>
 
