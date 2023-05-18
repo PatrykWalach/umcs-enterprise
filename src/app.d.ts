@@ -8,7 +8,10 @@ declare global {
 		interface Session {
 			token: string | undefined;
 		}
-		// interface PageData {}
+		interface PageData {
+			flash?: { type: 'BASKET_BOOK' };
+		}
+
 		// interface Platform {}
 	}
 }
