@@ -180,6 +180,7 @@ public class Seed {
 					.synopsis(
 						"SŁOWA CZŁOWIEKA. PRZESŁANIE NARODU. Oto zbiór najmocniejszych przemówień Wołodymyra Zełenskiego z czasu wojny (oraz jedno Ołeny Zełenskiej), osobiście przez niego wybranych, aby opowiedzieć historię narodu ukraińskiego. To opowieść o kraju mężnie broniącym się przed rosyjską agresją. To także..."
 					)
+
 					.author("Wołodymyr Zełenski")
 					.price(BigDecimal.valueOf(30.24))
 					.build(),
