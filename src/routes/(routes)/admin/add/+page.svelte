@@ -1,88 +1,40 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import TextField from '$lib/TextField.svelte';
+	import { superForm } from 'sveltekit-superforms/client';
+	import type { PageData } from './$houdini';
 
-	export let form: ActionData;
+	export let data: PageData;
 
-	$: isSubmitting = (void form, false);
+	const form = superForm(data.form);
+
+	const { delayed, errors } = form;
 </script>
 
 <form method="POST" encType="multipart/form-data" use:enhance class="grid grid-cols-3">
-	<fieldset disabled={isSubmitting} class="">
+	<fieldset disabled={$delayed} class="">
 		<legend>Add book</legend>
-		<div class="form-control">
-			<label class="label" for="title"><span class="label-text">Title</span></label>
-			<input
-				required
-				class="input-bordered input"
-				id="title"
-				type="text"
-				value={form?.data?.title ?? ''}
-				name="title"
-			/>
-			<label class="label" for="title">
-				<span class="label-text-alt text-error">{form?.errors?.title?._errors.at(0) ?? ''}</span>
-			</label>
-		</div>
-		<div class="form-control">
-			<label class="label" for="author"><span class="label-text">Author</span></label>
-			<input
-				required
-				class="input-bordered input"
-				id="author"
-				type="text"
-				value={form?.data?.author ?? ''}
-				name="author"
-			/>
-			<label class="label" for="title">
-				<span class="label-text-alt text-error">{form?.errors?.author?._errors.at(0) ?? ''}</span>
-			</label>
-		</div>
-		<div class="form-control">
-			<label class="label" for="price"><span class="label-text">Price</span></label>
-			<input
-				required
-				class="input-bordered input"
-				id="price"
-				type="number"
-				min="0"
-				value={form?.data?.price ?? ''}
-				name="price"
-			/>
-			<label class="label" for="title">
-				<span class="label-text-alt text-error">{form?.errors?.price?._errors.at(0) ?? ''}</span>
-			</label>
-		</div>
-		<div class="form-control">
-			<label class="label" for="releasedAt"><span class="label-text">Release date</span></label>
-			<input
-				required
-				class="input-bordered input"
-				id="releasedAt"
-				type="date"
-				value={form?.data?.releasedAt ?? ''}
-				name="releasedAt"
-			/>
-			<label class="label" for="title">
-				<span class="label-text-alt text-error">
-					{form?.errors?.releasedAt?._errors.at(0) ?? ''}
-				</span>
-			</label>
-		</div>
-		<div class="form-control">
-			<label class="label" for="cover"><span class="label-text">Cover</span></label>
-			<input
-				required
-				class="file-input-bordered file-input"
-				id="cover"
-				type="file"
-				name="cover"
-				accept="image/*"
-			/>
-			<label class="label" for="title">
-				<span class="label-text-alt text-error">{form?.errors?.cover?._errors.at(0) ?? ''}</span>
-			</label>
-		</div>
+
+		<label for="" class="label">
+			{#each $errors._errors ?? [] as error}
+				<span class="label-text-alt text-error">{ error }</span>
+			{/each}
+		</label>
+
+		<TextField {form} field="title">Title</TextField>
+		<TextField {form} field="author">Author</TextField>
+		<TextField {form} field='price' type="number" step="0.01">Price</TextField>
+		<TextField {form} field="releasedAt" type="date">Release date</TextField>
+		<TextField
+			{form}
+			field='cover'
+			type="file"
+			accept="image/*"
+			class="file-input-bordered file-input"
+		>
+			Cover
+		</TextField>
+
 		<div class="form-control mt-6">
 			<button type="submit" class="btn-primary btn">Submit</button>
 			<button type="reset" class="btn">Reset</button>

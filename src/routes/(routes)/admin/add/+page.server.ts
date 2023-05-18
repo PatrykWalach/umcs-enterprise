@@ -1,54 +1,67 @@
 import { graphql } from '$houdini';
 import { fail } from '@sveltejs/kit';
-import type { Actions } from './$houdini';
 import { z } from 'zod';
+import type { Actions } from './$houdini';
 
-const Input = z.object({
+const schema = z.object({
 	releasedAt: z.coerce.date(),
 	title: z.string(),
 	author: z.string(),
 	price: z.coerce.number().safe().positive(),
-	cover: z.instanceof(File)
+	cover: z.any()
 });
 
-export const actions: Actions = {
-	default: async (event) => {
-		const data = Object.fromEntries(await event.request.formData());
-		const input = Input.safeParse(data);
+import { redirect, type ActionFailure } from '@sveltejs/kit';
 
-		if (!input.success) {
-			return fail(403, {
-				data: {
-					releasedAt: data.releasedAt,
-					title: data.title,
-					author: data.author,
-					price: data.price
-				},
-				errors: input.error.format()
-			});
+import type { Validation } from 'sveltekit-superforms/index';
+import { setError, superValidate } from 'sveltekit-superforms/server';
+
+export const load = async () => {
+	return {
+		form: await superValidate(schema)
+	};
+};
+
+const addBook = graphql(`
+	mutation AddBook($input: CreateBookInput!) {
+		createBook(input: $input) {
+			book @required {
+				id
+			}
+		}
+	}
+`);
+
+export const actions: Actions = {
+	default: async (event): Promise<ActionFailure<{ form: Validation<typeof schema> }>> => {
+		const data = await event.request.formData();
+		const form = await superValidate(data, schema);
+
+		if (!form.valid) {
+			return fail(400, { form: form });
 		}
 
-		const result = await graphql(`
-			mutation AddBook($input: CreateBookInput!) {
-				createBook(input: $input) {
-					__typename
-				}
-			}
-		`).mutate(
+		const cover = data.get('cover');
+
+		if (!(cover instanceof File)) {
+			return setError(form, 'cover', 'Cover is required');
+		}
+
+		const response = await addBook.mutate(
 			{
 				input: {
-					title: input.data.title,
-					author: input.data.author,
-					price: { raw: input.data.price },
-					cover: {
-						file: input.data.cover
-					},
-					releasedAt: input.data.releasedAt
+					...form.data,
+					price: { raw: form.data.price },
+					cover: { file: cover }
 				}
 			},
 			{ event }
 		);
 
-		console.log(result);
+		if (response.data?.createBook) {
+			throw redirect(303, '/book/' + response.data.createBook.book.id);
+		}
+
+		return fail(400, { form: form });
 	}
 };

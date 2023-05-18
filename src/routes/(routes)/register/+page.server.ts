@@ -19,7 +19,7 @@ const register = graphql(`
 	}
 `);
 
-import { superValidate } from 'sveltekit-superforms/server';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -49,23 +49,12 @@ export const actions: Actions = {
 		);
 
 		if (response.data?.register?.__typename === 'RegisterSuccess') {
-			setToken(event, response.data?.register.token);
+			setToken(event, response.data.register.token);
 			throw redirect(303, '/');
 		}
 
-		if (
-			response.data?.register.__typename === 'RegisterError' &&
-			response.data?.register.username
-		) {
-			return fail(400, {
-				form: {
-					...form,
-					errors: {
-						...form.errors,
-						username: [response.data.register.username]
-					}
-				}
-			});
+		if (response.data?.register.__typename === 'RegisterError') {
+			return setError(form, 'username', response.data.register.username);
 		}
 
 		return fail(400, { form: form });

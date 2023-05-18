@@ -20,7 +20,7 @@ const login = graphql(`
 `);
 
 import type { Validation } from 'sveltekit-superforms/index';
-import { superValidate } from 'sveltekit-superforms/server';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -50,20 +50,12 @@ export const actions: Actions = {
 		);
 
 		if (response.data?.login?.__typename === 'LoginSuccess') {
-			setToken(event, response.data?.login.token);
+			setToken(event, response.data.login.token);
 			throw redirect(303, '/');
 		}
 
-		if (response.data?.login.__typename === 'LoginError' && response.data.login.username) {
-			return fail(400, {
-				form: {
-					...form,
-					errors: {
-						...form.errors,
-						username: [response.data.login.username]
-					}
-				}
-			});
+		if (response.data?.login.__typename === 'LoginError') {
+			return setError(form, null, response.data.login.username);
 		}
 
 		return fail(400, { form: form });

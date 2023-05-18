@@ -6,7 +6,7 @@
 	export let data: PageData;
 
 	const form = superForm(data.form);
-	const { delayed } = form;
+	const { delayed, errors } = form;
 </script>
 
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">
@@ -26,6 +26,11 @@
 			>
 				<fieldset disabled={$delayed}>
 					<div class="card-body">
+						<label for="" class="label">
+							{#each $errors._errors ?? [] as error}
+								<span class="label-text-alt text-error">{ error }</span>
+							{/each}
+						</label>
 						<TextField field="username" {form} autocomplete="username">Username</TextField>
 						<TextField field="password" {form} type="password" autocomplete="new-password">
 							Password
@@ -37,7 +42,7 @@
 				</fieldset>
 			</form>
 
-			<div class="card-compact card border border-base-content/20">
+			<div class="card card-compact border border-base-content/20">
 				<div class="card-body items-center">
 					<span class="label-text-alt label block">
 						Already have an account? <a href="/login" class="link">Login.</a>
