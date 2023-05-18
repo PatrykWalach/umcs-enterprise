@@ -6,7 +6,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.transaction.TransactionManager;
 import javax.sql.DataSource;
-
 //import liquibase.integration.spring.SpringLiquibase;
 import org.h2.jdbcx.JdbcDataSource;
 import org.hibernate.sql.Template;
@@ -35,41 +34,40 @@ public class HibernateConfig {
 	//
 	//
 	@Bean
-
 	public DataSource dataSource() {
-
-//		JdbcDataSource dataSource = new JdbcDataSource();
-//		dataSource.setUrl("classpath:db.sqlite3");
-
-
-
+		//		JdbcDataSource dataSource = new JdbcDataSource();
+		//		dataSource.setUrl("classpath:db.sqlite3");
 
 		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
-
-//		    JdbcDataSource dataSource = new JdbcDataSource();
-//
-//		    dataSource.setUrl("jdbc:h2:mem:AZ");
+		//		    JdbcDataSource dataSource = new JdbcDataSource();
+		//
+		//		    dataSource.setUrl("jdbc:h2:mem:AZ");
 		//
 		//
 		//
 		//
-//		    return dataSource;
+		//		    return dataSource;
 	}
 
 	//
-@Bean public  HibernateJpaVendorAdapter hibernateJpaVendorAdapter(){
-	HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter(); adapter.setGenerateDdl(true);return  adapter;
-}
+	@Bean
+	public HibernateJpaVendorAdapter hibernateJpaVendorAdapter() {
+		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+		adapter.setGenerateDdl(true);
+		return adapter;
+	}
+
 	@Bean
 	public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean(
-		DataSource dataSource, HibernateJpaVendorAdapter adapter
+		DataSource dataSource,
+		HibernateJpaVendorAdapter adapter
 	) {
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 
 		factory.setJpaVendorAdapter(adapter);
 		factory.setPackagesToScan("com.umcs.enterprise");
 		factory.setDataSource(dataSource);
-//		factory.setJpaDialect(new org.hibernate.community.dialect.SQLiteDialect ());
+		//		factory.setJpaDialect(new org.hibernate.community.dialect.SQLiteDialect ());
 		return factory;
 	}
 
@@ -78,20 +76,22 @@ public class HibernateConfig {
 		return factory.getNativeEntityManagerFactory();
 	}
 
-	@Bean("transactionManager") public  PlatformTransactionManager platformTransactionManager(EntityManagerFactory entityManagerFactory){
+	@Bean("transactionManager")
+	public PlatformTransactionManager platformTransactionManager(
+		EntityManagerFactory entityManagerFactory
+	) {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(entityManagerFactory);
-		return  transactionManager;
+		return transactionManager;
 	}
-
-//	@Bean
-//	public SpringLiquibase springLiquibase(DataSource dataSource) {
-//		SpringLiquibase liquibase = new SpringLiquibase();
-//
-//		liquibase.setChangeLog("classpath:changelog.sql");
-//		liquibase.setDataSource(dataSource);
-//		return liquibase;
-//	}
+	//	@Bean
+	//	public SpringLiquibase springLiquibase(DataSource dataSource) {
+	//		SpringLiquibase liquibase = new SpringLiquibase();
+	//
+	//		liquibase.setChangeLog("classpath:changelog.sql");
+	//		liquibase.setDataSource(dataSource);
+	//		return liquibase;
+	//	}
 
 	//
 	//

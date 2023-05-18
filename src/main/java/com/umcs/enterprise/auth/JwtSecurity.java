@@ -35,13 +35,11 @@ public class JwtSecurity implements WebMvcConfigurer {
 		return new ProviderManager(new DaoAuthenticationProvider());
 	}
 
-//	@Bean("mvcHandlerMappingIntrospector") public HandlerMappingIntrospector handlerMappingIntrospector(ApplicationContext ctx){
-//		HandlerMappingIntrospector handlerMappingIntrospector = new HandlerMappingIntrospector();
-//		handlerMappingIntrospector.setApplicationContext(ctx);
-//		return handlerMappingIntrospector;
-//	}
-
-
+	//	@Bean("mvcHandlerMappingIntrospector") public HandlerMappingIntrospector handlerMappingIntrospector(ApplicationContext ctx){
+	//		HandlerMappingIntrospector handlerMappingIntrospector = new HandlerMappingIntrospector();
+	//		handlerMappingIntrospector.setApplicationContext(ctx);
+	//		return handlerMappingIntrospector;
+	//	}
 
 	@NonNull
 	private final JwtFilter jwtFilter;
@@ -58,9 +56,12 @@ public class JwtSecurity implements WebMvcConfigurer {
 			.and()
 			.csrf()
 			.disable()
-
 			.authorizeHttpRequests(r ->
-				r.requestMatchers("/graphql*", "/graphiql*", "/hello").permitAll().anyRequest().hasRole("ADMIN")
+				r
+					.requestMatchers("/graphql*", "/graphiql*", "/hello")
+					.permitAll()
+					.anyRequest()
+					.hasRole("ADMIN")
 			)
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

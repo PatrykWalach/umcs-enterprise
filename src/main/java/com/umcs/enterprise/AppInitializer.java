@@ -19,34 +19,33 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @EnableJpaAuditing
 public class AppInitializer implements WebApplicationInitializer {
-    @Override
-    public void onStartup(ServletContext container) throws ServletException {
-        // Create the 'root' Spring application context
-        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(AppInitializer.class);
 
-        // Manage the lifecycle of the root application context
-        container.addListener(new ContextLoaderListener(rootContext));
+	@Override
+	public void onStartup(ServletContext container) throws ServletException {
+		// Create the 'root' Spring application context
+		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+		rootContext.register(AppInitializer.class);
 
-        // Create the dispatcher servlet's Spring application context
-        AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
+		// Manage the lifecycle of the root application context
+		container.addListener(new ContextLoaderListener(rootContext));
 
-        // Register and map the dispatcher servlet
-        ServletRegistration.Dynamic dispatcher = container
-                .addServlet("dispatcher", new DispatcherServlet(dispatcherContext));
-        dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/");
+		// Create the dispatcher servlet's Spring application context
+		AnnotationConfigWebApplicationContext dispatcherContext =
+			new AnnotationConfigWebApplicationContext();
 
-//        Seed seed = ctx.getBean("seed", Seed.class);
-//        seed.initDatabase().run();
-    }
+		// Register and map the dispatcher servlet
+		ServletRegistration.Dynamic dispatcher = container.addServlet(
+			"dispatcher",
+			new DispatcherServlet(dispatcherContext)
+		);
+		dispatcher.setLoadOnStartup(1);
+		dispatcher.addMapping("/");
+		//        Seed seed = ctx.getBean("seed", Seed.class);
+		//        seed.initDatabase().run();
+	}
 
-
-
-    @Bean
-    public SLF4JServiceProvider slf4JServiceProvider(){
-
-        return new org.slf4j.simple.SimpleServiceProvider
-                ();
-    }
+	@Bean
+	public SLF4JServiceProvider slf4JServiceProvider() {
+		return new org.slf4j.simple.SimpleServiceProvider();
+	}
 }
