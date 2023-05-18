@@ -1,5 +1,6 @@
 import { graphql, type BasketBook$input } from '$houdini';
 import type { RequestEvent } from '@sveltejs/kit';
+import { redirect } from 'sveltekit-flash-message/server';
 import { setToken } from './setToken';
 
 const BasketBook = graphql(`
@@ -18,8 +19,11 @@ export default async function basketBook(variables: BasketBook$input, event: Req
 	});
 
 	const token = response.data?.basketBook?.token;
-
 	setToken(event, token);
+
+	if (response.data?.basketBook) {
+		throw redirect({ type: 'BASKET_BOOK' }, event);
+	}
 
 	return response;
 }
