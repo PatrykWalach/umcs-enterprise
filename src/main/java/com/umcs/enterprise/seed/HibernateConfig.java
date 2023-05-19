@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -67,7 +68,6 @@ public class HibernateConfig {
 		factory.setJpaVendorAdapter(adapter);
 		factory.setPackagesToScan("com.umcs.enterprise");
 		factory.setDataSource(dataSource);
-		//		factory.setJpaDialect(new org.hibernate.community.dialect.SQLiteDialect ());
 		return factory;
 	}
 

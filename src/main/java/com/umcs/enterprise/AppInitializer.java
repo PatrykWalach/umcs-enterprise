@@ -1,9 +1,6 @@
 package com.umcs.enterprise;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRegistration;
-import org.slf4j.spi.SLF4JServiceProvider;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +10,10 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 @Configuration
 @ComponentScan
@@ -44,8 +45,8 @@ public class AppInitializer implements WebApplicationInitializer {
 		//        seed.initDatabase().run();
 	}
 
-	@Bean
-	public SLF4JServiceProvider slf4JServiceProvider() {
-		return new org.slf4j.simple.SimpleServiceProvider();
-	}
+//	@Bean
+//	public SLF4JServiceProvider slf4JServiceProvider() {
+//		return new org.slf4j.simple.SimpleServiceProvider();
+//	}
 }

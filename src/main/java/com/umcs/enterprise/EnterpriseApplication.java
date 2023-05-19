@@ -24,12 +24,13 @@ public class EnterpriseApplication {
 		baseDir.mkdir();
 		baseDir.deleteOnExit();
 
-		Tomcat tomcat = new Tomcat();
-		tomcat.setBaseDir(baseDir.getAbsolutePath());
-		tomcat.setPort(8080);
-		tomcat.getHost().setAppBase(".");
-		tomcat.addWebapp("", ".");
-		tomcat.start();
-		tomcat.getServer().await();
+		Tomcat server = new Tomcat();
+		server.setBaseDir(baseDir.getAbsolutePath());
+		server.setPort(8080);
+		server.getHost().setAppBase(".");
+		server.addWebapp("", ".");
+		server.getConnector();
+		server.start();
+		server.getServer().await();
 	}
 }
