@@ -11,17 +11,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class Security {
 
+	@Bean
+	public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
+		http
+			.authorizeHttpRequests()
+			.antMatchers(HttpMethod.GET, "/**")
+			.permitAll()
+			.antMatchers(HttpMethod.POST, "/**")
+			.permitAll()
+			.anyRequest()
+			.permitAll();
 
-    @Bean public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-                .antMatchers(HttpMethod.GET, "/**")
-                .permitAll()
-                .antMatchers(HttpMethod.POST, "/**")
-                .permitAll()
-                .anyRequest().permitAll()
-                ;
-
-        return  http.build();
-    }
-
+		return http.build();
+	}
 }

@@ -8,11 +8,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class HalForms {
-
-//@Bean
-//    public  com.fasterxml.jackson.databind.Module halFormsModule(){
-//    return new org.springframework.hateoas.mediatype.hal.forms.Jackson2HalFormsModule();
-//    }
-
+	//@Bean
+	//    public  com.fasterxml.jackson.databind.Module halFormsModule(){
+	//    return new org.springframework.hateoas.mediatype.hal.forms.Jackson2HalFormsModule();
+	//    }
 
 }

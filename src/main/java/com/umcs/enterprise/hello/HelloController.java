@@ -1,6 +1,5 @@
 package com.umcs.enterprise.hello;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,13 +7,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class HelloController {
 
-
-
-
-
-
-    @GetMapping("/hello")
-    public  String helloRest(){
-        return  "Hello World!";
-    }
+	@GetMapping("/hello")
+	public String helloRest() {
+		return "Hello World!";
+	}
 }

@@ -3,25 +3,22 @@ package com.umcs.enterprise.book;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.umcs.enterprise.author.Author;
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import javax.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.Hibernate;
-
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
 @Getter
-
 @ToString
 @Builder
 @Entity
@@ -30,36 +27,43 @@ import java.util.UUID;
 @NoArgsConstructor
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
-    private @LastModifiedDate LocalDateTime lastModifiedDate;
-    private @Version Long version;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", nullable = false)
+	private Long id;
 
-//    @NotEmpty
-    @Setter private String title;
+	@LastModifiedDate
+	private LocalDateTime lastModifiedDate;
 
-    @ToString.Exclude
-    @ManyToMany
-    @JoinTable(name = "Book_authors",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "authors_id"))
-//    @RestResource(exported = false)
-    @Builder.Default private Set<Author> authors = new LinkedHashSet<>();
+	@Version
+	private Long version;
 
+	//    @NotEmpty
+	@Setter
+	private String title;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Book book = (Book) o;
-        return getId() != null && Objects.equals(getId(), book.getId());
-    }
+	@ToString.Exclude
+	@ManyToMany
+	@JoinTable(
+		name = "Book_authors",
+		joinColumns = @JoinColumn(name = "book_id"),
+		inverseJoinColumns = @JoinColumn(name = "authors_id")
+	)
+	//    @RestResource(exported = false)
+	@Builder.Default
+	private Set<Author> authors = new LinkedHashSet<>();
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Book book = (Book) o;
+		return getId() != null && Objects.equals(getId(), book.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
