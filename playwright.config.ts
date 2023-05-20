@@ -2,7 +2,7 @@ import { devices, PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
 	webServer: {
-		command: './gradlew bootRun',
+		command: './gradlew runShadow',
 		url: 'http://localhost:8080/graphiql',
 		timeout: 3 * 60 * 1000,
 		reuseExistingServer: !process.env.CI

@@ -1,12 +1,11 @@
-package com.umcs.enterprise.book;
+package com.umcs.enterprise.author;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.umcs.enterprise.author.Author;
+import com.umcs.enterprise.book.Book;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.Hibernate;
-
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
@@ -21,7 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Getter
-
+@Setter
 @ToString
 @Builder
 @Entity
@@ -29,33 +28,31 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Book {
+public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private @LastModifiedDate LocalDateTime lastModifiedDate;
+
+    private @JsonIgnore
+    @LastModifiedDate LocalDateTime lastModifiedDate;
     private @Version Long version;
 
-//    @NotEmpty
-    @Setter private String title;
+    private String name;
 
+    @ManyToMany(mappedBy = "authors")
+    @RestResource(exported = false)
+//    @Builder.Default
     @ToString.Exclude
-    @ManyToMany
-    @JoinTable(name = "Book_authors",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "authors_id"))
-//    @RestResource(exported = false)
-    @Builder.Default private Set<Author> authors = new LinkedHashSet<>();
-
+    private Set<Book> books = new LinkedHashSet<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Book book = (Book) o;
-        return getId() != null && Objects.equals(getId(), book.getId());
+        Author author = (Author) o;
+        return getId() != null && Objects.equals(getId(), author.getId());
     }
 
     @Override

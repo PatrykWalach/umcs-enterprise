@@ -1,21 +1,28 @@
 package com.umcs.enterprise;
 
-import com.umcs.enterprise.seed.Seed;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
-import org.slf4j.spi.SLF4JServiceProvider;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+//import org.slf4j.spi.SLF4JServiceProvider;
+import org.springframework.context.annotation.*;
+
+
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+
+@Configuration
+@ComponentScan("com.umcs.enterprise")
+@EnableWebMvc
+@EnableJpaRepositories("com.umcs.enterprise")
+@Import(RepositoryRestMvcConfiguration.class)
+@EnableSpringDataWebSupport
 public class EnterpriseApplication {
 
 	public static void main(String[] args) throws LifecycleException, IOException {
