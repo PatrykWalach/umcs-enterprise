@@ -37,7 +37,7 @@
 		"tailwindcss": "^3.3.2",
 		"tailwindcss-fluid-type": "^2.0.3",
 		"tslib": "^2.5.0",
-		"turbo": "^1.9.6",
+		"turbo": "^1.9.9",
 		"typescript": "^5.0.4",
 		"vite": "^4.3.7"
 	},
