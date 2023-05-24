@@ -1,6 +1,5 @@
-
 import type { RequestEvent } from '@sveltejs/kit';
-function graphql(){}
+function graphql() {}
 graphql(
 	/* GraphQL */
 	`

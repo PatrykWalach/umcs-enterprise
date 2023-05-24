@@ -1,4 +1,3 @@
-
 import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { Actions } from './$types';
@@ -21,7 +20,7 @@ export const load = async () => {
 		form: await superValidate(schema)
 	};
 };
-function graphql(){}
+function graphql() {}
 const addBook = graphql(`
 	mutation AddBook($input: CreateBookInput!) {
 		createBook(input: $input) {

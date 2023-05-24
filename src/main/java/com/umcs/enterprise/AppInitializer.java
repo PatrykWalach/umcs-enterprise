@@ -1,8 +1,6 @@
 package com.umcs.enterprise;
 
-
-
-
+import com.umcs.enterprise.env.DotenvConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,18 +12,11 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import com.umcs.enterprise.env.DotenvConfig;
-
-
-
-
-
-
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[]{DotenvConfig.class,  EnterpriseApplication.class};
+		return new Class[] { DotenvConfig.class, EnterpriseApplication.class };
 	}
 
 	@Override

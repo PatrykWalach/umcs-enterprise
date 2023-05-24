@@ -5,8 +5,6 @@
 	export let data: PageData;
 
 	$: ({ HomeQuery } = data);
-
- 
 </script>
 
 <main class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
@@ -29,7 +27,7 @@
 			<a href="/books?by=releaseDate&order=desc" class="link-hover link">Nowości</a>
 		</h2>
 		<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
-			{#each HomeQuery?.new?? [] as book (book.id)}
+			{#each HomeQuery?.new ?? [] as book (book.id)}
 				<li class="grid">
 					<Book {book} />
 				</li>

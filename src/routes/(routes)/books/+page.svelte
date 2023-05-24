@@ -39,10 +39,20 @@
 			aria-label="Pierwsza strona"
 			title="Pierwsza strona"
 		>
-		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-			<path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
-		</svg>
-		
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="h-6 w-6"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"
+				/>
+			</svg>
 		</a>
 
 		<a
@@ -53,10 +63,17 @@
 				})}`}
 			aria-label="Poprzednia strona"
 			title="Poprzednia strona"
-		><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-			<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-		</svg>
-		
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="h-6 w-6"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+			</svg>
 		</a>
 
 		<div class="btn col-start-2 md:col-start-3">
@@ -71,10 +88,17 @@
 				})}`}
 			aria-label="Następna strona"
 			title="Następna strona"
-		><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-			<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-		</svg>
-		
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="h-6 w-6"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+			</svg>
 		</a>
 		<a
 			class="hidden md:btn {BooksQuery.page.last || 'md:btn-disabled'}"
@@ -85,10 +109,20 @@
 			aria-label="Ostatnia strona"
 			title="Ostatnia strona"
 		>
-		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-			<path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
-		</svg>
-		
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="h-6 w-6"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+				/>
+			</svg>
 		</a>
 	</nav>
 </main>

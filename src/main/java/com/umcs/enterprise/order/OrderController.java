@@ -22,41 +22,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //@RequestMapping("/orders/{id}")
 public class OrderController {
 
-    private final  @NonNull OrderRepository orderRepository;
-    private final  @NonNull OrderService orderService;
+	@NonNull
+	private final OrderRepository orderRepository;
 
+	@NonNull
+	private final OrderService orderService;
 
-    @PatchMapping(path="/orders/{id}/pay")
-    public ResponseEntity<?> pay(@PathVariable("id") Order order){
-        if(order == null || order.getStatus() != null){
-            return ResponseEntity.notFound().build();
-        }
+	@PatchMapping(path = "/orders/{id}/pay")
+	public ResponseEntity<?> pay(@PathVariable("id") Order order) {
+		if (order == null || order.getStatus() != null) {
+			return ResponseEntity.notFound().build();
+		}
 
-        order = orderService.pay(order);
+		order = orderService.pay(order);
 
-        EntityModel<Order> model = EntityModel.of(order);
+		EntityModel<Order> model = EntityModel.of(order);
 
-        model.add(entityLinks.linkToItemResource(Order.class, order.getId()));
+		model.add(entityLinks.linkToItemResource(Order.class, order.getId()));
 
-        return  new ResponseEntity<>(model, HttpStatus.OK);
-    }
+		return new ResponseEntity<>(model, HttpStatus.OK);
+	}
 
-    @NonNull private  final
-    EntityLinks entityLinks;
+	@NonNull
+	private final EntityLinks entityLinks;
 
+	@PatchMapping(path = "/orders/{id}/ship")
+	public ResponseEntity<?> ship(@PathVariable("id") Order order) {
+		if (order == null || !order.getStatus().equals(OrderStatus.PAID)) {
+			return ResponseEntity.notFound().build();
+		}
 
-    @PatchMapping(path="/orders/{id}/ship")
-    public ResponseEntity<?> ship(@PathVariable("id") Order order){
-        if(order == null || !order.getStatus() .equals(OrderStatus.PAID)){
-            return ResponseEntity.notFound().build();
-        }
+		order = orderService.ship(order);
 
-        order = orderService.ship(order);
+		EntityModel<Order> model = EntityModel.of(order);
 
-        EntityModel<Order> model = EntityModel.of(order);
+		model.add(entityLinks.linkToItemResource(Order.class, order.getId()));
 
-        model.add(entityLinks.linkToItemResource(Order.class, order.getId()));
-
-        return  new ResponseEntity<>(model,  HttpStatus.OK);
-    }
+		return new ResponseEntity<>(model, HttpStatus.OK);
+	}
 }

@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.*;
 import lombok.*;
-
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -29,27 +28,31 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @NoArgsConstructor
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    @Type(type = "uuid-char")
-    private UUID id;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", nullable = false)
+	@Type(type = "uuid-char")
+	private UUID id;
 
 	@JsonIgnore
 	@LastModifiedDate
 	private LocalDateTime lastModifiedDate;
 
-    private
-    @LastModifiedDate @JsonIgnore LocalDateTime lastModifiedDate;
-    private @Version Long version;
+	@LastModifiedDate
+	@JsonIgnore
+	private LocalDateTime lastModifiedDate;
+
+	@Version
+	private Long version;
 
 	private String name;
 
-    @ManyToMany(mappedBy = "authors")
-    // @RestResource(exported = false)
-   @Builder.Default
-    @ToString.Exclude
-    private Set<Book> books = new LinkedHashSet<>();
+	@ManyToMany(mappedBy = "authors")
+	// @RestResource(exported = false)
+	@Builder.Default
+	@ToString.Exclude
+	private Set<Book> books = new LinkedHashSet<>();
 
 	@Override
 	public boolean equals(Object o) {

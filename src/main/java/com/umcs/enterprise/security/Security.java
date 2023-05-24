@@ -11,17 +11,19 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class Security {
 
-
-    @Bean public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
-        http.cors(cors->cors.disable()).authorizeHttpRequests(authorizeHttpRequests->authorizeHttpRequests
-                .requestMatchers(
-
-                HttpMethod.GET, "/**")
-                .permitAll()
-                .requestMatchers(HttpMethod.POST, "/**")
-                .permitAll()
-                .anyRequest().permitAll())
-                ;
+	@Bean
+	public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
+		http
+			.cors(cors -> cors.disable())
+			.authorizeHttpRequests(authorizeHttpRequests ->
+				authorizeHttpRequests
+					.requestMatchers(HttpMethod.GET, "/**")
+					.permitAll()
+					.requestMatchers(HttpMethod.POST, "/**")
+					.permitAll()
+					.anyRequest()
+					.permitAll()
+			);
 
 		return http.build();
 	}

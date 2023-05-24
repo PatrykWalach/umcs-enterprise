@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("org.springdoc")
 public class OpenApiConfig {
 
-    @Bean
-    public ObjectMapper objectMapper(){
-        return  new ObjectMapper();
-    }
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
 }

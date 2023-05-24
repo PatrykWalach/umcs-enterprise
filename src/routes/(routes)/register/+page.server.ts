@@ -1,9 +1,8 @@
-
 import { setToken } from '$lib/setToken';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
-function graphql(){}
+function graphql() {}
 
 const register = graphql(`
 	mutation Register($input: RegisterInput!) {

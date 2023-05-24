@@ -10,11 +10,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class DotenvConfig {
 
-    public DotenvConfig(ConfigurableEnvironment env) { DotenvPropertySource.addToEnvironment(env);
-    }
-
-
+	public DotenvConfig(ConfigurableEnvironment env) {
+		DotenvPropertySource.addToEnvironment(env);
+	}
 }

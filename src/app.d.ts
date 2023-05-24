@@ -1,9 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { api } from "$lib/client.server";
-import type { Client } from "ketting";
-
-
+import type { api } from '$lib/client.server';
+import type { Client } from 'ketting';
 
 // for information about these interfaces
 declare global {
@@ -21,5 +19,4 @@ declare global {
 	}
 }
 
-export { };
-
+export {};

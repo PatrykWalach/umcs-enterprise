@@ -2,8 +2,6 @@
 	import { enhance } from '$app/forms';
 	import type { BookListItem } from '$lib/client';
 
- 
-
 	export let book: BookListItem;
 </script>
 
@@ -11,9 +9,7 @@
 	<figure>
 		<img
 			loading="lazy"
-
-			class="h-auto w-full mix-blend-darken aspect-[3/4]"
-
+			class="aspect-[3/4] h-auto w-full mix-blend-darken"
 			srcset={Object.entries(book.covers)
 				.map(([width, url]) => `${url} ${width}w`)
 				.join(', ')}
