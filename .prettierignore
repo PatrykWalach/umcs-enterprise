@@ -17,4 +17,3 @@ yarn.lock
 .eslintignore
 .gitignore
 *.properties
-/$houdini

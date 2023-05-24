@@ -1,19 +1,19 @@
 package com.umcs.enterprise.book;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.umcs.enterprise.author.Author;
+import com.umcs.enterprise.book.cover.Covers;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
+
 import org.hibernate.Hibernate;
 
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -33,22 +33,35 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Long id;
+    @Type(type="uuid-char")
+    private UUID id;
 
-    private @LastModifiedDate LocalDateTime lastModifiedDate;
+    private @JsonIgnore
+    @LastModifiedDate LocalDateTime lastModifiedDate;
     private @Version Long version;
+
+    private
+    @LastModifiedDate LocalDateTime releaseDate;
 
 //    @NotEmpty
     @Setter private String title;
 
     @ToString.Exclude
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Book_authors",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "authors_id"))
-//    @RestResource(exported = false)
+
     @Builder.Default private Set<Author> authors = new LinkedHashSet<>();
 
+
+    @Embedded
+    private Covers covers;
+
+    @Column(length = 1020)
+    private  String synopsis;
+
+    private BigDecimal price;
 
     @Override
     public boolean equals(Object o) {

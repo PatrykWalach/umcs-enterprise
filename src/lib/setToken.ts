@@ -1,6 +1,6 @@
-import { graphql, setSession, type SetToken_token$data } from '$houdini';
-import type { RequestEvent } from '@sveltejs/kit';
 
+import type { RequestEvent } from '@sveltejs/kit';
+function graphql(){}
 graphql(
 	/* GraphQL */
 	`

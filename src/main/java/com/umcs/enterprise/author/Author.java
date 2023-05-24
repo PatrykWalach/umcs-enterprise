@@ -1,10 +1,11 @@
 package com.umcs.enterprise.author;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.umcs.enterprise.book.Book;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
+
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -32,18 +33,19 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Long id;
+    @Type(type = "uuid-char")
+    private UUID id;
 
 
-    private @JsonIgnore
-    @LastModifiedDate LocalDateTime lastModifiedDate;
+    private
+    @LastModifiedDate @JsonIgnore LocalDateTime lastModifiedDate;
     private @Version Long version;
 
     private String name;
 
     @ManyToMany(mappedBy = "authors")
-    @RestResource(exported = false)
-//    @Builder.Default
+    // @RestResource(exported = false)
+   @Builder.Default
     @ToString.Exclude
     private Set<Book> books = new LinkedHashSet<>();
 

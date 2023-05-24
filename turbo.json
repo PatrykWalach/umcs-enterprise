@@ -25,16 +25,6 @@
 			"dependsOn": ["generate", "sync"]
 		},
 		"sync": { "outputs": [".svelte-kit/**"] },
-		"generate": {
-			"outputs": ["$houdini/**"],
-			"inputs": [
-				"src/**/*.svelte",
-				"src/**/*.graphql",
-				"src/**/*.gql",
-				"src/**/*.ts",
-				"houdini.config.js"
-			]
-		},
 		"dev": {
 			"cache": false,
 			"persistent": true

@@ -9,7 +9,7 @@ test('can add to basket', async ({ page }) => {
 
 	const book = main
 		.getByRole('region', {
-			name: 'Bestsellers'
+			name: 'Bestsellery'
 		})
 		.getByRole('article', {
 			name: 'Kicia Kocia. Wiosna'
@@ -46,7 +46,7 @@ test('can quickly add to basket', async ({ page }) => {
 
 	const book = main
 		.getByRole('region', {
-			name: 'Bestsellers'
+			name: 'Bestsellery'
 		})
 		.getByRole('article', {
 			name: 'Kicia Kocia. Wiosna'
@@ -79,7 +79,7 @@ test('keeps contents after register', async ({ page, register }) => {
 
 	const book = main
 		.getByRole('region', {
-			name: 'Bestsellers'
+			name: 'Bestsellery'
 		})
 		.getByRole('article', {
 			name: 'Kicia Kocia. Wiosna'
@@ -115,7 +115,7 @@ test('clears after logout', async ({ page, register }) => {
 
 	const book = main
 		.getByRole('region', {
-			name: 'Bestsellers'
+			name: 'Bestsellery'
 		})
 		.getByRole('article', {
 			name: 'Kicia Kocia. Wiosna'
@@ -152,7 +152,7 @@ test('keeps between logins', async ({ page, register, login }) => {
 
 	const book = main
 		.getByRole('region', {
-			name: 'Bestsellers'
+			name: 'Bestsellery'
 		})
 		.getByRole('article', {
 			name: 'Kicia Kocia. Wiosna'

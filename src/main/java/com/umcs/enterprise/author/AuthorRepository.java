@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @RepositoryRestResource(excerptProjection = AuthorRepository.class)
-public interface AuthorRepository extends PagingAndSortingRepository <Author, Long>{
+public interface AuthorRepository extends PagingAndSortingRepository <Author, UUID>{
 
 }

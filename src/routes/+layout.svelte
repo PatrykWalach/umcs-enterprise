@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
 	import '../app.css';
-	import type { LayoutData } from './$houdini';
+	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
 
@@ -56,7 +56,7 @@
 								/>
 							</svg>
 							<span class="badge badge-sm indicator-item">
-								{$NavbarQuery.data?.basket?.quantity ?? 0}
+								{NavbarQuery.data?.basket?.quantity ?? 0}
 							</span>
 						</div>
 					</button>
@@ -66,7 +66,7 @@
 					>
 						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">
-								{$NavbarQuery.data?.basket?.quantity || 'Brak'}
+								{NavbarQuery.data?.basket?.quantity || 'Brak'}
 								{(() => ({
 									one: 'Książka',
 									many: 'Książek',
@@ -74,10 +74,10 @@
 									other: null,
 									zero: 'Książek',
 									two: 'Książki'
-								}))()[pluralRules.select($NavbarQuery.data?.basket?.quantity ?? 0)] ?? 'Książek'}
+								}))()[pluralRules.select(NavbarQuery.data?.basket?.quantity ?? 0)] ?? 'Książek'}
 							</span>
 							<ul class="grid gap-4">
-								{#each $NavbarQuery.data?.basket?.books?.edges
+								{#each NavbarQuery.data?.basket?.books?.edges
 									?.map((edge) => edge?.node)
 									.filter(isNotNull) ?? [] as node (node.id)}
 									<li class="grid grid-cols-3 gap-2">
@@ -101,14 +101,14 @@
 							</ul>
 							<div class="card-actions">
 								<span class="font-semibold text-info text-lg">
-									Total: <strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
+									Total: <strong>{NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
 								</span>
 								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
 							</div>
 						</div>
 					</div>
 				</div>
-				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
+				{#if NavbarQuery.data?.viewer?.__typename === 'User'}
 					<div class="dropdown-end dropdown">
 						<button type="button" aria-label="Show menu" class="btn-ghost btn-square avatar btn">
 							<!--

@@ -13,12 +13,14 @@ public class Security {
 
 
     @Bean public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-                .antMatchers(HttpMethod.GET, "/**")
+        http.cors(cors->cors.disable()).authorizeHttpRequests(authorizeHttpRequests->authorizeHttpRequests
+                .requestMatchers(
+
+                HttpMethod.GET, "/**")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/**")
+                .requestMatchers(HttpMethod.POST, "/**")
                 .permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().permitAll())
                 ;
 
         return  http.build();

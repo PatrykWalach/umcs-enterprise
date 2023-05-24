@@ -1,49 +1,21 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { fragment, graphql, type Book_book } from '$houdini';
-	import { isNotNull } from '$lib/isNotNull';
+	import type { BookListItem } from '$lib/client';
 
-	export let book: Book_book;
+ 
 
-	$: data = fragment(
-		book,
-		graphql(`
-			fragment Book_book on Book {
-				id
-				covers(
-					widths: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000]
-					transformation: {
-						aspectRatio: { width: 3, height: 4 }
-						crop: FILL_PAD
-						gravity: AUTO
-						quality: { auto: DEFAULT }
-						format: AUTO
-					}
-				) {
-					width @required
-					url @required
-				}
-				price {
-					formatted
-				}
-				title @required
-				author
-			}
-		`)
-	);
-	// $: data = fragment(
-	// 	book,
-	// );
+	export let book: BookListItem;
 </script>
 
-<article class="card card-compact bg-base-100 shadow" aria-labelledby={$data?.id}>
+<article class="card card-compact bg-base-100 shadow" aria-labelledby={book.id}>
 	<figure>
 		<img
 			loading="lazy"
-			class="h-auto w-full mix-blend-darken"
-			srcset={$data?.covers
-				?.filter(isNotNull)
-				.map((cover) => `${cover.url} ${cover.width}w`)
+
+			class="h-auto w-full mix-blend-darken aspect-[3/4]"
+
+			srcset={Object.entries(book.covers)
+				.map(([width, url]) => `${url} ${width}w`)
 				.join(', ')}
 			sizes="(min-width: 1536px) 16.6vw, (min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw"
 			alt=""
@@ -51,20 +23,23 @@
 	</figure>
 	<div class="card-body justify-between gap-4">
 		<div>
-			<h3 id={$data?.id} class="card-title line-clamp-3 md:line-clamp-2" title={$data?.title}>
-				<a href="/book/{$data?.id}" class="link-hover link">{$data?.title}</a>
+			<h3 id={book.id} class="card-title line-clamp-3 md:line-clamp-2" title={book.title}>
+				<a href="/book/{book.id}" class="link-hover link">{book.title}</a>
 			</h3>
-			{#if $data?.author}
-				<div class="truncate">
-					{$data.author}
-				</div>
-			{/if}
+
+			<ul class="truncate">
+				{#each book.authors ?? [] as author, i}
+					<li>
+						{author}
+					</li>
+				{/each}
+			</ul>
 		</div>
 		<div>
 			<form method="POST" use:enhance class="flex items-center justify-between">
-				<input type="hidden" name="id" value={$data?.id} />
+				<input type="hidden" name="id" value={book.id} />
 				<div class="font-bold text-lg">
-					{$data?.price?.formatted}
+					{book.price}
 				</div>
 				<!-- <button type="submit" class="btn-primary btn w-full">do koszyka</button> -->
 				<button

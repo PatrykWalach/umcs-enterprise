@@ -1,7 +1,7 @@
 import BasketBook from '$lib/BasketBook.server';
 import UnbasketBook from '$lib/UnbasketBook.server';
 import { error } from '@sveltejs/kit';
-import type { Actions } from './$houdini';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
 	basket_book: async (event) => {
