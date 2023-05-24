@@ -15,7 +15,7 @@
 		"generate": "houdini generate"
 	},
 	"devDependencies": {
-		"@graphql-eslint/eslint-plugin": "^3.18.0",
+		"@graphql-eslint/eslint-plugin": "^3.19.1",
 		"@playwright/test": "^1.33.0",
 		"@sveltejs/adapter-auto": "^2.1.0",
 		"@sveltejs/kit": "^1.17.0",
