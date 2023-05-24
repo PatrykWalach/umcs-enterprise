@@ -3,7 +3,7 @@
 	import { isNotNull } from '$lib/isNotNull';
 	import Book from '../../Book.svelte';
 
-	import type { PageData } from './$houdini';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 

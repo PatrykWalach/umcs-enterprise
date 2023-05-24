@@ -1,8 +1,7 @@
-import { graphql } from '$houdini';
 import { setToken } from '$lib/setToken';
 import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
-import type { Actions } from './$houdini';
-
+import type { Actions } from './$types';
+function graphql() {}
 const login = graphql(`
 	mutation Login($input: LoginInput!) {
 		login(input: $input) @required {

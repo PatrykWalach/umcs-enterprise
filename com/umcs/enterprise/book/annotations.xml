@@ -1,0 +1,5 @@
+<root>
+    <item name='com.umcs.enterprise.book.BookRepresentationModelProcessor org.springframework.hateoas.EntityModel&lt;com.umcs.enterprise.book.Book&gt; process(org.springframework.hateoas.EntityModel&lt;com.umcs.enterprise.book.Book&gt;)'>
+        <annotation name='org.jetbrains.annotations.NotNull'/>
+    </item>
+</root>

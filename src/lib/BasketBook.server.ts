@@ -1,8 +1,7 @@
-import { graphql, type BasketBook$input } from '$houdini';
 import type { RequestEvent } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 import { setToken } from './setToken';
-
+function graphql() {}
 const BasketBook = graphql(`
 	mutation BasketBook($input: BasketBookInput!) {
 		basketBook(input: $input) {

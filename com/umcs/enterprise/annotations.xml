@@ -1,4 +1,7 @@
 <root>
+    <item name='com.umcs.enterprise.AppInitializer java.lang.String[] getServletMappings()'>
+        <annotation name='org.jetbrains.annotations.NotNull'/>
+    </item>
     <item name='com.umcs.enterprise.BasketDataFetcher java.util.Map&lt;java.lang.Long,java.lang.Integer&gt; basket(graphql.schema.DataFetchingEnvironment)'>
         <annotation name='java.lang.SuppressWarnings'>
             <val val="&quot;unused&quot;"/>

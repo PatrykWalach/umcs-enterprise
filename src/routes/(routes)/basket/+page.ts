@@ -1,4 +1,4 @@
-import type { BasketQueryVariables } from './$houdini';
+import type { BasketQueryVariables } from './$types';
 
 export const _BasketQueryVariables: BasketQueryVariables = async (event) => {
 	return {

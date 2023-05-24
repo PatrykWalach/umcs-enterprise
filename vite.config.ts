@@ -1,12 +1,13 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import houdini from 'houdini/vite';
+
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [houdini(), sveltekit()],
+	plugins: [sveltekit()],
+
 	server: {
-		fs: {
-			allow: ['.gql']
+		proxy: {
+			// '/api': 'http://localhost:8080'
 		}
 	}
 });

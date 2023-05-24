@@ -1,7 +1,6 @@
-import { graphql } from '$houdini';
 import BasketBook from '$lib/BasketBook.server';
-import { error, type ServerLoad } from '@sveltejs/kit';
-import type { Actions } from './$houdini';
+import { error } from '@sveltejs/kit';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
 	default: async (event) => {

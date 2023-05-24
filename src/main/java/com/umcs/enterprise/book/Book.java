@@ -1,65 +1,75 @@
 package com.umcs.enterprise.book;
 
-import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.node.Node;
-import com.umcs.enterprise.purchase.BookPurchase;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.umcs.enterprise.author.Author;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import javax.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
-@Builder(builderMethodName = "newBuilder")
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
+@Builder
+@Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Book implements Node {
+@AllArgsConstructor
+@NoArgsConstructor
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Book {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(nullable = false)
-	private UUID databaseId;
+	@Column(name = "id", nullable = false)
+	@Type(type = "uuid-char")
+	private UUID id;
 
-	private String author;
+	@JsonIgnore
+	@LastModifiedDate
+	private LocalDateTime lastModifiedDate;
 
+	@Version
+	private Long version;
+
+	@LastModifiedDate
+	private LocalDateTime releaseDate;
+
+	//    @NotEmpty
+	@Setter
 	private String title;
 
-	@Column(length = 2_000)
+	@ToString.Exclude
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+		name = "Book_authors",
+		joinColumns = @JoinColumn(name = "book_id"),
+		inverseJoinColumns = @JoinColumn(name = "authors_id")
+	)
+	@Builder.Default
+	private Set<Author> authors = new LinkedHashSet<>();
+
+	@Embedded
+	private Covers covers;
+
+	@Column(length = 1020)
 	private String synopsis;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cover_id", nullable = false)
-	private Cover cover;
-
-	@Column(precision = 19, scale = 4)
 	private BigDecimal price;
-
-	@CreatedDate
-	@Column(nullable = false)
-	private Instant createdAt;
-
-	private OffsetDateTime releasedAt;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
-	private List<BookPurchase> purchases;
-
-	private Long popularity;
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
 		Book book = (Book) o;
-		return getDatabaseId() != null && Objects.equals(getDatabaseId(), book.getDatabaseId());
+		return getId() != null && Objects.equals(getId(), book.getId());
 	}
 
 	@Override

@@ -1,7 +1,6 @@
-import { graphql } from '$houdini';
 import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
-import type { Actions } from './$houdini';
+import type { Actions } from './$types';
 
 const schema = z.object({
 	releasedAt: z.coerce.date(),
@@ -21,7 +20,7 @@ export const load = async () => {
 		form: await superValidate(schema)
 	};
 };
-
+function graphql() {}
 const addBook = graphql(`
 	mutation AddBook($input: CreateBookInput!) {
 		createBook(input: $input) {

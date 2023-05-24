@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
-	import type { PageData } from './$houdini';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 

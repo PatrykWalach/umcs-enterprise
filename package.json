@@ -11,11 +11,9 @@
 		"lint": "eslint .",
 		"prettier": "prettier --cache --cache-strategy content",
 		"format": "npm run prettier -- --write .",
-		"docker": "docker-compose up -d",
-		"generate": "houdini generate"
+		"docker": "docker-compose up -d"
 	},
 	"devDependencies": {
-		"@graphql-eslint/eslint-plugin": "^3.18.0",
 		"@playwright/test": "^1.33.0",
 		"@sveltejs/adapter-auto": "^2.1.0",
 		"@sveltejs/kit": "^1.17.0",
@@ -43,8 +41,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@effect/data": "^0.12.2",
 		"daisyui": "^2.51.6",
-		"houdini-svelte": "^1.2.3",
+		"effect": "^2.0.0-next.13",
+		"ketting": "^8.0.0-alpha.2",
 		"sveltekit-flash-message": "^0.11.3",
 		"sveltekit-superforms": "^0.8.6",
 		"zod": "^3.21.4"
