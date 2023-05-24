@@ -2,11 +2,9 @@ package com.umcs.enterprise.book;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.umcs.enterprise.author.Author;
-import com.umcs.enterprise.book.cover.Covers;
 import lombok.*;
 
 import org.hibernate.Hibernate;
-
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
@@ -21,7 +19,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Getter
-
 @ToString
 @Builder
 @Entity
@@ -40,11 +37,12 @@ public class Book {
     @LastModifiedDate LocalDateTime lastModifiedDate;
     private @Version Long version;
 
-    private
+	    private
     @LastModifiedDate LocalDateTime releaseDate;
 
 //    @NotEmpty
-    @Setter private String title;
+	@Setter
+	private String title;
 
     @ToString.Exclude
     @ManyToMany(cascade = CascadeType.ALL)
@@ -71,8 +69,8 @@ public class Book {
         return getId() != null && Objects.equals(getId(), book.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

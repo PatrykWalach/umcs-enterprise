@@ -23,7 +23,6 @@ public class Security {
                 .anyRequest().permitAll())
                 ;
 
-        return  http.build();
-    }
-
+		return http.build();
+	}
 }

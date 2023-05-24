@@ -22,6 +22,7 @@ import com.umcs.enterprise.env.DotenvConfig;
 
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class[]{DotenvConfig.class,  EnterpriseApplication.class};
@@ -29,12 +30,11 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[]{};
+		return new Class[] {};
 	}
 
 	@Override
 	protected String[] getServletMappings() {
-		return new String[]{"/"};
+		return new String[] { "/" };
 	}
-
 }

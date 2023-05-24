@@ -23,12 +23,11 @@ import java.util.*;
 @RequiredArgsConstructor
 public class Seed {
 
+	@NonNull
+	private final BookRepository bookRepository;
 
-    @NonNull
-    private  final BookRepository bookRepository;
-
-    @NonNull
-    private  final AuthorRepository authorRepository;
+	@NonNull
+	private final AuthorRepository authorRepository;
 
 
     @NonNull
@@ -72,6 +71,7 @@ public class Seed {
 
         CoversMapper.ResultDto resultDto = new ObjectMapper().convertValue(result, CoversMapper.ResultDto.class);
 
+    authorRepository.saveAll(List.of(Author.builder().name("Author").build())).forEach(authors::add);
 
         return Mappers.getMapper(CoversMapper.class).breakpointsToCovers(
                 resultDto.responsive_breakpoints().get(0)
