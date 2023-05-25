@@ -2,15 +2,15 @@ import { Order } from '$houdini';
 import type { BooksQueryVariables } from './$houdini';
 
 export const _BooksQueryVariables: BooksQueryVariables = (event) => {
-	const purchase = {
+	const order = {
 		asc: Order.ASC,
 		desc: Order.DESC
-	}[event.url.searchParams.get('purchase') ?? ''];
+	}[event.url.searchParams.get('order') ?? ''];
 
 	const orderBy = {
-		realease_date: { releasedAt: purchase },
-		popularity: { popularity: purchase },
-		price: { price: { raw: purchase } }
+		realease_date: { releasedAt: order },
+		popularity: { popularity: order },
+		price: { price: { raw: order } }
 	}[event.url.searchParams.get('by') ?? ''] ?? { releasedAt: Order.DESC };
 
 	return {
