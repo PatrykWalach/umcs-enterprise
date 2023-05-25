@@ -11,13 +11,13 @@
 </script>
 
 <main class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
-	<form method="get" class="flex justify-end gap-2 sm:gap-8">
+	<form method="get" class="flex justify-start gap-2 sm:gap-8">
 		<select name="by" id="" class="select">
 			<option value="realease_date" selected>Release date</option>
 			<option value="popularity">Popularity</option>
 			<option value="price">Price</option>
 		</select>
-		<select name="purchase" id="" class="select">
+		<select name="order" id="" class="select">
 			<option value="asc">Ascending</option>
 			<option value="desc" selected>Descending</option>
 		</select>
@@ -34,34 +34,35 @@
 		{/each}
 	</ol>
 
-	<footer class="flex">
-		<div class="btn-group grid grid-cols-2">
-			{#if $BooksQuery.data?.books?.pageInfo?.hasPreviousPage && $BooksQuery.data?.books.pageInfo.startCursor}
-				<a
-					class="btn"
-					href="/books?{new URLSearchParams({
+	<nav class="btn-group mx-auto grid grid-cols-2">
+		<a
+			class="btn {$BooksQuery.data?.books?.pageInfo?.hasPreviousPage || 'btn-disabled'}"
+			href={$BooksQuery.data?.books?.pageInfo.hasPreviousPage &&
+			$BooksQuery.data?.books?.pageInfo.startCursor
+				? `/books?${new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
-						purchase: $page.url.searchParams.get('purchase') ?? '',
-						before: $BooksQuery.data?.books.pageInfo.startCursor
-					})}"
-				>
-					Previous
-				</a>
-			{/if}
-			{#if $BooksQuery.data?.books?.pageInfo?.hasNextPage && $BooksQuery.data?.books.pageInfo.endCursor}
-				<a
-					class="btn"
-					href="/books?{new URLSearchParams({
+						order: $page.url.searchParams.get('order') ?? '',
+						after: $BooksQuery.data?.books.pageInfo.startCursor
+				  })}`
+				: undefined}
+		>
+			Previous
+		</a>
+
+		<a
+			class="btn {$BooksQuery.data?.books?.pageInfo?.hasNextPage || 'btn-disabled'}"
+			href={$BooksQuery.data?.books?.pageInfo?.hasNextPage &&
+			$BooksQuery.data?.books.pageInfo.endCursor
+				? `/books?${new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
-						purchase: $page.url.searchParams.get('purchase') ?? '',
+						order: $page.url.searchParams.get('order') ?? '',
 						after: $BooksQuery.data?.books.pageInfo.endCursor
-					})}"
-				>
-					Next
-				</a>
-			{/if}
-		</div>
-	</footer>
+				  })}`
+				: undefined}
+		>
+			Next
+		</a>
+	</nav>
 </main>
 
 <slot />
