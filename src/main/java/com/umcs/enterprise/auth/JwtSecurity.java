@@ -38,11 +38,9 @@ public class JwtSecurity implements WebMvcConfigurer {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-
-
-			.csrf(csrf->csrf.disable())
-
-			.authorizeHttpRequests(authorizeHttpRequests->authorizeHttpRequests
+			.csrf(csrf -> csrf.disable())
+			.authorizeHttpRequests(authorizeHttpRequests ->
+				authorizeHttpRequests
 					.requestMatchers("/admin/**")
 					.hasRole("ADMIN")
 					.requestMatchers("/graphql*", "/graphiql*", "/covers/*")
@@ -51,14 +49,10 @@ public class JwtSecurity implements WebMvcConfigurer {
 					.anonymous()
 					.anyRequest()
 					.permitAll()
-
 			)
-
-
-			.sessionManagement(
-					sessionManagement->sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			)
-			;
+			.sessionManagement(sessionManagement ->
+				sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			);
 
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		//		http.addFilter(BearerTokenAuthenticationFilter.class);
