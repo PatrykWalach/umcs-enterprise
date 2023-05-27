@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
-	import { i } from "@inlang/sdk-js";
+	import { i } from '@inlang/sdk-js';
 	import '../../app.css';
 	import type { LayoutData } from '../$houdini';
 
@@ -40,7 +40,7 @@
 			</div>
 			<nav class="flex flex-none gap-1">
 				<div class="dropdown-end dropdown">
-					<button type="button" aria-label={i("show-cart-total")} class="btn-ghost btn-square btn">
+					<button type="button" aria-label={i('show-cart-total')} class="btn-ghost btn-square btn">
 						<div class="indicator">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@
 					</button>
 					<div
 						tabindex="-1"
-						class="card-compact card dropdown-content mt-3 w-52 bg-base-100 shadow-xl"
+						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow-xl"
 					>
 						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">
@@ -111,7 +111,11 @@
 				</div>
 				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
 					<div class="dropdown-end dropdown">
-						<button type="button" aria-label={i('show-menu')} class="btn-ghost btn-square avatar btn">
+						<button
+							type="button"
+							aria-label={i('show-menu')}
+							class="btn-ghost btn-square avatar btn"
+						>
 							<!--
 			 <div class="w-10 rounded-full">
 						 <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
