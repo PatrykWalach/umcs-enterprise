@@ -36,7 +36,7 @@
 	// );
 </script>
 
-<article class="card card-compact bg-base-100 shadow" aria-labelledby={$data?.id}>
+<article class="card card-compact bg-base-100 shadow overflow-hidden" aria-labelledby={$data?.id}>
 	<figure>
 		<img
 			loading="lazy"

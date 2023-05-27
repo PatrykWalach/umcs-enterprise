@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
+	import { i } from '@inlang/sdk-js';
 	import Book from '../../Book.svelte';
-
 	import type { PageData } from './$houdini';
 
 	export let data: PageData;
@@ -48,7 +48,7 @@
 
 				<form method="POST" use:enhance class="grid gap-2 md:gap-4">
 					<input type="hidden" name="id" value={$BookQuery.data.node.id} />
-					<button type="submit" class="btn-secondary btn-lg btn">To cart</button>
+					<button type="submit" class="btn-secondary btn-lg btn">{i('to-cart')}</button>
 					<button type="submit" class="btn-primary btn-lg btn" formaction="?buy_now">
 						Buy now
 					</button>
