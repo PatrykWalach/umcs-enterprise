@@ -55,7 +55,7 @@
 				</form>
 			</div>
 
-			<header class="md:col-span-2" aria-label={i("info")}>
+			<header class="md:col-span-2" aria-label={i('info')}>
 				<div class="card flex-1 bg-base-100 max-sm:card-compact xl:p-6">
 					<div class="card-body">
 						<h1 class="card-title text-8xl">
@@ -93,7 +93,9 @@
 				aria-labelledby="frequently-bought-together"
 			>
 				{#if $BookQuery.data.node.recommended?.edges?.length}
-					<h2 class="ml-4 text-2xl" id="frequently-bought-together">i('frequently-bought-together')</h2>
+					<h2 class="ml-4 text-2xl" id="frequently-bought-together">
+						i('frequently-bought-together')
+					</h2>
 					<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
 						{#each $BookQuery.data.node.recommended?.edges
 							?.map((edge) => edge?.node)
