@@ -63,19 +63,12 @@
 					</button>
 					<div
 						tabindex="-1"
-						class="card-compact card dropdown-content mt-3 w-52 bg-base-100 shadow-xl"
+						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow-xl"
 					>
 						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">
-								{$NavbarQuery.data?.basket?.quantity || 'Brak'}
-								{(() => ({
-									one: 'Książka',
-									many: 'Książek',
-									few: 'Książki',
-									other: null,
-									zero: 'Książek',
-									two: 'Książki'
-								}))()[pluralRules.select($NavbarQuery.data?.basket?.quantity ?? 0)] ?? 'Książek'}
+								{$NavbarQuery.data?.basket?.quantity}
+								{i('books-quantity', { quantity: $NavbarQuery.data?.basket?.quantity })}
 							</span>
 							<ul class="grid gap-4">
 								{#each $NavbarQuery.data?.basket?.books?.edges
@@ -102,9 +95,10 @@
 							</ul>
 							<div class="card-actions">
 								<span class="font-semibold text-info text-lg">
-									Total: <strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
+									{i('total')}:
+									<strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
 								</span>
-								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
+								<a href="/basket" class="btn-primary btn-block btn">{i('go-to-checkout')}</a>
 							</div>
 						</div>
 					</div>
@@ -143,20 +137,20 @@
 							>
 								<li>
 									<a class="justify-between" href="">
-										Profile
-										<span class="badge">New</span>
+										{i('profile')}
+										<span class="badge">{i('new')}</span>
 									</a>
 								</li>
-								<li><a href="">Settings</a></li>
+								<li><a href="">{i('settings')}</a></li>
 								<li>
-									<button type="submit">Logout</button>
+									<button type="submit">{i('logout')}</button>
 								</li>
 							</ul>
 						</form>
 					</div>
 				{:else}
-					<a href="/login" class="btn-ghost btn">Login</a>
-					<a href="/register" class="btn-ghost btn">Register</a>
+					<a href="/login" class="btn-ghost btn">{i('login')}</a>
+					<a href="/register" class="btn-ghost btn">{i('register')}</a>
 				{/if}
 			</nav>
 		</header>
