@@ -44,7 +44,7 @@
 	"type": "module",
 	"dependencies": {
 		"daisyui": "^2.51.6",
-		"houdini-svelte": "^1.2.4",
+		"houdini-svelte": "^1.2.5",
 		"sveltekit-flash-message": "^0.11.3",
 		"sveltekit-superforms": "^0.8.7",
 		"zod": "^3.21.4"
