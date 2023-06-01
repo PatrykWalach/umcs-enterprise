@@ -9,7 +9,7 @@ import com.umcs.enterprise.basket.BookEdgeRepository;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
+
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
@@ -69,13 +69,13 @@ class BasketDataFetcherTest {
 				Book
 					.newBuilder()
 					.price(BigDecimal.valueOf(2))
-					.cover(coverRepository.save(Cover.newBuilder().build()))
+	
 					.title("Title 1")
 					.build(),
 				Book
 					.newBuilder()
 					.price(BigDecimal.valueOf(3))
-					.cover(coverRepository.save(Cover.newBuilder().build()))
+	
 					.title("Title 2")
 					.build()
 			)
@@ -115,8 +115,7 @@ class BasketDataFetcherTest {
 	@Autowired
 	private BookRepository bookRepository;
 
-	@Autowired
-	private CoverRepository coverRepository;
+
 
 	@Autowired
 	private BasketRepository basketRepository;
@@ -133,7 +132,6 @@ class BasketDataFetcherTest {
 		var book = bookRepository.save(
 			Book
 				.newBuilder()
-				.cover(coverRepository.save(new Cover()))
 				.price(BigDecimal.valueOf(10))
 				.build()
 		);
@@ -195,7 +193,6 @@ class BasketDataFetcherTest {
 		var book = bookRepository.save(
 			Book
 				.newBuilder()
-				.cover(coverRepository.save(new Cover()))
 				.price(BigDecimal.valueOf(10))
 				.build()
 		);

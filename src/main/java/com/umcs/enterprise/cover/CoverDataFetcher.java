@@ -25,20 +25,17 @@ public class CoverDataFetcher {
 	private final Cloudinary cloudinary;
 
 	@DgsData(parentType = "Cover")
-	public CompletableFuture<String> url(DgsDataFetchingEnvironment env) {
+	public String url(DgsDataFetchingEnvironment env) {
 		var transformation = env.<com.umcs.enterprise.types.Transformation>getSource();
 
-		DataLoader<Long, Cover> dataLoader = env.getDataLoader(CoverDataLoader.class);
+
 		var book = env.<Book>getLocalContext();
 
-		return dataLoader
-			.load(book.getCover().getDatabaseId())
-			.thenApply(cover ->
-				cloudinary
+		return  cloudinary
 					.url()
 					.transformation(Mappers.getMapper(TransformationMapper.class).map(transformation))
-					.generate(cover.getUuid())
-			);
+					.generate(book.getCover().getUuid())
+			;
 	}
 
 	@DgsData(parentType = "Book")

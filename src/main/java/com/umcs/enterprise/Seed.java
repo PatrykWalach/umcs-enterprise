@@ -4,7 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
+
 import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.user.User;
@@ -24,8 +24,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @RequiredArgsConstructor
 public class Seed {
 
-	@NonNull
-	private final CoverRepository coverRepository;
+
 
 	@NonNull
 	private final PurchaseService purchaseRepository;
@@ -42,7 +41,7 @@ public class Seed {
 		//		} catch (IOException e) {
 		//			return null;
 		//		}
-		return coverRepository.save(Cover.newBuilder().uuid(uuid).build());
+		return (Cover.newBuilder().uuid(uuid).build());
 	}
 
 	@NonNull
