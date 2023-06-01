@@ -11,7 +11,6 @@ import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.types.*;
@@ -53,12 +52,8 @@ class BookDataFetcherTest {
 	@Autowired
 	private BookRepository bookRepository;
 
-
-
 	@Autowired
 	private MockMvc mvc;
-
-
 
 	@Test
 	void createBook_admin() throws Exception {
@@ -225,9 +220,7 @@ class BookDataFetcherTest {
 	) {
 		//        given
 
-		bookRepository.saveAll(
-			IntStream.range(0, 14).mapToObj(i -> new Book()).toList()
-		);
+		bookRepository.saveAll(IntStream.range(0, 14).mapToObj(i -> new Book()).toList());
 
 		this.graphQlTester.documentName("BookControllerTest_books")
 			.variable("first", first)
@@ -268,16 +261,10 @@ class BookDataFetcherTest {
 
 		Book book = bookRepository.save(new Book());
 		bookRepository.saveAll(
-			IntStream
-				.range(0, 10)
-				.mapToObj(i -> Book.newBuilder().title("" + i).build())
-				.toList()
+			IntStream.range(0, 10).mapToObj(i -> Book.newBuilder().title("" + i).build()).toList()
 		);
 		var recommended = bookRepository.saveAll(
-			IntStream
-				.range(0, 7)
-				.mapToObj(i -> Book.newBuilder().title("" + (10 + i)).build())
-				.toList()
+			IntStream.range(0, 7).mapToObj(i -> Book.newBuilder().title("" + (10 + i)).build()).toList()
 		);
 
 		List<Purchase> purchases = purchaseRepository.saveAll(
@@ -318,12 +305,8 @@ class BookDataFetcherTest {
 	void recommended_2() {
 		//        given
 
-
 		var recommended = bookRepository.saveAll(
-			IntStream
-				.range(0, 2)
-				.mapToObj(i -> Book.newBuilder().title("" + (i)).build())
-				.toList()
+			IntStream.range(0, 2).mapToObj(i -> Book.newBuilder().title("" + (i)).build()).toList()
 		);
 
 		Book book = bookRepository.save(new Book());
@@ -366,7 +349,6 @@ class BookDataFetcherTest {
 	)
 	void books_sort(String order, String out0, String out1, String out2, String out3) {
 		//        given
-
 
 		HashMap<String, BookOrderBy> sort = new HashMap<>();
 		sort.put(
@@ -476,8 +458,6 @@ class BookDataFetcherTest {
 			.path("books.pageInfo.endCursor")
 			.valueIsNull();
 	}
-
-
 
 	@Test
 	void cover() {

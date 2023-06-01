@@ -9,7 +9,6 @@ import com.umcs.enterprise.basket.BookEdgeRepository;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
@@ -66,18 +65,8 @@ class BasketDataFetcherTest {
 
 		List<Book> books = bookRepository.saveAll(
 			List.of(
-				Book
-					.newBuilder()
-					.price(BigDecimal.valueOf(2))
-	
-					.title("Title 1")
-					.build(),
-				Book
-					.newBuilder()
-					.price(BigDecimal.valueOf(3))
-	
-					.title("Title 2")
-					.build()
+				Book.newBuilder().price(BigDecimal.valueOf(2)).title("Title 1").build(),
+				Book.newBuilder().price(BigDecimal.valueOf(3)).title("Title 2").build()
 			)
 		);
 
@@ -115,8 +104,6 @@ class BasketDataFetcherTest {
 	@Autowired
 	private BookRepository bookRepository;
 
-
-
 	@Autowired
 	private BasketRepository basketRepository;
 
@@ -129,12 +116,7 @@ class BasketDataFetcherTest {
 
 		String token = null;
 
-		var book = bookRepository.save(
-			Book
-				.newBuilder()
-				.price(BigDecimal.valueOf(10))
-				.build()
-		);
+		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
 
 		var tester = this.graphQlTester;
 
@@ -190,12 +172,7 @@ class BasketDataFetcherTest {
 					.setSubject(user.getUsername())
 			);
 
-		var book = bookRepository.save(
-			Book
-				.newBuilder()
-				.price(BigDecimal.valueOf(10))
-				.build()
-		);
+		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
 
 		var tester = this.graphQlTester;
 

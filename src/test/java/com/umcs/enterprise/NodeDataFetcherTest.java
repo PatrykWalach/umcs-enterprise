@@ -6,7 +6,6 @@ import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-
 import com.umcs.enterprise.purchase.BookPurchaseRepository;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.purchase.PurchaseService;
@@ -32,8 +31,6 @@ class NodeDataFetcherTest {
 
 	@Autowired
 	private HttpGraphQlTester graphQlTester;
-
-
 
 	@Autowired
 	private PurchaseService purchaseRepository;
@@ -199,9 +196,7 @@ class NodeDataFetcherTest {
 	@Test
 	void notFound() {
 		//        given
-		var book = bookRepository.save(
-			Book.newBuilder().title("Book title").build()
-		);
+		var book = bookRepository.save(Book.newBuilder().title("Book title").build());
 		book.setDatabaseId(UUID.randomUUID());
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")

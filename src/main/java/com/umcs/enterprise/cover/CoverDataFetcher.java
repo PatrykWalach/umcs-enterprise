@@ -28,14 +28,12 @@ public class CoverDataFetcher {
 	public String url(DgsDataFetchingEnvironment env) {
 		var transformation = env.<com.umcs.enterprise.types.Transformation>getSource();
 
-
 		var book = env.<Book>getLocalContext();
 
-		return  cloudinary
-					.url()
-					.transformation(Mappers.getMapper(TransformationMapper.class).map(transformation))
-					.generate(book.getCover().getUuid())
-			;
+		return cloudinary
+			.url()
+			.transformation(Mappers.getMapper(TransformationMapper.class).map(transformation))
+			.generate(book.getCover().getUuid());
 	}
 
 	@DgsData(parentType = "Book")

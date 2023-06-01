@@ -4,7 +4,6 @@ import com.cloudinary.Cloudinary;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-
 import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.user.User;
@@ -23,8 +22,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @RequiredArgsConstructor
 public class Seed {
-
-
 
 	@NonNull
 	private final PurchaseService purchaseRepository;
