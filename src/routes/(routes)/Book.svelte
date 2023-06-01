@@ -40,7 +40,7 @@
 	<figure>
 		<img
 			loading="lazy"
-			class="h-auto w-full mix-blend-darken"
+			class="h-auto w-full mix-blend-darken aspect-[3/4]"
 			srcset={$data?.covers
 				?.filter(isNotNull)
 				.map((cover) => `${cover.url} ${cover.width}w`)

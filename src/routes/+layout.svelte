@@ -39,7 +39,33 @@
 			</div>
 			<nav class="flex flex-none gap-1">
 				<div class="dropdown-end dropdown">
-					<button type="button" aria-label="Show cart total" class="btn-ghost btn-square btn">
+					<a class="btn-ghost btn-square btn sm:hidden" href="/basket">
+						<div class="indicator">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="h-5 w-5"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+								/>
+							</svg>
+							<span class="badge badge-sm indicator-item">
+								{$NavbarQuery.data?.basket?.quantity ?? 0}
+							</span>
+						</div>
+					</a>
+
+					<button
+						type="button"
+						aria-label="Show cart total"
+						class="btn-square hidden sm:btn-ghost sm:btn"
+					>
 						<div class="indicator">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -62,29 +88,26 @@
 					</button>
 					<div
 						tabindex="-1"
-						class="card-compact card dropdown-content mt-3 w-52 bg-base-100 shadow-xl"
+						class="card dropdown-content card-compact mt-3 max-w-xl w-max bg-base-100 shadow-xl"
 					>
-						<div class="card-body grid gap-4">
-							<span class="font-bold text-xl">
-								{$NavbarQuery.data?.basket?.quantity || 'Brak'}
-								{(() => ({
-									one: 'Książka',
-									many: 'Książek',
-									few: 'Książki',
-									other: null,
-									zero: 'Książek',
-									two: 'Książki'
-								}))()[pluralRules.select($NavbarQuery.data?.basket?.quantity ?? 0)] ?? 'Książek'}
-							</span>
-							<ul class="grid gap-4">
+						<section class="card-body grid gap-4">
+							<h3 class="font-bold text-xl">
+								{$NavbarQuery.data?.basket?.books?.edges
+									?.map((edge) => edge?.node)
+									.filter(isNotNull).length
+									? 'Ostatnio dodane do koszyka'
+									: 'Brak książek'}
+							</h3>
+
+							<ul class="grid grid-cols-3 gap-4">
 								{#each $NavbarQuery.data?.basket?.books?.edges
 									?.map((edge) => edge?.node)
 									.filter(isNotNull) ?? [] as node (node.id)}
-									<li class="grid grid-cols-3 gap-2">
+									<li class="flex flex-1 flex-col gap-2">
 										<figure>
 											<img
 												loading="lazy"
-												class="h-auto w-16 mix-blend-darken"
+												class="aspect-[3/4] h-auto w-full object-contain mix-blend-darken"
 												srcset={node.covers
 													?.filter(isNotNull)
 													.map((cover) => `${cover.url} ${cover.width}w`)
@@ -93,19 +116,22 @@
 												alt=""
 											/>
 										</figure>
-										<article class="col-span-2">
-											<h4><a href="/book/{node.id}" class="link-hover link">{node.title}</a></h4>
+										<article class="">
+											<h4>
+												<a href="/book/{node.id}" class="link-hover link text-lg">{node.title}</a>
+											</h4>
 										</article>
 									</li>
 								{/each}
 							</ul>
-							<div class="card-actions">
+							<div class="card-actions items-center justify-between">
 								<span class="font-semibold text-info text-lg">
 									Total: <strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
 								</span>
+
 								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
 							</div>
-						</div>
+						</section>
 					</div>
 				</div>
 				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
