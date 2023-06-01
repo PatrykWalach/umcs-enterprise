@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 public class CoverService {
 
 	@NonNull
-	private final CoverRepository coverRepository;
-
-	@NonNull
 	private final Cloudinary cloudinary;
 
 	private Cover uploadAndSave(Object multipart) throws IOException {
@@ -23,7 +20,7 @@ public class CoverService {
 
 		cloudinary.uploader().uploadLarge(multipart, Map.of("public_id", uuid.toString()));
 
-		return coverRepository.save(Cover.newBuilder().uuid(uuid.toString()).build());
+		return (Cover.newBuilder().uuid(uuid.toString()).build());
 	}
 
 	public Cover upload(InputStream multipart) throws IOException {

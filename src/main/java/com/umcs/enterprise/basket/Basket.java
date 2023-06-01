@@ -27,6 +27,11 @@ public class Basket implements Node {
 	@CreatedBy
 	private User user;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "basket")
+	@OneToMany(
+		fetch = FetchType.LAZY,
+		mappedBy = "basket",
+		cascade = CascadeType.ALL,
+		orphanRemoval = true
+	)
 	private List<BookEdge> books;
 }
