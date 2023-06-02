@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { fragment, graphql, type Book_book } from '$houdini';
 	import { isNotNull } from '$lib/isNotNull';
-
+	import { i } from '@inlang/sdk-js';
 	export let book: Book_book;
 
 	$: data = fragment(
@@ -36,7 +36,7 @@
 	// );
 </script>
 
-<article class="card card-compact bg-base-100 shadow" aria-labelledby={$data?.id}>
+<article class="card card-compact overflow-hidden bg-base-100 shadow" aria-labelledby={$data?.id}>
 	<figure>
 		<img
 			loading="lazy"
@@ -70,7 +70,7 @@
 				<button
 					type="submit"
 					class="btn-ghost btn-square btn"
-					aria-label="Add to cart"
+					aria-label={i('add-to-cart')}
 					title="Add to cart"
 				>
 					<svg

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
+	import { i } from '@inlang/sdk-js';
 	import Book from '../../Book.svelte';
-
 	import type { PageData } from './$houdini';
 
 	export let data: PageData;
@@ -48,14 +48,14 @@
 
 				<form method="POST" use:enhance class="grid gap-2 md:gap-4">
 					<input type="hidden" name="id" value={$BookQuery.data.node.id} />
-					<button type="submit" class="btn-secondary btn-lg btn">To cart</button>
+					<button type="submit" class="btn-secondary btn-lg btn">{i('add-to-cart')}</button>
 					<button type="submit" class="btn-primary btn-lg btn" formaction="?buy_now">
-						Buy now
+						{i('buy-now')}
 					</button>
 				</form>
 			</div>
 
-			<header class="md:col-span-2" aria-label="Base information">
+			<header class="md:col-span-2" aria-label={i('info')}>
 				<div class="card flex-1 bg-base-100 max-sm:card-compact xl:p-6">
 					<div class="card-body">
 						<h1 class="card-title text-8xl">
@@ -93,7 +93,9 @@
 				aria-labelledby="frequently-bought-together"
 			>
 				{#if $BookQuery.data.node.recommended?.edges?.length}
-					<h2 class="ml-4 text-2xl" id="frequently-bought-together">Frequently bought together</h2>
+					<h2 class="ml-4 text-2xl" id="frequently-bought-together">
+						i('frequently-bought-together')
+					</h2>
 					<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
 						{#each $BookQuery.data.node.recommended?.edges
 							?.map((edge) => edge?.node)

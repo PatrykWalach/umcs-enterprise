@@ -1,5 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
-
+import { redirect } from '@sveltejs/kit';
 import { setSession } from '$houdini';
 
 export const handle: Handle = ({ event, resolve }) => {

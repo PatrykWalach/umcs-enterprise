@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { isNotNull } from '$lib/isNotNull';
+	import { i } from '@inlang/sdk-js';
 	import '../app.css';
 	import type { LayoutData } from './$houdini';
 
@@ -39,7 +40,7 @@
 			</div>
 			<nav class="flex flex-none gap-1">
 				<div class="dropdown-end dropdown">
-					<button type="button" aria-label="Show cart total" class="btn-ghost btn-square btn">
+					<button type="button" aria-label={i('show-cart-total')} class="btn-ghost btn-square btn">
 						<div class="indicator">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -66,15 +67,8 @@
 					>
 						<div class="card-body grid gap-4">
 							<span class="font-bold text-xl">
-								{$NavbarQuery.data?.basket?.quantity || 'Brak'}
-								{(() => ({
-									one: 'Książka',
-									many: 'Książek',
-									few: 'Książki',
-									other: null,
-									zero: 'Książek',
-									two: 'Książki'
-								}))()[pluralRules.select($NavbarQuery.data?.basket?.quantity ?? 0)] ?? 'Książek'}
+								{$NavbarQuery.data?.basket?.quantity}
+								{i('books-quantity', { quantity: $NavbarQuery.data?.basket?.quantity })}
 							</span>
 							<ul class="grid gap-4">
 								{#each $NavbarQuery.data?.basket?.books?.edges
@@ -101,16 +95,21 @@
 							</ul>
 							<div class="card-actions">
 								<span class="font-semibold text-info text-lg">
-									Total: <strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
+									{i('total')}:
+									<strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
 								</span>
-								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
+								<a href="/basket" class="btn-primary btn-block btn">{i('go-to-checkout')}</a>
 							</div>
 						</div>
 					</div>
 				</div>
 				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
 					<div class="dropdown-end dropdown">
-						<button type="button" aria-label="Show menu" class="btn-ghost btn-square avatar btn">
+						<button
+							type="button"
+							aria-label={i('show-menu')}
+							class="btn-ghost btn-square avatar btn"
+						>
 							<!--
 			 <div class="w-10 rounded-full">
 						 <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
@@ -138,20 +137,20 @@
 							>
 								<li>
 									<a class="justify-between" href="">
-										Profile
-										<span class="badge">New</span>
+										{i('profile')}
+										<span class="badge">{i('new')}</span>
 									</a>
 								</li>
-								<li><a href="">Settings</a></li>
+								<li><a href="">{i('settings')}</a></li>
 								<li>
-									<button type="submit">Logout</button>
+									<button type="submit">{i('logout')}</button>
 								</li>
 							</ul>
 						</form>
 					</div>
 				{:else}
-					<a href="/login" class="btn-ghost btn">Login</a>
-					<a href="/register" class="btn-ghost btn">Register</a>
+					<a href="/login" class="btn-ghost btn">{i('login')}</a>
+					<a href="/register" class="btn-ghost btn">{i('register')}</a>
 				{/if}
 			</nav>
 		</header>
