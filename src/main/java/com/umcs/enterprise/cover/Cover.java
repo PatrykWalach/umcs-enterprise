@@ -20,6 +20,7 @@ public class Cover {
 	private String uuid;
 
 	private String url;
+
 	@OneToOne(fetch = FetchType.LAZY)
 	private Book book;
 }

@@ -10,7 +10,6 @@ import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -53,15 +52,15 @@ public class Seed {
 	@NonNull
 	private Cloudinary cloudinary;
 
-	@Bean public Jackson2RepositoryPopulatorFactoryBean jackson2RepositoryPopulatorFactoryBean (ObjectMapper mapper) throws Exception {
+	@Bean
+	public Jackson2RepositoryPopulatorFactoryBean jackson2RepositoryPopulatorFactoryBean(
+		ObjectMapper mapper
+	) throws Exception {
 		Jackson2RepositoryPopulatorFactoryBean factory = new Jackson2RepositoryPopulatorFactoryBean();
-		factory.setResources(new Resource[]{new ClassPathResource("books.json")});
-//		factory.afterPropertiesSet();
+		factory.setResources(new Resource[] { new ClassPathResource("books.json") });
+		//		factory.afterPropertiesSet();
 		factory.setMapper(mapper);
 
-
-		return  factory;
+		return factory;
 	}
-
-
 }
