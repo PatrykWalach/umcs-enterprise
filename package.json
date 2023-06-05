@@ -43,7 +43,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"daisyui": "^2.51.6",
+		"daisyui": "^3.0.3",
 		"houdini-svelte": "^1.2.4",
 		"sveltekit-flash-message": "^0.11.3",
 		"sveltekit-superforms": "^0.8.7",
