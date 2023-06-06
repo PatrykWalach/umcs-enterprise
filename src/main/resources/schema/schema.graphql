@@ -130,6 +130,7 @@ type Book implements Node {
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
 	covers(transformation: Transformation, widths: [Int]): [Cover]
 	id: ID!
+	inBasket: Boolean
 	popularity: Int
 	price: Price
 	recommended(after: String, before: String, first: Int, last: Int): BookConnection

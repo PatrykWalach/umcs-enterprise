@@ -39,7 +39,7 @@
 						</TextField>
 
 						<div class="form-control mt-6">
-							<button class="btn-primary btn" type="submit">Login</button>
+							<button class="btn-primary btn cursor-default" type="submit">Login</button>
 						</div>
 					</div>
 				</fieldset>

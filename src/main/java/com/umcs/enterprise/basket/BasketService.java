@@ -10,7 +10,9 @@ public interface BasketService {
 	@NonNull
 	Basket getBasket() throws JsonProcessingException;
 
-	Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException;
+	Token getToken() throws JsonProcessingException;
 
-	Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException;
+	BookEdge basketBook(@NonNull UUID databaseId) throws JsonProcessingException;
+
+	BookEdge unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException;
 }

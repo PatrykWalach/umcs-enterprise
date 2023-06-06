@@ -11,6 +11,7 @@ query BookQuery($id: ID!) {
 				url @required
 				width @required
 			}
+			inBasket
 			price {
 				formatted
 			}

@@ -1,196 +1,116 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
+import HomePage, { BookPage, CartPage } from './HomePage.js';
 
-test('can add to basket', async ({ page }) => {
+test('can add to basket twice', async ({ page }) => {
 	// given
-	const main = page.getByRole('main');
-	const nav = page.getByRole('navigation');
+
 	await page.goto('/');
 
-	const book = main
-		.getByRole('region', {
-			name: 'Bestsellers'
-		})
-		.getByRole('article', {
-			name: 'Kicia Kocia. Wiosna'
-		});
+	const homepage = new HomePage(page);
+	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
+	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
+	await book.addToCart();
 
-	await expect.soft(book.getByText('6,45 zł')).toBeVisible();
-
-	await book.getByRole('link').click();
+	const bookpage = new BookPage(page);
 	await expect.soft(page).toHaveTitle('Kicia Kocia. Wiosna');
-
-	await expect.soft(main.getByText('6,45 zł')).toBeVisible();
-
+	await expect.soft(bookpage.nav.cartItems.getByText('1')).toBeVisible();
 	// when
-	await main.getByRole('button', { name: 'To cart', exact: true }).click();
+	await bookpage.addToCart();
 	// then
-	await nav.getByRole('button', { name: 'show cart total' }).click();
-	await nav.getByRole('link', { name: 'to checkout' }).click();
-	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(main.getByText('Total 6,45 zł')).toBeVisible();
-	await expect
-		.soft(
-			main.getByRole('heading', {
-				name: 'Kicia Kocia. Wiosna'
-			})
-		)
-		.toBeVisible();
+	await expect.soft(bookpage.nav.cartItems.getByText('2')).toBeVisible();
+	await bookpage.nav.goToCart();
+
+	const cartpage = new CartPage(page);
+	await expect.soft(cartpage.main.getByText('Total 12,90 zł')).toBeVisible();
+	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
 
 test('can quickly add to basket', async ({ page }) => {
 	// given
-	const main = page.getByRole('main');
-	const nav = page.getByRole('navigation');
+
 	await page.goto('/');
 
-	const book = main
-		.getByRole('region', {
-			name: 'Bestsellers'
-		})
-		.getByRole('article', {
-			name: 'Kicia Kocia. Wiosna'
-		});
-
-	await expect.soft(book.getByText('6,45 zł')).toBeVisible();
-
+	const homepage = new HomePage(page);
+	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
+	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
 	// when
-	await book.getByRole('button', { name: 'Add to cart' }).click();
+	await book.addToCart();
 	// then
 
-	await nav.getByRole('button', { name: 'show cart total' }).click();
-	await nav.getByRole('link', { name: 'to checkout' }).click();
-	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(main.getByText('Total 6,45 zł')).toBeVisible();
-	await expect
-		.soft(
-			main.getByRole('heading', {
-				name: 'Kicia Kocia. Wiosna'
-			})
-		)
-		.toBeVisible();
+	const bookpage = new BookPage(page);
+	await expect.soft(page).toHaveTitle('Kicia Kocia. Wiosna');
+	await expect.soft(bookpage.nav.cartItems.getByText('1')).toBeVisible();
+	await bookpage.nav.goToCart();
+
+	const cartpage = new CartPage(page);
+	await expect.soft(cartpage.main.getByText('Total 6,45 zł')).toBeVisible();
+	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
 
 test('keeps contents after register', async ({ page, register }) => {
 	// given
-	const main = page.getByRole('main');
-	const nav = page.getByRole('navigation');
+
 	await page.goto('/');
 
-	const book = main
-		.getByRole('region', {
-			name: 'Bestsellers'
-		})
-		.getByRole('article', {
-			name: 'Kicia Kocia. Wiosna'
-		});
-
-	await expect.soft(book.getByText('6,45 zł')).toBeVisible();
-	await book.getByRole('button', { name: 'Add to cart' }).click();
+	const homepage = new HomePage(page);
+	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
+	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
+	await book.addToCart();
 	// when
 	await register();
 	// then
-	await expect.soft(nav.getByRole('link', { name: 'register' })).not.toBeVisible();
-	await expect.soft(nav.getByRole('link', { name: 'login' })).not.toBeVisible();
+	await expect.soft(homepage.nav.register).not.toBeVisible();
+	await expect.soft(homepage.nav.login).not.toBeVisible();
+	await homepage.nav.goToCart();
 
-	await nav.getByRole('button', { name: 'show cart total' }).click();
-	await nav.getByRole('link', { name: 'to checkout' }).click();
-	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(main.getByText('Total 6,45 zł')).toBeVisible();
-	await expect
-		.soft(
-			main.getByRole('heading', {
-				name: 'Kicia Kocia. Wiosna'
-			})
-		)
-		.toBeVisible();
+	const cartpage = new CartPage(page);
+	await expect.soft(cartpage.main.getByText('Total 6,45 zł')).toBeVisible();
+	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
 
 test('clears after logout', async ({ page, register }) => {
 	// given
-	const main = page.getByRole('main');
-	const nav = page.getByRole('navigation');
 	await page.goto('/');
 	await register();
 
-	const book = main
-		.getByRole('region', {
-			name: 'Bestsellers'
-		})
-		.getByRole('article', {
-			name: 'Kicia Kocia. Wiosna'
-		});
-
-	await expect.soft(book.getByText('6,45 zł')).toBeVisible();
-	await book.getByRole('button', { name: 'Add to cart' }).click();
+	const homepage = new HomePage(page);
+	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
+	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
+	await book.addToCart();
 	// when
-	await nav.getByRole('button', { name: 'show menu' }).click();
-	await nav.getByRole('button', { name: 'logout' }).click();
+	await homepage.nav.logout();
 	// then
-	await expect.soft(nav.getByRole('link', { name: 'register' })).toBeVisible();
-	await expect.soft(nav.getByRole('link', { name: 'login' })).toBeVisible();
 
-	await nav.getByRole('button', { name: 'show cart total' }).click();
-	await nav.getByRole('link', { name: 'to checkout' }).click();
-	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(main.getByText('Total 0,00 zł')).toBeVisible();
-	await expect
-		.soft(
-			main.getByRole('heading', {
-				name: 'Kicia Kocia. Wiosna'
-			})
-		)
-		.not.toBeVisible();
+	await homepage.nav.goToCart();
+	const cartpage = new CartPage(page);
+	await expect.soft(cartpage.main.getByText('Total 0,00 zł')).toBeVisible();
+	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).not.toBeVisible();
 });
 
 test('keeps between logins', async ({ page, register, login }) => {
 	// given
-	const main = page.getByRole('main');
-	const nav = page.getByRole('navigation');
+
 	await page.goto('/');
 	const user = await register();
 
-	const book = main
-		.getByRole('region', {
-			name: 'Bestsellers'
-		})
-		.getByRole('article', {
-			name: 'Kicia Kocia. Wiosna'
-		});
+	const homepage = new HomePage(page);
+	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
+	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
+	await book.addToCart();
+	await homepage.nav.logout();
+	await homepage.nav.goToCart();
 
-	await expect.soft(book.getByText('6,45 zł')).toBeVisible();
-	await book.getByRole('button', { name: 'Add to cart' }).click();
-	await nav.getByRole('button', { name: 'show menu' }).click();
-	await nav.getByRole('button', { name: 'logout' }).click();
-	await expect.soft(nav.getByRole('link', { name: 'register' })).toBeVisible();
-	await expect.soft(nav.getByRole('link', { name: 'login' })).toBeVisible();
-
-	await nav.getByRole('button', { name: 'show cart total' }).click();
-	await nav.getByRole('link', { name: 'to checkout' }).click();
-	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(main.getByText('Total 0,00 zł')).toBeVisible();
-	await expect
-		.soft(
-			main.getByRole('heading', {
-				name: 'Kicia Kocia. Wiosna'
-			})
-		)
-		.not.toBeVisible();
+	const cartpage = new CartPage(page);
+	await expect.soft(cartpage.main.getByText('Total 0,00 zł')).toBeVisible();
+	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).not.toBeVisible();
 	// when
 	await login(user);
 	// then
-	await expect.soft(nav.getByRole('link', { name: 'register' })).not.toBeVisible();
-	await expect.soft(nav.getByRole('link', { name: 'login' })).not.toBeVisible();
+	await expect.soft(homepage.nav.register).not.toBeVisible();
+	await expect.soft(homepage.nav.login).not.toBeVisible();
+	await homepage.nav.goToCart();
 
-	await nav.getByRole('button', { name: 'show cart total' }).click();
-	await nav.getByRole('link', { name: 'to checkout' }).click();
-	await expect.soft(page).toHaveTitle('Basket');
-	await expect.soft(main.getByText('Total 6,45 zł')).toBeVisible();
-	await expect
-		.soft(
-			main.getByRole('heading', {
-				name: 'Kicia Kocia. Wiosna'
-			})
-		)
-		.toBeVisible();
+	await expect.soft(cartpage.main.getByText('Total 6,45 zł')).toBeVisible();
+	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });

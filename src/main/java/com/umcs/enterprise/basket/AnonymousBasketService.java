@@ -9,25 +9,34 @@ import com.umcs.enterprise.types.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
-@AllArgsConstructor
 public class AnonymousBasketService implements BasketService {
+
+	public AnonymousBasketService(
+		@NonNull JwtService jwtService,
+		String authorization,
+		@NonNull BookRepository bookRepository
+	) {
+		this.jwtService = jwtService;
+		Authorization = authorization;
+		this.bookRepository = bookRepository;
+	}
 
 	@NonNull
 	private final JwtService jwtService;
 
 	private String Authorization;
 
-	private Token setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
+	private Token token;
+
+	private void setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
 		OffsetDateTime expiresAt = (OffsetDateTime.now().plusSeconds(60 * 60 * 24 * 365));
 
 		JwtBuilder builder =
@@ -45,7 +54,7 @@ public class AnonymousBasketService implements BasketService {
 		String token = jwtService.signToken(builder);
 		this.Authorization = "Bearer " + token;
 
-		return Token.newBuilder().value(token).expiresAt(expiresAt).build();
+		this.token = Token.newBuilder().value(token).expiresAt(expiresAt).build();
 	}
 
 	@NonNull
@@ -85,18 +94,31 @@ public class AnonymousBasketService implements BasketService {
 	}
 
 	@Override
-	public @NonNull Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public Token getToken() throws JsonProcessingException {
+		return this.token;
+	}
+
+	@Override
+	public BookEdge basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Basket basket = getBasket();
 		Map<UUID, Integer> books = basket
 			.getBooks()
 			.stream()
 			.collect(Collectors.toMap(e -> e.getBook().getDatabaseId(), BookEdge::getQuantity));
-		books.merge(databaseId, 1, Integer::sum);
-		return setBasket(books);
+
+		Integer quantity = books.merge(databaseId, 1, Integer::sum);
+		setBasket(books);
+
+		return BookEdge
+			.newBuilder()
+			.basket(getBasket())
+			.quantity(quantity)
+			.book(bookRepository.findById(databaseId).orElse(null))
+			.build();
 	}
 
 	@Override
-	public @NonNull Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public @NonNull BookEdge unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Basket basket = getBasket();
 		Map<UUID, Integer> books = basket
 			.getBooks()
@@ -112,7 +134,12 @@ public class AnonymousBasketService implements BasketService {
 				return value - 1;
 			}
 		);
+		setBasket(books);
 
-		return setBasket(books);
+		return BookEdge
+			.newBuilder()
+			.basket(basket)
+			.book(bookRepository.findById(databaseId).orElse(null))
+			.build();
 	}
 }

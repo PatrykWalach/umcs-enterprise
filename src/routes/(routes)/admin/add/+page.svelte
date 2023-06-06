@@ -36,8 +36,8 @@
 		</TextField>
 
 		<div class="form-control mt-6">
-			<button type="submit" class="btn-primary btn">Submit</button>
-			<button type="reset" class="btn">Reset</button>
+			<button type="submit" class="btn-primary btn cursor-default">Submit</button>
+			<button type="reset" class="btn cursor-default">Reset</button>
 		</div>
 	</fieldset>
 </form>

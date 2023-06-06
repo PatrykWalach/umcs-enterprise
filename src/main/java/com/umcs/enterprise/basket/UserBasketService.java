@@ -5,7 +5,6 @@ import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
 import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.types.Token;
-import com.umcs.enterprise.user.User;
 import io.jsonwebtoken.Claims;
 import java.util.UUID;
 import lombok.NonNull;
@@ -37,7 +36,12 @@ public class UserBasketService implements BasketService {
 	private final BookRepository bookRepository;
 
 	@Override
-	public Token basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public Token getToken() throws JsonProcessingException {
+		return null;
+	}
+
+	@Override
+	public BookEdge basketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Claims token = jwtService.parseAuthorizationHeader(Authorization);
 		assert token.getSubject() != null;
 
@@ -59,11 +63,11 @@ public class UserBasketService implements BasketService {
 		bookEdge.setQuantity(bookEdge.getQuantity() + 1);
 		bookEdgeRepository.save(bookEdge);
 
-		return null;
+		return bookEdge;
 	}
 
 	@Override
-	public Token unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
+	public BookEdge unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Claims token = jwtService.parseAuthorizationHeader(Authorization);
 		assert token.getSubject() != null;
 
@@ -84,6 +88,6 @@ public class UserBasketService implements BasketService {
 		bookEdge.setQuantity(bookEdge.getQuantity() - 1);
 		bookEdgeRepository.save(bookEdge);
 
-		return null;
+		return bookEdge;
 	}
 }
