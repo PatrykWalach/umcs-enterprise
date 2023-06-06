@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>Basket</title>
+	<title>Cart</title>
 </svelte:head>
 
 <main class="bg-base-200">
@@ -57,11 +57,11 @@
 									<form action="" class="" method="POST" use:enhance>
 										<input type="hidden" value={edge.node.id} name="id" />
 										<div class="join">
-											<button class="btn-outline join-item btn" formaction="/basket?/unbasket_book">
+											<button class="btn-outline join-item btn cursor-default" formaction="/basket?/unbasket_book">
 												-
 											</button>
 											<div class="btn-outline join-item btn border-x-0">{edge.quantity}</div>
-											<button class="btn-outline join-item btn" formaction="/basket?/basket_book">
+											<button class="btn-outline join-item btn cursor-default" formaction="/basket?/basket_book">
 												+
 											</button>
 										</div>
@@ -85,9 +85,9 @@
 		</div>
 		<div class="card flex-1 bg-base-100">
 			<div class="card-body">
-				<button class="btn-primary btn" type="button">Login</button>
-				<button class="btn-accent btn" type="button">Register</button>
-				<button class="btn-ghost btn" type="button">Order without account</button>
+				<button class="btn-primary btn cursor-default" type="button">Login</button>
+				<button class="btn-accent btn cursor-default" type="button">Register</button>
+				<button class="btn-ghost btn cursor-default" type="button">Order without account</button>
 			</div>
 		</div>
 	</div>

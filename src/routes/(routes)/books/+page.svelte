@@ -21,7 +21,7 @@
 			<option value="asc">Ascending</option>
 			<option value="desc" selected>Descending</option>
 		</select>
-		<button type="submit" class=" btn-secondary btn">sort</button>
+		<button type="submit" class=" btn-secondary btn cursor-default">sort</button>
 	</form>
 
 	<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">

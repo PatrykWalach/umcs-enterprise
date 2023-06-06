@@ -36,7 +36,7 @@
 							Password
 						</TextField>
 						<div class="form-control mt-6">
-							<button class="btn-primary btn" type="submit">Register</button>
+							<button class="btn-primary btn cursor-default" type="submit">Register</button>
 						</div>
 					</div>
 				</fieldset>

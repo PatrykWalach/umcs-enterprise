@@ -21,7 +21,7 @@ public class BookEdge {
 	@JoinColumn(name = "basket_id")
 	private Basket basket;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "book_id")
 	private Book book;
 

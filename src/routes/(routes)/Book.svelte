@@ -69,7 +69,7 @@
 				<!-- <button type="submit" class="btn-primary btn w-full">do koszyka</button> -->
 				<button
 					type="submit"
-					class="btn-ghost btn-square btn"
+					class="btn-ghost btn-square btn cursor-default"
 					aria-label="Add to cart"
 					title="Add to cart"
 				>

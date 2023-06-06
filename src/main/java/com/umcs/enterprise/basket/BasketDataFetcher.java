@@ -90,7 +90,7 @@ public class BasketDataFetcher {
 	@DgsData(parentType = "Basket")
 	public Integer quantity(DgsDataFetchingEnvironment env) {
 		Basket basket = env.getSource();
-		return basket.getBooks().size();
+		return basket.getBooks().stream().mapToInt(BookEdge::getQuantity).sum();
 	}
 
 	@DgsMutation

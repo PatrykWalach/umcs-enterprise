@@ -28,7 +28,7 @@ public class Basket implements Node {
 	private User user;
 
 	@OneToMany(
-		fetch = FetchType.LAZY,
+		fetch = FetchType.EAGER,
 		mappedBy = "basket",
 		cascade = CascadeType.ALL,
 		orphanRemoval = true
