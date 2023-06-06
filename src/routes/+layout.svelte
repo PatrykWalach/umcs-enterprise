@@ -109,7 +109,7 @@
 					</div>
 				</div>
 				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
-					<div class="dropdown-end dropdown">
+					<div class="dropdown-end dropdown z-10">
 						<button type="button" aria-label="Show menu" class="btn-ghost btn-square avatar btn">
 							<!--
 			 <div class="w-10 rounded-full">
