@@ -57,11 +57,17 @@
 									<form action="" class="" method="POST" use:enhance>
 										<input type="hidden" value={edge.node.id} name="id" />
 										<div class="join">
-											<button class="btn-outline join-item btn cursor-default" formaction="/basket?/unbasket_book">
+											<button
+												class="btn-outline join-item btn cursor-default"
+												formaction="/basket?/unbasket_book"
+											>
 												-
 											</button>
 											<div class="btn-outline join-item btn border-x-0">{edge.quantity}</div>
-											<button class="btn-outline join-item btn cursor-default" formaction="/basket?/basket_book">
+											<button
+												class="btn-outline join-item btn cursor-default"
+												formaction="/basket?/basket_book"
+											>
 												+
 											</button>
 										</div>

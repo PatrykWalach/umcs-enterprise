@@ -110,7 +110,7 @@ test('keeps between logins', async ({ page, register, login }) => {
 	await expect.soft(homepage.nav.register).not.toBeVisible();
 	await expect.soft(homepage.nav.login).not.toBeVisible();
 	await homepage.nav.goToCart();
-	
+
 	await expect.soft(cartpage.main.getByText('Total 6,45 zł')).toBeVisible();
 	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
