@@ -134,7 +134,7 @@
 						<form action="/logout" method="POST" use:enhance>
 							<ul
 								tabindex="-1"
-								class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow-xl"
+								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 bg-base-100 p-2 shadow-xl"
 							>
 								<li>
 									<a class="justify-between" href="">

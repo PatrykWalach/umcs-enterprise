@@ -44,7 +44,7 @@
 
 			<div class="card-compact card border border-base-content/20">
 				<div class="card-body items-center">
-					<span class="label-text-alt label block">
+					<span class="label label-text-alt block">
 						Already have an account? <a href="/login" class="link">Login.</a>
 					</span>
 				</div>
