@@ -7,10 +7,9 @@ import com.umcs.enterprise.book.BookDataLoader;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
+import graphql.relay.DefaultConnectionCursor;
 import java.math.BigDecimal;
 import java.util.*;
-
-import graphql.relay.DefaultConnectionCursor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -76,17 +75,16 @@ public class BasketDataFetcher {
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
-
 	@DgsData(parentType = "Book")
-	public Boolean inBasket(DgsDataFetchingEnvironment env, 	@RequestHeader(required = false) String Authorization) throws JsonProcessingException {
+	public Boolean inBasket(
+		DgsDataFetchingEnvironment env,
+		@RequestHeader(required = false) String Authorization
+	) throws JsonProcessingException {
 		Basket basket = getBasketService(Authorization).getBasket();
 
 		com.umcs.enterprise.book.Book book = env.getSource();
 
-		return basket
-				.getBooks()
-				.stream().map(BookEdge::getBook)
-				.anyMatch(book::equals);
+		return basket.getBooks().stream().map(BookEdge::getBook).anyMatch(book::equals);
 	}
 
 	@DgsData(parentType = "Basket")
@@ -107,10 +105,14 @@ public class BasketDataFetcher {
 		BasketService service = getBasketService(Authorization);
 		com.umcs.enterprise.basket.BookEdge edge = service.basketBook(globalId.databaseId());
 
-		return BasketBookResult.newBuilder().edge(new graphql.relay.DefaultEdge<>(
-				edge,
-				new DefaultConnectionCursor(edge.getBook().getId())
-		)).token(service.getToken()).basket(service.getBasket()).build();
+		return BasketBookResult
+			.newBuilder()
+			.edge(
+				new graphql.relay.DefaultEdge<>(edge, new DefaultConnectionCursor(edge.getBook().getId()))
+			)
+			.token(service.getToken())
+			.basket(service.getBasket())
+			.build();
 	}
 
 	@DgsMutation
@@ -126,10 +128,13 @@ public class BasketDataFetcher {
 
 		com.umcs.enterprise.basket.BookEdge edge = service.unbasketBook(globalId.databaseId());
 
-
-		return UnbasketBookResult.newBuilder().edge(new graphql.relay.DefaultEdge<>(
-				edge,
-				new DefaultConnectionCursor(edge.getBook().getId())
-		)).token(service.getToken()).basket(service.getBasket()).build();
+		return UnbasketBookResult
+			.newBuilder()
+			.edge(
+				new graphql.relay.DefaultEdge<>(edge, new DefaultConnectionCursor(edge.getBook().getId()))
+			)
+			.token(service.getToken())
+			.basket(service.getBasket())
+			.build();
 	}
 }

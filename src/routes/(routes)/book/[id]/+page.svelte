@@ -44,7 +44,7 @@
 				</div>
 			{/if}
 
-			<div class="grid sm:grid-cols-4 gap-2 sm:gap-4">
+			<div class="grid gap-2 sm:grid-cols-4 sm:gap-4">
 				<div class="flex flex-col gap-2 md:gap-4">
 					<div class="card overflow-hidden bg-base-100">
 						<figure class="">
@@ -70,7 +70,7 @@
 					</form>
 				</div>
 
-				<div class="flex flex-col gap-2 sm:gap-4 sm:col-span-3">
+				<div class="flex flex-col gap-2 sm:col-span-3 sm:gap-4">
 					<header class="" aria-label="Base information">
 						<div class="card flex-1 bg-base-100 max-sm:card-compact xl:p-6">
 							<div class="card-body">
