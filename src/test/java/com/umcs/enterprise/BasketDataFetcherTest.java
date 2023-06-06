@@ -141,12 +141,12 @@ class BasketDataFetcherTest {
 						//                then
 						.errors()
 						.verify()
-						.path("basketBook.basket.books.edges[*].node.id")
-						.entity(List.class)
-						.isEqualTo(Collections.singletonList(book.getId()))
-						.path("basketBook.basket.books.edges[*].quantity")
-						.entity(List.class)
-						.isEqualTo(Collections.singletonList(i))
+							.path("basketBook.edge.node.id")
+						.entity(String.class)
+						.isEqualTo((book.getId()))
+							.path("basketBook.edge.quantity")
+						.entity(Integer.class)
+						.isEqualTo((i))
 						.path("basketBook.token.value")
 						.entity(String.class)
 						.get()
@@ -195,12 +195,12 @@ class BasketDataFetcherTest {
 				//                then
 				.errors()
 				.verify()
-				.path("basketBook.basket.books.edges[*].node.id")
-				.entity(List.class)
-				.isEqualTo(Collections.singletonList(book.getId()))
-				.path("basketBook.basket.books.edges[*].quantity")
-				.entity(List.class)
-				.isEqualTo(Collections.singletonList(i));
+				.path("basketBook.edge.node.id")
+				.entity(String.class)
+				.isEqualTo((book.getId()))
+				.path("basketBook.edge.quantity")
+				.entity(Integer.class)
+				.isEqualTo((i));
 		}
 	}
 }

@@ -1,21 +1,5 @@
 query NavbarQuery {
 	basket {
-		books(first: 3) {
-			edges {
-				node @required {
-					covers(
-						transformation: { quality: { auto: DEFAULT }, format: AUTO }
-						widths: [100, 200, 300, 400, 500, 600, 700, 800]
-					) {
-						url @required
-						width @required
-					}
-					id
-					title @required
-				}
-			}
-		}
-
 		price {
 			formatted
 		}

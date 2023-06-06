@@ -106,12 +106,13 @@ public class AnonymousBasketService implements BasketService {
 			.stream()
 			.collect(Collectors.toMap(e -> e.getBook().getDatabaseId(), BookEdge::getQuantity));
 
-		books.merge(databaseId, 1, Integer::sum);
+		Integer quantity = books.merge(databaseId, 1, Integer::sum);
 		setBasket(books);
 
 		return BookEdge
 			.newBuilder()
-			.basket(basket)
+			.basket(getBasket())
+				.quantity(quantity)
 			.book(bookRepository.findById(databaseId).orElse(null))
 			.build();
 	}
