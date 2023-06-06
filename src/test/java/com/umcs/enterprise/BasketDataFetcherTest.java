@@ -141,10 +141,10 @@ class BasketDataFetcherTest {
 						//                then
 						.errors()
 						.verify()
-							.path("basketBook.edge.node.id")
+						.path("basketBook.edge.node.id")
 						.entity(String.class)
 						.isEqualTo((book.getId()))
-							.path("basketBook.edge.quantity")
+						.path("basketBook.edge.quantity")
 						.entity(Integer.class)
 						.isEqualTo((i))
 						.path("basketBook.token.value")

@@ -112,7 +112,7 @@ public class AnonymousBasketService implements BasketService {
 		return BookEdge
 			.newBuilder()
 			.basket(getBasket())
-				.quantity(quantity)
+			.quantity(quantity)
 			.book(bookRepository.findById(databaseId).orElse(null))
 			.build();
 	}

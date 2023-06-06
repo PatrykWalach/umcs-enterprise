@@ -1,9 +1,10 @@
 mutation BasketDataFetcherTestBasketBook($input: BasketBookInput!) {
 	basketBook(input: $input) {
 		edge {
-			 quantity
-			node
-			{id}
+			quantity
+			node {
+				id
+			}
 		}
 		token {
 			value
