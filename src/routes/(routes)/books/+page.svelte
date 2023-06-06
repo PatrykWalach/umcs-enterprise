@@ -34,9 +34,9 @@
 		{/each}
 	</ol>
 
-	<nav class="btn-group mx-auto grid grid-cols-2">
+	<nav class="join mx-auto grid grid-cols-2">
 		<a
-			class="btn {$BooksQuery.data?.books?.pageInfo?.hasPreviousPage || 'btn-disabled'}"
+			class="btn join-item {$BooksQuery.data?.books?.pageInfo?.hasPreviousPage || 'btn-disabled'}"
 			href={$BooksQuery.data?.books?.pageInfo.hasPreviousPage &&
 			$BooksQuery.data?.books?.pageInfo.startCursor
 				? `/books?${new URLSearchParams({
@@ -50,7 +50,7 @@
 		</a>
 
 		<a
-			class="btn {$BooksQuery.data?.books?.pageInfo?.hasNextPage || 'btn-disabled'}"
+			class="btn join-item {$BooksQuery.data?.books?.pageInfo?.hasNextPage || 'btn-disabled'}"
 			href={$BooksQuery.data?.books?.pageInfo?.hasNextPage &&
 			$BooksQuery.data?.books.pageInfo.endCursor
 				? `/books?${new URLSearchParams({
