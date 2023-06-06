@@ -11,7 +11,6 @@ import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.types.*;
@@ -53,27 +52,8 @@ class BookDataFetcherTest {
 	@Autowired
 	private BookRepository bookRepository;
 
-	@AfterEach
-	void afterEach() throws Exception {
-		List<String> ids = coverRepository
-			.findAll()
-			.stream()
-			.map(Cover::getUuid)
-			.filter(Objects::nonNull)
-			.toList();
-
-		if (ids.isEmpty()) {
-			return;
-		}
-
-		cloudinary.api().deleteResources(ids, Map.of());
-	}
-
 	@Autowired
 	private MockMvc mvc;
-
-	@Autowired
-	private Cloudinary cloudinary;
 
 	@Test
 	void createBook_admin() throws Exception {
@@ -145,7 +125,6 @@ class BookDataFetcherTest {
 			.andExpect(jsonPath("data.createBook.book.covers[0].url").isNotEmpty());
 
 		Assertions.assertEquals(1L, bookRepository.count());
-		Assertions.assertEquals(1L, coverRepository.count());
 	}
 
 	@Autowired
@@ -217,7 +196,6 @@ class BookDataFetcherTest {
 			.andExpect(jsonPath("data.createBook").isEmpty());
 
 		Assertions.assertEquals(0L, bookRepository.count());
-		Assertions.assertEquals(0L, coverRepository.count());
 	}
 
 	@ParameterizedTest
@@ -241,10 +219,8 @@ class BookDataFetcherTest {
 		String endCursor
 	) {
 		//        given
-		var cover = coverRepository.save(new Cover());
-		bookRepository.saveAll(
-			IntStream.range(0, 14).mapToObj(i -> Book.newBuilder().cover(cover).build()).toList()
-		);
+
+		bookRepository.saveAll(IntStream.range(0, 14).mapToObj(i -> new Book()).toList());
 
 		this.graphQlTester.documentName("BookControllerTest_books")
 			.variable("first", first)
@@ -282,19 +258,13 @@ class BookDataFetcherTest {
 	@Test
 	void recommended() {
 		//        given
-		Cover cover = coverRepository.save(new Cover());
-		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
+
+		Book book = bookRepository.save(new Book());
 		bookRepository.saveAll(
-			IntStream
-				.range(0, 10)
-				.mapToObj(i -> Book.newBuilder().title("" + i).cover(cover).build())
-				.toList()
+			IntStream.range(0, 10).mapToObj(i -> Book.newBuilder().title("" + i).build()).toList()
 		);
 		var recommended = bookRepository.saveAll(
-			IntStream
-				.range(0, 7)
-				.mapToObj(i -> Book.newBuilder().cover(cover).title("" + (10 + i)).build())
-				.toList()
+			IntStream.range(0, 7).mapToObj(i -> Book.newBuilder().title("" + (10 + i)).build()).toList()
 		);
 
 		List<Purchase> purchases = purchaseRepository.saveAll(
@@ -334,16 +304,12 @@ class BookDataFetcherTest {
 	@Test
 	void recommended_2() {
 		//        given
-		Cover cover = coverRepository.save(new Cover());
 
 		var recommended = bookRepository.saveAll(
-			IntStream
-				.range(0, 2)
-				.mapToObj(i -> Book.newBuilder().cover(cover).title("" + (i)).build())
-				.toList()
+			IntStream.range(0, 2).mapToObj(i -> Book.newBuilder().title("" + (i)).build()).toList()
 		);
 
-		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
+		Book book = bookRepository.save(new Book());
 
 		Purchase purchase = purchaseRepository.save(new Purchase());
 
@@ -383,7 +349,6 @@ class BookDataFetcherTest {
 	)
 	void books_sort(String order, String out0, String out1, String out2, String out3) {
 		//        given
-		Cover cover = coverRepository.save(new Cover());
 
 		HashMap<String, BookOrderBy> sort = new HashMap<>();
 		sort.put(
@@ -411,10 +376,10 @@ class BookDataFetcherTest {
 			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Order.DESC).build()
 		);
 
-		Book book0 = Book.newBuilder().cover(cover).build();
-		Book book1 = Book.newBuilder().cover(cover).build();
-		Book book2 = Book.newBuilder().cover(cover).build();
-		Book book3 = Book.newBuilder().cover(cover).build();
+		Book book0 = new Book();
+		Book book1 = new Book();
+		Book book2 = new Book();
+		Book book3 = new Book();
 
 		book0.setTitle("Book:0");
 		book1.setTitle("Book:1");
@@ -494,13 +459,10 @@ class BookDataFetcherTest {
 			.valueIsNull();
 	}
 
-	@Autowired
-	private CoverRepository coverRepository;
-
 	@Test
 	void cover() {
 		//        given
-		Cover cover = coverRepository.save(Cover.newBuilder().uuid("12").build());
+		Cover cover = (Cover.newBuilder().uuid("12").build());
 		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
 
 		this.graphQlTester.documentName("BookControllerTest_bookCover")

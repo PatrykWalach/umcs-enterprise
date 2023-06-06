@@ -36,9 +36,10 @@ public class Book implements Node {
 	@Column(length = 2_000)
 	private String synopsis;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "cover_id", nullable = false)
-	private Cover cover;
+	@Builder.Default
+	private Cover cover = new Cover();
 
 	@Column(precision = 19, scale = 4)
 	private BigDecimal price;

@@ -38,7 +38,7 @@
 				</a>
 			</div>
 			<nav class="flex flex-none gap-1">
-				<div class="dropdown-end dropdown">
+				<div class="dropdown-end dropdown z-10">
 					<a class="btn-ghost btn-square btn sm:hidden" href="/basket">
 						<div class="indicator">
 							<svg
@@ -81,7 +81,7 @@
 									d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
 								/>
 							</svg>
-							<span class="badge badge-sm indicator-item">
+							<span class="badge badge-neutral badge-sm indicator-item">
 								{$NavbarQuery.data?.basket?.quantity ?? 0}
 							</span>
 						</div>
@@ -135,7 +135,7 @@
 					</div>
 				</div>
 				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
-					<div class="dropdown-end dropdown">
+					<div class="dropdown-end dropdown z-10">
 						<button type="button" aria-label="Show menu" class="btn-ghost btn-square avatar btn">
 							<!--
 			 <div class="w-10 rounded-full">
@@ -160,12 +160,12 @@
 						<form action="/logout" method="POST" use:enhance>
 							<ul
 								tabindex="-1"
-								class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow-xl"
+								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 bg-base-100 p-2 shadow-xl"
 							>
 								<li>
 									<a class="justify-between" href="">
 										Profile
-										<span class="badge">New</span>
+										<span class="badge badge-neutral">New</span>
 									</a>
 								</li>
 								<li><a href="">Settings</a></li>
