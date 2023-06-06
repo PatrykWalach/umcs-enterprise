@@ -9,7 +9,6 @@ import com.umcs.enterprise.types.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,10 +17,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 
-
 public class AnonymousBasketService implements BasketService {
 
-	public AnonymousBasketService(@NonNull JwtService jwtService, String authorization, @NonNull BookRepository bookRepository) {
+	public AnonymousBasketService(
+		@NonNull JwtService jwtService,
+		String authorization,
+		@NonNull BookRepository bookRepository
+	) {
 		this.jwtService = jwtService;
 		Authorization = authorization;
 		this.bookRepository = bookRepository;
@@ -32,7 +34,7 @@ public class AnonymousBasketService implements BasketService {
 
 	private String Authorization;
 
-	private  Token token;
+	private Token token;
 
 	private void setBasket(Map<UUID, Integer> basket) throws JsonProcessingException {
 		OffsetDateTime expiresAt = (OffsetDateTime.now().plusSeconds(60 * 60 * 24 * 365));
@@ -52,7 +54,7 @@ public class AnonymousBasketService implements BasketService {
 		String token = jwtService.signToken(builder);
 		this.Authorization = "Bearer " + token;
 
-		this.token =  Token.newBuilder().value(token).expiresAt(expiresAt).build();
+		this.token = Token.newBuilder().value(token).expiresAt(expiresAt).build();
 	}
 
 	@NonNull
@@ -107,7 +109,11 @@ public class AnonymousBasketService implements BasketService {
 		books.merge(databaseId, 1, Integer::sum);
 		setBasket(books);
 
-		return BookEdge.newBuilder().basket(basket).book(bookRepository.findById(databaseId).orElse(null)).build();
+		return BookEdge
+			.newBuilder()
+			.basket(basket)
+			.book(bookRepository.findById(databaseId).orElse(null))
+			.build();
 	}
 
 	@Override
@@ -129,6 +135,10 @@ public class AnonymousBasketService implements BasketService {
 		);
 		setBasket(books);
 
-		return BookEdge.newBuilder().basket(basket).book(bookRepository.findById(databaseId).orElse(null)).build();
+		return BookEdge
+			.newBuilder()
+			.basket(basket)
+			.book(bookRepository.findById(databaseId).orElse(null))
+			.build();
 	}
 }

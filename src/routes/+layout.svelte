@@ -88,7 +88,7 @@
 					</button>
 					<div
 						tabindex="-1"
-						class="card dropdown-content card-compact mt-3 max-w-xl w-max bg-base-100 shadow-xl"
+						class="card-compact card dropdown-content mt-3 w-max max-w-xl bg-base-100 shadow-xl"
 					>
 						<section class="card-body grid gap-4">
 							<h3 class="font-bold text-xl">

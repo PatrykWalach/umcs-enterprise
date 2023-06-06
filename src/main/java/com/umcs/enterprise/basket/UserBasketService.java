@@ -65,7 +65,8 @@ public class UserBasketService implements BasketService {
 
 		return bookEdge;
 	}
-@Override
+
+	@Override
 	public BookEdge unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException {
 		Claims token = jwtService.parseAuthorizationHeader(Authorization);
 		assert token.getSubject() != null;
