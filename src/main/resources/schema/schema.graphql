@@ -9,6 +9,7 @@ type Price {
 
 input Transformation {
 	aspectRatio: AspectRatio
+	background: Background
 	crop: Crop
 	format: Format
 	gravity: Gravity
@@ -16,6 +17,11 @@ input Transformation {
 	quality: Quality
 	width: Int
 }
+
+enum Background {
+	AUTO
+}
+
 enum Gravity {
 	AUTO
 }
