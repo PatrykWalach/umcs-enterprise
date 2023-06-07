@@ -70,8 +70,8 @@
 				<button
 					type="submit"
 					class="btn-ghost btn-square btn cursor-default"
-					aria-label="Add to cart"
-					title="Add to cart"
+					aria-label="Add to basket"
+					title="Add to basket"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

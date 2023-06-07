@@ -61,7 +61,7 @@
 
 					<form method="POST" use:enhance class="grid gap-2 md:gap-4">
 						<input type="hidden" name="id" value={$BookQuery.data.node.id} />
-						<button type="submit" class="btn-secondary btn-lg btn cursor-default">To cart</button>
+						<button type="submit" class="btn-secondary btn-lg btn cursor-default">To basket</button>
 						<button
 							type="submit"
 							class="btn-primary btn-lg btn cursor-default"
