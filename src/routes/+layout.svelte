@@ -37,7 +37,7 @@
 				</a>
 			</div>
 			<nav class="flex flex-none gap-1">
-				<a class="btn-ghost btn-square btn" href="/basket" aria-label="Go to cart">
+				<a class="btn-ghost btn-square btn" href="/basket" aria-label="Go to basket">
 					<div class="indicator">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"

@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>Cart</title>
+	<title>Basket</title>
 </svelte:head>
 
 <main class="bg-base-200">
