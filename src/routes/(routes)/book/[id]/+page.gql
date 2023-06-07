@@ -5,7 +5,14 @@ query BookQuery($id: ID!) {
 		... on Book {
 			author
 			covers(
-				transformation: { quality: { auto: DEFAULT }, format: AUTO }
+				transformation: {
+						aspectRatio: { width: 3, height: 5 }
+						crop: FILL_PAD
+						background: AUTO
+						gravity: AUTO
+						quality: { auto: DEFAULT }
+						format: AUTO
+				}
 				widths: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000]
 			) {
 				url @required

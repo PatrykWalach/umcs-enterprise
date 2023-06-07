@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
-import HomePage, { BookPage, CartPage } from './HomePage.js';
+import HomePage, { BasketPage, BookPage } from './HomePage.js';
 
 test('can add to basket', async ({ page }) => {
 	// given
@@ -15,12 +15,12 @@ test('can add to basket', async ({ page }) => {
 	const bookpage = new BookPage(page);
 	await expect.soft(page).toHaveTitle('Kicia Kocia. Wiosna');
 	// when
-	await bookpage.addToCart();
+	await bookpage.addToBasket();
 	// then
-	await expect.soft(bookpage.nav.cartItems.getByText('1')).toBeVisible();
-	await bookpage.nav.goToCart();
+	await expect.soft(bookpage.nav.basketItems.getByText('1')).toBeVisible();
+	await bookpage.nav.goToBasket();
 
-	const cartpage = new CartPage(page);
-	await expect.soft(cartpage.main.getByText('Total 6,45 zł')).toBeVisible();
-	await expect.soft(cartpage.book('Kicia Kocia. Wiosna')).toBeVisible();
+	const basketpage = new BasketPage(page);
+	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
+	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });

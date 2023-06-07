@@ -9,10 +9,10 @@
 </script>
 
 <svelte:head>
-	<title>Cart</title>
+	<title>Basket</title>
 </svelte:head>
 
-<main class="bg-base-200">
+<main class="">
 	<div class="flex justify-center pt-4">
 		<ul class="steps">
 			<li class="step-primary step">Register</li>

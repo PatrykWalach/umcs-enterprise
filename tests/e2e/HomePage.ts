@@ -32,13 +32,13 @@ class Section {
 class Book {
 	constructor(private page: Page, public loc: Locator) {}
 
-	async addToCart() {
-		await this.loc.getByRole('button', { name: 'add to cart' }).click();
+	async addToBasket() {
+		await this.loc.getByRole('button', { name: 'add to basket' }).click();
 		await expect.soft(this.page.getByText('In the basket')).toBeVisible();
 	}
 }
 
-export class CartPage {
+export class BasketPage {
 	main: Locator;
 	book(title: string) {
 		return this.main.getByRole('heading', {
@@ -52,7 +52,7 @@ export class CartPage {
 }
 
 export class Navigation {
-	cartItems: Locator;
+	basketItems: Locator;
 	async logout() {
 		await this.locator.getByRole('button', { name: 'show menu' }).click();
 		await this.locator.getByRole('button', { name: 'logout' }).click();
@@ -60,9 +60,9 @@ export class Navigation {
 		await expect.soft(this.login).toBeVisible();
 	}
 
-	async goToCart() {
-		await this.cartItems.click();
-		await expect.soft(this.page).toHaveTitle('Cart');
+	async goToBasket() {
+		await this.basketItems.click();
+		await expect.soft(this.page).toHaveTitle('Basket');
 	}
 
 	login: Locator;
@@ -71,7 +71,7 @@ export class Navigation {
 	constructor(private page: Page, private locator: Locator) {
 		this.login = locator.getByRole('link', { name: 'login' });
 		this.register = locator.getByRole('link', { name: 'register' });
-		this.cartItems = locator.getByRole('link', { name: 'go to cart' });
+		this.basketItems = locator.getByRole('link', { name: 'go to basket' });
 	}
 }
 
@@ -79,8 +79,8 @@ export class BookPage {
 	main: Locator;
 	nav: Navigation;
 
-	async addToCart() {
-		await this.main.getByRole('button', { name: 'To cart', exact: true }).click();
+	async addToBasket() {
+		await this.main.getByRole('button', { name: 'To basket', exact: true }).click();
 		await expect.soft(this.page.getByText('In the basket')).toBeVisible();
 
 		return this;
