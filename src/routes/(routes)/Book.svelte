@@ -38,10 +38,10 @@
 </script>
 
 <article class="" aria-labelledby={$data?.id}>
-	<figure class="aspect-[3/5] rounded-xl overflow-hidden">
+	<figure class="aspect-[3/5] overflow-hidden rounded-xl">
 		<img
 			loading="lazy"
-			class="w-full h-full bg-contain"
+			class="h-full w-full bg-contain"
 			style="background-image: url('{$data?.covers?.filter(isNotNull).at(0)?.url}')"
 			srcset={$data?.covers
 				?.filter(isNotNull)
@@ -53,15 +53,11 @@
 	</figure>
 	<div class="mt-4 justify-between gap-4">
 		<div>
-			<h3
-				id={$data?.id}
-				class="line-clamp-1 font-medium text-base"
-				title={$data?.title}
-			>
+			<h3 id={$data?.id} class="line-clamp-1 font-medium text-base" title={$data?.title}>
 				<a href="/book/{$data?.id}" class="link-hover link">{$data?.title}</a>
 			</h3>
 			{#if $data?.author}
-				<div class="line-clamp-1 mt-1 italic text-sm">
+				<div class="mt-1 line-clamp-1 italic text-sm">
 					{$data.author}
 				</div>
 			{/if}

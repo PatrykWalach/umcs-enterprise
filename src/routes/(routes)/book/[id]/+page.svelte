@@ -110,9 +110,9 @@
 
 			<aside class="grid gap-2 sm:gap-4" aria-labelledby="frequently-bought-together">
 				{#if $BookQuery.data.node.recommended?.edges?.length}
-					<h2 class="text-3xl mt-4" id="frequently-bought-together">Frequently bought together</h2>
+					<h2 class="mt-4 text-3xl" id="frequently-bought-together">Frequently bought together</h2>
 					<ol
-						class="grid grid-cols-1 gap-x-6 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+						class="grid grid-cols-1 gap-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
 					>
 						{#each $BookQuery.data.node.recommended?.edges
 							?.map((edge) => edge?.node)

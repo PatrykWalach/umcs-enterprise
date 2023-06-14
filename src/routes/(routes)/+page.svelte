@@ -15,7 +15,7 @@
 			<a href="/books?by=popularity&order=desc" class="link-hover link">Bestsellers</a>
 		</h2>
 		<ol
-			class="grid grid-cols-1 gap-x-6 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+			class="grid grid-cols-1 gap-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
 		>
 			{#each $HomeQuery.data?.popular?.edges
 				?.map((edge) => edge?.node)
@@ -32,7 +32,7 @@
 			<a href="/books?by=realease_date&order=desc" class="link-hover link">New</a>
 		</h2>
 		<ol
-			class="grid grid-cols-1 gap-x-6 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+			class="grid grid-cols-1 gap-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
 		>
 			{#each $HomeQuery.data?.new?.edges
 				?.map((edge) => edge?.node)
