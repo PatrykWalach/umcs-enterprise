@@ -1,6 +1,6 @@
 import { graphql, type BasketBook$input } from '$houdini';
-import type { RequestEvent } from '@sveltejs/kit';
-import { redirect } from 'sveltekit-flash-message/server';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
+
 import { setToken } from './setToken';
 
 const BasketBook = graphql(`
@@ -27,7 +27,7 @@ export default async function basketBook(variables: BasketBook$input, event: Req
 	setToken(event, token);
 
 	if (response.data?.basketBook?.edge?.node?.id) {
-		throw redirect('/book/' + response.data.basketBook.edge.node.id, undefined, event);
+		throw redirect(303, '/book/' + response.data.basketBook.edge.node.id);
 	}
 
 	return response;

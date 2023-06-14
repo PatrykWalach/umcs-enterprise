@@ -1,18 +1,18 @@
 <script lang="ts">
-	import type { FieldPath, UnwrapEffects } from 'sveltekit-superforms';
+	import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
 	import type { SuperForm } from 'sveltekit-superforms/client';
 	import { formFieldProxy } from 'sveltekit-superforms/client';
 	import type { AnyZodObject, z } from 'zod';
 
 	type T = $$Generic<AnyZodObject>;
 
-	export let form: SuperForm<UnwrapEffects<T>, unknown>;
-	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
+	export let form: SuperForm<ZodValidation<T>, unknown>;
+	export let field: FormPathLeaves<z.infer<T>>;
 	export let id = String(field);
 
 	$: inputId = id ?? String(field);
 
-	const { path, value, errors, constraints } = formFieldProxy(form, field);
+	const { value, errors, constraints } = formFieldProxy(form, field);
 </script>
 
 <div class="form-control">
@@ -23,8 +23,8 @@
 		bind:value={$value}
 		class="input-bordered input"
 		type="text"
-		data-invalid={$errors}
-		name={String(field)}
+		aria-invalid={$errors ? 'true' : undefined}
+		name={field}
 		id={inputId}
 		{...$constraints}
 		{...$$restProps}

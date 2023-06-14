@@ -55,7 +55,7 @@ export const actions: Actions = {
 		}
 
 		if (response.data?.login.__typename === 'LoginError') {
-			return setError(form, null, response.data.login.username);
+			return setError(form, '', response.data.login.username);
 		}
 
 		return fail(400, { form: form });
