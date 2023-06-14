@@ -8,12 +8,10 @@ declare global {
 		interface Session {
 			token: string | undefined;
 		}
-		interface PageData {
-			flash?: { type: 'BASKET_BOOK' };
-		}
-
+		// interface PageData {}
 		// interface Platform {}
 	}
 }
 
-export {};
+export { };
+
