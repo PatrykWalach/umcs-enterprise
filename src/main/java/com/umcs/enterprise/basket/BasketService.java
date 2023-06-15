@@ -30,8 +30,6 @@ public class BasketService {
 
 		GlobalId<Map<String, Integer>> globalId = GlobalId.from(id);
 
- 
-
 		assert Objects.equals(globalId.className(), "Basket");
 
 		Map<Book, Integer> books = bookRepository

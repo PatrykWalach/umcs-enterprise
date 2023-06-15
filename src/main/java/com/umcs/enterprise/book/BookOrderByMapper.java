@@ -21,8 +21,6 @@ public interface BookOrderByMapper {
 		map.put("price", orderBy.price());
 		map.put("releasedAt", orderBy.releasedAt());
 
-	 
-
 		return map
 			.entrySet()
 			.stream()

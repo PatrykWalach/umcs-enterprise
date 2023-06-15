@@ -13,4 +13,3 @@ export const handle: Handle = ({ event, resolve }) => {
 
 	return resolve(event);
 };
- 

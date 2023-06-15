@@ -28,8 +28,6 @@ public class Basket implements Node {
 	public BookEdge add(Book book) {
 		Integer quantity = books.merge(book, 1, Integer::sum);
 
-	 
-
 		return new BookEdge(book, quantity);
 	}
 
@@ -43,8 +41,6 @@ public class Basket implements Node {
 				return value - 1;
 			}
 		);
-
-	 
 
 		if (quantity == null) {
 			return null;
