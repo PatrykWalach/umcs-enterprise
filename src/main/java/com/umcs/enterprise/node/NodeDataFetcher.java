@@ -5,7 +5,8 @@ import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.CoverRepository;
+
+
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.purchase.PurchaseRepository;
@@ -56,7 +57,7 @@ public class NodeDataFetcher {
 
 	@DgsMutation
 	@Secured("ADMIN")
-	public DeleteResult delete(@InputArgument DeleteInput input) {
+	public DeleteResult delete(@InputArgument DeleteInput input) throws JsonProcessingException {
 		Map<String, Consumer<UUID>> delete = Map.of(
 			"Book",
 			bookRepository::deleteById,
@@ -66,7 +67,7 @@ public class NodeDataFetcher {
 			purchaseRepository::deleteById
 		);
 
-		GlobalId globalId = GlobalId.from(input.getId());
+		GlobalId<UUID> globalId = GlobalId.from(input.getId());
 
 		Consumer<UUID> consumer = delete.get(globalId.className());
 

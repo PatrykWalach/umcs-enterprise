@@ -61,7 +61,7 @@
 						</figure>
 					</div>
 
-					<form method="POST" use:enhance class="grid gap-2 md:gap-4" aria-label="Actions">
+					<form method="POST" action="?/basket_book" use:enhance class="grid gap-2 md:gap-4" aria-label="Actions">
 						<input type="hidden" name="id" value={$BookQuery.data.node.id} />
 						{#if $BookQuery.data.viewer?.__typename === 'Admin'}
 						<button type="submit" class="btn-error btn-lg btn cursor-default" formaction="?/delete">Delete</button>

@@ -39,7 +39,7 @@ public class UserDataFetcher {
 
 	@DgsTypeResolver(name = "Viewer")
 	public String resolveViewer(User user) {
-		if (user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+		if (user.getAuthorities().contains(("ADMIN"))) {
 			return "Admin";
 		}
 

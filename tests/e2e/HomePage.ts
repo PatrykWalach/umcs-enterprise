@@ -75,6 +75,29 @@ export class Navigation {
 	}
 }
 
+export class AddBookPage {
+	main: Locator;
+	nav: Navigation;
+	form: { title: Locator; author: Locator; price: Locator; releasedAt: Locator; cover: Locator; submit: Locator; };
+ 
+
+	constructor(private page: Page) {
+		this.main = page.getByRole('main');
+		this.nav = new Navigation(page, page.getByRole('navigation'));
+
+		const form = this.main.getByRole('group', {name:'Add book'});
+
+		this.form = {
+			title: form.getByLabel('Title'),
+			author: form.getByLabel('Author'),
+			price: form.getByLabel('Price'),
+			releasedAt: form.getByLabel('Release date'),
+			cover: form.getByLabel('Cover'),
+			submit: form.getByRole('button', { name: 'Submit' })
+		};
+	}
+}
+
 export class BookPage {
 	main: Locator;
 	nav: Navigation;
@@ -87,6 +110,15 @@ export class BookPage {
 		await expect.soft(this.page.getByText('In the basket')).toBeVisible();
 
 		return this;
+	}
+
+	async delete() {
+		await this.main
+			.getByRole('button', {
+				name: 'Delete'
+			})
+			.click();
+		await expect.soft(this.page).toHaveTitle('Home');
 	}
 
 	constructor(private page: Page) {

@@ -1,32 +1,28 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
+import { AddBookPage, BookPage } from './HomePage.js';
 
-test('can upload cover', async ({ page, admin }) => {
+test.only('can upload cover', async ({ page, admin }) => {
 	// given
-	const main = page.getByRole('main');
-	const nav = page.getByRole('navigation');
+
 	await page.goto('/admin/add');
+	const addbookpage = new AddBookPage(page);
+	await expect(page).toHaveTitle('Add book');
 
-	const form = main.getByRole('form');
-
-	await form.getByLabel('Title').fill('Foo');
-	await form.getByLabel('Author').fill('Bar');
-	await form.getByLabel('Price').fill('12.5');
-	await form.getByLabel('Release date').fill('2023-04-24');
-	await form.getByLabel('Cover').setInputFiles('src/test/resources/cover.jpg');
+	await addbookpage.form.title.fill('Foo');
+	await addbookpage.form.author.fill('Bar');
+	await addbookpage.form.price.fill('12.5');
+	await addbookpage.form.releasedAt.fill('2023-04-24');
+	await addbookpage.form.cover.setInputFiles('src/test/resources/cover.jpg');
 
 	// when
-	await form.getByRole('button', { name: 'Submit' }).click();
+	await addbookpage.form.submit.click();
 	// then
+	const bookpage = new BookPage(page);
 	await expect.soft(page).toHaveTitle('Foo');
 
-	await expect.soft(main.getByRole('heading', { name: 'Foo' })).toBeVisible();
-	await expect.soft(main.getByText('Bar')).toBeVisible();
-	await expect.soft(main.getByText('12,50 zł')).toBeVisible();
-	await main
-		.getByRole('button', {
-			name: 'Delete'
-		})
-		.click();
-	await expect.soft(page).toHaveTitle('Home');
+	await expect.soft(bookpage.main.getByRole('heading', { name: 'Foo' })).toBeVisible();
+	await expect.soft(bookpage.main.getByText('Bar')).toBeVisible();
+	await expect.soft(bookpage.main.getByText('12,50 zł')).toBeVisible();
+	await bookpage.delete();
 });
