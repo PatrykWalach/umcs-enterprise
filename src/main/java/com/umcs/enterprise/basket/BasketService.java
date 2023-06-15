@@ -25,7 +25,10 @@ public class BasketService {
 			return new Basket();
 		}
 
-		GlobalId<LinkedHashMap<String, Integer>> globalId = GlobalId.from(id);
+		GlobalId<HashMap<String, Integer>> globalId = GlobalId.from(id);
+
+
+
 
 		assert Objects.equals(globalId.className(), "Basket");
 
@@ -39,6 +42,9 @@ public class BasketService {
 
 				)
 			);
+
+
+
 
 		return new Basket(globalId.databaseId().entrySet().stream().collect(Collectors.toMap(e->books.get(e.getKey()), Map.Entry::getValue)));
 	}
