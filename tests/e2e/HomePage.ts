@@ -78,14 +78,20 @@ export class Navigation {
 export class AddBookPage {
 	main: Locator;
 	nav: Navigation;
-	form: { title: Locator; author: Locator; price: Locator; releasedAt: Locator; cover: Locator; submit: Locator; };
- 
+	form: {
+		title: Locator;
+		author: Locator;
+		price: Locator;
+		releasedAt: Locator;
+		cover: Locator;
+		submit: Locator;
+	};
 
 	constructor(private page: Page) {
 		this.main = page.getByRole('main');
 		this.nav = new Navigation(page, page.getByRole('navigation'));
 
-		const form = this.main.getByRole('group', {name:'Add book'});
+		const form = this.main.getByRole('group', { name: 'Add book' });
 
 		this.form = {
 			title: form.getByLabel('Title'),
