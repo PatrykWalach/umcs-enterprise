@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
