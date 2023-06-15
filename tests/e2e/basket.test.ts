@@ -69,7 +69,7 @@ test('keeps contents after register', async ({ page, register }) => {
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
 
-test('clears after logout', async ({ page, register }) => {
+test('keeps after logout', async ({ page, register }) => {
 	// given
 	await page.goto('/');
 	await register();
@@ -84,33 +84,6 @@ test('clears after logout', async ({ page, register }) => {
 
 	await homepage.nav.goToBasket();
 	const basketpage = new BasketPage(page);
-	await expect.soft(basketpage.main.getByText('Total 0,00 zł')).toBeVisible();
-	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).not.toBeVisible();
-});
-
-test('keeps between logins', async ({ page, register, login }) => {
-	// given
-
-	await page.goto('/');
-	const user = await register();
-
-	const homepage = new HomePage(page);
-	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
-	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
-	await book.addToBasket();
-	await homepage.nav.logout();
-	await homepage.nav.goToBasket();
-
-	const basketpage = new BasketPage(page);
-	await expect.soft(basketpage.main.getByText('Total 0,00 zł')).toBeVisible();
-	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).not.toBeVisible();
-	// when
-	await login(user);
-	// then
-	await expect.soft(homepage.nav.register).not.toBeVisible();
-	await expect.soft(homepage.nav.login).not.toBeVisible();
-	await homepage.nav.goToBasket();
-
 	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });

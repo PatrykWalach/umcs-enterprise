@@ -2,69 +2,35 @@ package com.umcs.enterprise.basket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netflix.graphql.dgs.*;
-import com.umcs.enterprise.auth.JwtService;
-import com.umcs.enterprise.book.BookDataLoader;
+import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
+import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
 import graphql.relay.DefaultConnectionCursor;
 import java.math.BigDecimal;
 import java.util.*;
-import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.dataloader.DataLoader;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @DgsComponent
 @RequiredArgsConstructor
 public class BasketDataFetcher {
 
-	@Value("${spring.security.authentication.jwt.secret}")
-	private String secret;
-
 	@DgsQuery
-	public Basket basket(@RequestHeader(required = false) String Authorization)
-		throws JsonProcessingException {
-		return getBasketService(Authorization).getBasket();
+	public Basket basket(String id) throws JsonProcessingException {
+		return basketService.getBasket(id);
 	}
-
-	@NonNull
-	private final JwtService jwtService;
 
 	@NonNull
 	private final BookRepository bookRepository;
 
 	@NonNull
-	private final BasketRepository basketRepository;
-
-	@NonNull
-	private final BookEdgeRepository bookEdgeRepository;
-
-	private BasketService getBasketService(String Authorization) {
-		if (
-			Authorization != null &&
-			jwtService.parseAuthorizationHeader(Authorization).getSubject() != null
-		) {
-			return new UserBasketService(
-				jwtService,
-				basketRepository,
-				bookEdgeRepository,
-				Authorization,
-				bookRepository
-			);
-		}
-
-		return new AnonymousBasketService(jwtService, Authorization, bookRepository);
-	}
+	private final BasketService basketService;
 
 	@DgsData(parentType = "Basket")
 	public BigDecimal price(DgsDataFetchingEnvironment env) {
-		DataLoader<UUID, com.umcs.enterprise.book.Book> dataLoader = env.getDataLoader(
-			BookDataLoader.class
-		);
-
 		Basket basket = env.getSource();
 
 		return basket
@@ -76,15 +42,15 @@ public class BasketDataFetcher {
 	}
 
 	@DgsData(parentType = "Book")
-	public Boolean inBasket(
-		DgsDataFetchingEnvironment env,
-		@RequestHeader(required = false) String Authorization
-	) throws JsonProcessingException {
-		Basket basket = getBasketService(Authorization).getBasket();
-
+	public Boolean inBasket(DgsDataFetchingEnvironment env, String id)
+		throws JsonProcessingException {
 		com.umcs.enterprise.book.Book book = env.getSource();
-
-		return basket.getBooks().stream().map(BookEdge::getBook).anyMatch(book::equals);
+		return basketService
+			.getBasket(id)
+			.getBooks()
+			.stream()
+			.map(BookEdge::getBook)
+			.anyMatch(book::equals);
 	}
 
 	@DgsData(parentType = "Basket")
@@ -99,19 +65,22 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId globalId = GlobalId.from(input.getBook().getId());
+		GlobalId<String> globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 
-		BasketService service = getBasketService(Authorization);
-		com.umcs.enterprise.basket.BookEdge edge = service.basketBook(globalId.databaseId());
+		Book book = bookRepository
+			.findById(UUID.fromString(globalId.databaseId()))
+			.orElseThrow(DgsEntityNotFoundException::new);
+
+		Basket basket = basketService.getBasket(input.getBasket().getId());
+		com.umcs.enterprise.basket.BookEdge edge = basket.add(book);
 
 		return BasketBookResult
 			.newBuilder()
 			.edge(
 				new graphql.relay.DefaultEdge<>(edge, new DefaultConnectionCursor(edge.getBook().getId()))
 			)
-			.token(service.getToken())
-			.basket(service.getBasket())
+			.basket(basket)
 			.build();
 	}
 
@@ -121,20 +90,22 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId globalId = GlobalId.from(input.getBook().getId());
+		GlobalId<String> globalId = GlobalId.from(input.getBook().getId());
 		assert Objects.equals(globalId.className(), "Book");
 
-		BasketService service = getBasketService(Authorization);
+		Book book = bookRepository
+			.findById(UUID.fromString(globalId.databaseId()))
+			.orElseThrow(DgsEntityNotFoundException::new);
 
-		com.umcs.enterprise.basket.BookEdge edge = service.unbasketBook(globalId.databaseId());
+		Basket basket = basketService.getBasket(input.getBasket().getId());
+		com.umcs.enterprise.basket.BookEdge edge = basket.remove(book);
 
 		return UnbasketBookResult
 			.newBuilder()
 			.edge(
 				new graphql.relay.DefaultEdge<>(edge, new DefaultConnectionCursor(edge.getBook().getId()))
 			)
-			.token(service.getToken())
-			.basket(service.getBasket())
+			.basket(basket)
 			.build();
 	}
 }

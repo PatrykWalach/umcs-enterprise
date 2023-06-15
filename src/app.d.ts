@@ -7,6 +7,7 @@ declare global {
 		// interface Locals {}
 		interface Session {
 			token: string | undefined;
+			basket: string | undefined;
 		}
 		// interface PageData {}
 		// interface Platform {}

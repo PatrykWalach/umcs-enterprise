@@ -2,7 +2,7 @@ package com.umcs.enterprise;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-import com.umcs.enterprise.auth.JwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
@@ -11,18 +11,22 @@ import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.purchase.PurchaseService;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-import io.jsonwebtoken.Jwts;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@SpringBootTest(classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)
 class NodeDataFetcherTest {
 
@@ -30,13 +34,26 @@ class NodeDataFetcherTest {
 	private BookRepository bookRepository;
 
 	@Autowired
+	WebApplicationContext context;
+
+	@BeforeEach
+	public void beforeEach() {
+		WebTestClient client = MockMvcWebTestClient
+			.bindToApplicationContext(context)
+			.configureClient()
+			.baseUrl("/graphql")
+			.build();
+
+		graphQlTester = HttpGraphQlTester.create(client);
+	}
+
 	private HttpGraphQlTester graphQlTester;
 
 	@Autowired
 	private PurchaseService purchaseRepository;
 
 	@Test
-	void returnsBook() {
+	void returnsBook() throws JsonProcessingException {
 		//        given
 
 		var book = bookRepository.save(Book.newBuilder().title("Book title").build());
@@ -62,27 +79,15 @@ class NodeDataFetcherTest {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private JwtService jwtService;
-
 	@Test
-	void returnsViewer() {
+	@WithMockUser(username = "user")
+	void returnsViewer() throws JsonProcessingException {
 		//        given
 		var user = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 		);
 
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
-
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
-			.documentName("NodeControllerTest_returnsNode")
+		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", user.getId())
 			//        when
 			.execute()
@@ -98,7 +103,8 @@ class NodeDataFetcherTest {
 	}
 
 	@Test
-	void doesntReturnOtherUser() {
+	@WithMockUser(username = "user")
+	void doesntReturnOtherUser() throws JsonProcessingException {
 		//        given
 		var user = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
@@ -106,17 +112,8 @@ class NodeDataFetcherTest {
 		var other = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("other").build()
 		);
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
-			.documentName("NodeControllerTest_returnsNode")
+		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", other.getId())
 			//        when
 			.execute()
@@ -129,23 +126,15 @@ class NodeDataFetcherTest {
 	}
 
 	@Test
-	void returnsPurchase() {
+	@WithMockUser(username = "user")
+	void returnsPurchase() throws JsonProcessingException {
 		//        given
 		var user = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 		);
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(user).build());
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
 
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
-			.documentName("NodeControllerTest_returnsNode")
+		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", purchase.getId())
 			//        when
 			.execute()
@@ -161,7 +150,8 @@ class NodeDataFetcherTest {
 	}
 
 	@Test
-	void doesntReturnOtherUserPurchase() {
+	@WithMockUser(username = "user")
+	void doesntReturnOtherUserPurchase() throws JsonProcessingException {
 		//        given
 		var user = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
@@ -171,17 +161,7 @@ class NodeDataFetcherTest {
 		);
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(other).build());
 
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
-		);
-
-		this.graphQlTester.mutate()
-			.header("Authorization", "Bearer " + token)
-			.build()
-			.documentName("NodeControllerTest_returnsNode")
+		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", purchase.getId())
 			//        when
 			.execute()
@@ -194,7 +174,7 @@ class NodeDataFetcherTest {
 	}
 
 	@Test
-	void notFound() {
+	void notFound() throws JsonProcessingException {
 		//        given
 		var book = bookRepository.save(Book.newBuilder().title("Book title").build());
 		book.setDatabaseId(UUID.randomUUID());

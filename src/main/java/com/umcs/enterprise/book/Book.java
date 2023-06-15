@@ -36,7 +36,7 @@ public class Book implements Node {
 	@Column(length = 2_000)
 	private String synopsis;
 
-	@OneToOne(cascade = CascadeType.ALL, optional = false)
+	@OneToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "cover_id", nullable = false)
 	@Builder.Default
 	private Cover cover = new Cover();

@@ -1,25 +1,24 @@
 package com.umcs.enterprise.node;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public record GlobalId(String className, UUID databaseId) {
-	public String encode() {
+public record GlobalId<T>(String className, T databaseId) {
+	public String encode() throws JsonProcessingException {
 		return java.util.Base64
 			.getEncoder()
-			.encodeToString((className + ":" + databaseId).getBytes(StandardCharsets.UTF_8));
+			.encodeToString(new ObjectMapper().writeValueAsString(this).getBytes(StandardCharsets.UTF_8));
 	}
 
-	public static GlobalId from(String c) {
-		var id = new String(java.util.Base64.getDecoder().decode(c), StandardCharsets.UTF_8);
-
-		String[] split = id.split(":");
-
-		if (split.length != 2) {
-			throw new IllegalArgumentException("Invalid id");
-		}
-
-		String className = split[0];
-		return new GlobalId(className, UUID.fromString(split[1]));
+	public static <U> GlobalId<U> from(String c) throws JsonProcessingException {
+		return new ObjectMapper()
+			.readValue(
+				new String(java.util.Base64.getDecoder().decode(c), StandardCharsets.UTF_8),
+				new TypeReference<>() {}
+			);
 	}
 }

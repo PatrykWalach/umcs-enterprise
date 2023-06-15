@@ -1,4 +1,4 @@
-query BookQuery($id: ID!) {
+query BookQuery($basketId: ID, $id: ID!) {
 	node(id: $id) {
 		__typename
 		id
@@ -11,7 +11,7 @@ query BookQuery($id: ID!) {
 				url @required
 				width @required
 			}
-			inBasket
+			inBasket(id: $basketId)
 			price {
 				formatted
 			}

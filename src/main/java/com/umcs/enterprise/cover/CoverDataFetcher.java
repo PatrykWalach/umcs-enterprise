@@ -11,10 +11,8 @@ import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.dataloader.DataLoader;
 import org.mapstruct.factory.Mappers;
 
 @DgsComponent
