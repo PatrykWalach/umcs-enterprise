@@ -9,7 +9,7 @@ interface Viewer {
 export const test = base.extend<{
 	register: (options?: Partial<Viewer>) => Promise<Viewer>;
 	login: (options: Viewer) => Promise<Viewer>;
-		admin: Viewer;
+	admin: Viewer;
 }>({
 	async admin({ page, login }, use) {
 		await page.goto('/');
