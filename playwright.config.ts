@@ -1,12 +1,20 @@
 import { devices, PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
-	webServer: {
-		command: './gradlew bootRun',
-		url: 'http://localhost:8080/graphiql',
-		timeout: 3 * 60 * 1000,
-		reuseExistingServer: !process.env.CI
-	},
+	webServer: [
+		{
+			command: './gradlew bootRun',
+			url: 'http://localhost:8080/graphiql',
+			timeout: 3 * 60 * 1000,
+			reuseExistingServer: !process.env.CI
+		},
+		{
+			command: 'npx turbo preview',
+			url: 'http://localhost:5173',
+			timeout: 3 * 60 * 1000,
+			reuseExistingServer: !process.env.CI
+		}
+	],
 	snapshotDir: './__snapshots__',
 	maxFailures: 100,
 	expect: {
@@ -28,7 +36,9 @@ const config: PlaywrightTestConfig = {
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-		trace: 'on-first-retry'
+		trace: 'on-first-retry',
+		baseURL: 'http://localhost:5173',
+		video: 'retain-on-failure'
 	},
 	testDir: 'tests/e2e',
 	projects: [

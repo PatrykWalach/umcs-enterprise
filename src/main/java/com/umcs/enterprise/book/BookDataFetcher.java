@@ -32,8 +32,6 @@ public class BookDataFetcher {
 			.getMapper(BookOrderByMapper.class)
 			.bookOrderByListToOrders(orderBy);
 
-		System.out.println(orders);
-
 		if (orders != null) {
 			return connectionService.getConnection(this.bookRepository.findAll(Sort.by(orders)), env);
 		}

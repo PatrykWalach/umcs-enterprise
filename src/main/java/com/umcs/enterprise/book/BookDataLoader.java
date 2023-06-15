@@ -31,7 +31,7 @@ public class BookDataLoader implements MappedBatchLoader<UUID, Book> {
 				repository
 					.findAllById(keys)
 					.stream()
-					.collect(Collectors.toMap(Node::getDatabaseId, Function.identity())),
+					.collect(Collectors.toMap(Node<UUID>::getDatabaseId, Function.identity())),
 			executor
 		);
 	}

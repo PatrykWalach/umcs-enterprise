@@ -1,30 +1,37 @@
 import { graphql, type BasketBook$input } from '$houdini';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 
-import { setToken } from './setToken';
+import { setBasket } from './setBasket';
+import { BASKET_COOKIE } from './constants';
 
 const BasketBook = graphql(`
 	mutation BasketBook($input: BasketBookInput!) {
 		basketBook(input: $input) {
+			basket @required {
+				id
+			}
 			edge {
 				node {
 					id
 				}
-			}
-			token {
-				...SetToken_token @mask_disable
 			}
 		}
 	}
 `);
 
 export default async function basketBook(variables: BasketBook$input, event: RequestEvent) {
-	const response = await BasketBook.mutate(variables, {
-		event
-	});
+	const response = await BasketBook.mutate(
+		{
+			input: { book: variables.input.book, basket: { id: event.cookies.get(BASKET_COOKIE) } }
+		},
+		{
+			event
+		}
+	);
 
-	const token = response.data?.basketBook?.token;
-	setToken(event, token);
+	if (response.data?.basketBook) {
+		setBasket(event, response.data.basketBook.basket.id);
+	}
 
 	if (response.data?.basketBook?.edge?.node?.id) {
 		throw redirect(303, '/book/' + response.data.basketBook.edge.node.id);

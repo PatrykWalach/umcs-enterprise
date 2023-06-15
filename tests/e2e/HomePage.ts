@@ -80,7 +80,10 @@ export class BookPage {
 	nav: Navigation;
 
 	async addToBasket() {
-		await this.main.getByRole('button', { name: 'To basket', exact: true }).click();
+		await this.main
+			.getByRole('form', { name: 'Actions' })
+			.getByRole('button', { name: 'Add to basket' })
+			.click();
 		await expect.soft(this.page.getByText('In the basket')).toBeVisible();
 
 		return this;

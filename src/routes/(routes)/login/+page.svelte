@@ -1,15 +1,10 @@
 <script lang="ts">
-	import TextField from '$lib/TextField.svelte';
-	import { superForm } from 'sveltekit-superforms/client';
-	import type { PageData } from './$houdini';
-
-	export let data: PageData;
-
-	const form = superForm(data.form);
-
-	const { delayed, errors } = form;
+	import { page } from '$app/stores';
 </script>
 
+<svelte:head>
+	<title>Login</title>
+</svelte:head>
 <main class="hero grid min-h-screen grid-cols-2">
 	<div class="hero-content h-full bg-base-300">
 		<div class="text-center md:px-20 lg:text-left">
@@ -22,21 +17,47 @@
 		<div class="grid gap-4">
 			<form
 				method="POST"
-				use:form.enhance
+				action="http://localhost:8080/login"
 				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow"
 			>
-				<fieldset disabled={$delayed}>
+				<fieldset>
 					<div class="card-body">
 						<label for="" class="label">
-							{#each $errors._errors ?? [] as error}
-								<span class="label-text-alt text-error">{error}</span>
-							{/each}
+							{#if $page.url.searchParams.has('error')}
+								<span class="label-text-alt text-error">Invalid username and password.</span>
+							{/if}
+							{#if $page.url.searchParams.has('logout')}
+								<span class="label-text-alt">You have been logged out.</span>
+							{/if}
 						</label>
 
-						<TextField field="username" {form} autocomplete="username">Username</TextField>
-						<TextField field="password" {form} type="password" autocomplete="new-password">
-							Password
-						</TextField>
+						<div class="form-control">
+							<label class="label" for="username">
+								<span class="label-text">Username</span>
+							</label>
+							<input
+								class="input-bordered input"
+								type="text"
+								name={'username'}
+								id={'username'}
+								autocomplete="username"
+								required
+							/>
+						</div>
+
+						<div class="form-control">
+							<label class="label" for="password">
+								<span class="label-text">Password</span>
+							</label>
+							<input
+								required
+								class="input-bordered input"
+								type="password"
+								name={'password'}
+								id={'password'}
+								autocomplete="new-password"
+							/>
+						</div>
 
 						<div class="form-control mt-6">
 							<button class="btn-primary btn cursor-default" type="submit">Login</button>

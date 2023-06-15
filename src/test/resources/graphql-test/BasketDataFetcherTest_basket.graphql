@@ -1,5 +1,5 @@
-query BasketDataFetcherTestBasket {
-	basket {
+query BasketDataFetcherTestBasket($id: ID) {
+	basket(id: $id) {
 		books(first: 10) {
 			edges {
 				node {
@@ -13,6 +13,7 @@ query BasketDataFetcherTestBasket {
 				quantity
 			}
 		}
+		id
 		price {
 			formatted
 			raw
