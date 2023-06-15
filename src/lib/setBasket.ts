@@ -18,7 +18,6 @@ export function setBasket(event: RequestEvent, basket: string | null | undefined
 	});
 }
 
-
 export async function getBasket(event: LoadEvent) {
 	const session = await getSession(event);
 	return 'basket' in session ? session.basket : undefined;

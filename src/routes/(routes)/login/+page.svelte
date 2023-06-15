@@ -47,7 +47,7 @@
 								<span class="label-text">Password</span>
 							</label>
 							<input
-							required
+								required
 								class="input-bordered input"
 								type="password"
 								name={'password'}
@@ -63,7 +63,7 @@
 				</fieldset>
 			</form>
 
-			<div class="card card-compact border border-base-content/20">
+			<div class="card-compact card border border-base-content/20">
 				<div class="card-body items-center">
 					<span class="label label-text-alt block">
 						New around here? <a href="/register" class="link">Create an account.</a>

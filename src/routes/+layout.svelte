@@ -13,7 +13,7 @@
 		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
 				<a
-					class="btn-ghost btn-primary btn flex gap-2 normal-case text-3xl max-sm:btn-square"
+					class="btn-primary btn-ghost btn flex gap-2 normal-case text-3xl max-sm:btn-square"
 					href="/"
 				>
 					<svg

@@ -1,4 +1,4 @@
-query NavbarQuery ($id: ID) {
+query NavbarQuery($id: ID) {
 	basket(id: $id) {
 		price {
 			formatted

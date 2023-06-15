@@ -48,11 +48,10 @@ test('can quickly add to basket', async ({ page }) => {
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
 
-test('keeps contents after register', async ({ page , register}) => {
+test('keeps contents after register', async ({ page, register }) => {
 	// given
- 
-	await page.goto('/');
 
+	await page.goto('/');
 
 	const homepage = new HomePage(page);
 	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
@@ -74,7 +73,6 @@ test('keeps after logout', async ({ page, register }) => {
 	// given
 	await page.goto('/');
 	await register();
-
 
 	const homepage = new HomePage(page);
 	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
