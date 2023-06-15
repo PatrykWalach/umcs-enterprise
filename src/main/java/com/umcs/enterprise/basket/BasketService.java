@@ -30,7 +30,7 @@ public class BasketService {
 
 		GlobalId<Map<String, Integer>> globalId = GlobalId.from(id);
 
-		System.out.println(globalId.databaseId().getClass());
+ 
 
 		assert Objects.equals(globalId.className(), "Basket");
 

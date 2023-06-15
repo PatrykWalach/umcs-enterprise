@@ -101,7 +101,7 @@ public class OAuthSecurity implements WebMvcConfigurer {
 			.oauth2ResourceServer(resourceServer ->
 				resourceServer.jwt(jwt ->
 					jwt.jwtAuthenticationConverter(token -> {
-						System.out.println(token);
+ 
 						UserDetails userDetails = userDetailsService.loadUserByUsername(token.getSubject());
 						List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
 

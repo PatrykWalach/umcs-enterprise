@@ -52,7 +52,7 @@ public class BookEdgeDataFetcher {
 	@DgsData(parentType = "Basket")
 	public Connection<BookEdge> books(DgsDataFetchingEnvironment env) {
 		Basket basket = env.getSource();
-		System.out.println(basket.getBooks());
+	 
 		return connectionService.getConnection(basket.getBooks(), env);
 	}
 }
