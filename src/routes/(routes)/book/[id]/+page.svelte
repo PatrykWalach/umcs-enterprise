@@ -22,9 +22,9 @@
 
 {#if $BookQuery.data?.node?.__typename === 'Book'}
 	<main class="">
-		<article class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
+		<article class="grid gap-2 py-2 sm:gap-4 sm:py-4">
 			{#if $BookQuery.data?.node.inBasket}
-				<div class="alert alert-success shadow-lg">
+				<div class="alert alert-success">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="h-6 w-6 flex-shrink-0 stroke-current"
@@ -44,16 +44,18 @@
 
 			<div class="grid gap-2 sm:grid-cols-4 sm:gap-4">
 				<div class="flex flex-col gap-2 md:gap-4">
-					<div class="card overflow-hidden bg-base-100">
-						<figure class="">
+					<div class="card">
+						<figure class="aspect-[3/5] overflow-hidden rounded-xl">
 							<img
 								loading="lazy"
-								class="h-auto w-full mix-blend-darken"
+								class="h-full w-full bg-contain"
+								style="background-image: url('{$BookQuery.data.node?.covers?.filter(isNotNull).at(0)
+									?.url}')"
 								srcset={$BookQuery.data.node.covers
 									?.filter(isNotNull)
 									.map((cover) => `${cover.url} ${cover.width}w`)
 									.join(', ')}
-								sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+								sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
 								alt=""
 							/>
 						</figure>
@@ -76,9 +78,9 @@
 
 				<div class="flex flex-col gap-2 sm:col-span-3 sm:gap-4">
 					<header class="" aria-label="Base information">
-						<div class="card flex-1 bg-base-100 max-sm:card-compact xl:p-6">
+						<div class="card flex-1 bg-base-200 max-sm:card-compact xl:p-6">
 							<div class="card-body">
-								<h1 class="card-title text-8xl">
+								<h1 class="card-title text-7xl">
 									{$BookQuery.data.node?.title}
 								</h1>
 								{#if $BookQuery.data.node?.author}
@@ -97,7 +99,7 @@
 		<SupportingPane> -->
 
 					<!-- {#if $BookQuery.data.node.synopsis} -->
-					<div class="card bg-base-100">
+					<div class="card bg-base-200">
 						<div class="card-body">
 							<div>
 								{$BookQuery.data.node.synopsis}
@@ -110,8 +112,10 @@
 
 			<aside class="grid gap-2 sm:gap-4" aria-labelledby="frequently-bought-together">
 				{#if $BookQuery.data.node.recommended?.edges?.length}
-					<h2 class="ml-4 text-2xl" id="frequently-bought-together">Frequently bought together</h2>
-					<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
+					<h2 class="mt-4 text-3xl" id="frequently-bought-together">Frequently bought together</h2>
+					<ol
+						class="grid grid-cols-1 gap-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+					>
 						{#each $BookQuery.data.node.recommended?.edges
 							?.map((edge) => edge?.node)
 							.filter(isNotNull) ?? [] as book (book.id)}

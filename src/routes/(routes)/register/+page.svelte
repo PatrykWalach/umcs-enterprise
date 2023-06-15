@@ -12,7 +12,7 @@
 <svelte:head>
 	<title>Register</title>
 </svelte:head>
-<main class="hero grid min-h-screen grid-cols-2 bg-base-200">
+<main class="hero grid min-h-screen grid-cols-2">
 	<div class="hero-content h-full bg-base-300">
 		<div class="text-center md:px-20 lg:text-left">
 			<h1 class="font-bold text-5xl">Register!</h1>

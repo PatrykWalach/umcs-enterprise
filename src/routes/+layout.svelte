@@ -8,9 +8,9 @@
 	$: ({ NavbarQuery } = data);
 </script>
 
-<div class="container mx-auto">
-	<div class="">
-		<header class="navbar bg-base-100 shadow-xl">
+<div class="">
+	<div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+		<header class="navbar p-0">
 			<div class="flex-1">
 				<a
 					class="btn-primary btn-ghost btn flex gap-2 normal-case text-3xl max-sm:btn-square"

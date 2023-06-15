@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { isNotNull } from '$lib/isNotNull';
+
 	import Book from '../Book.svelte';
 	import type { PageData } from './$houdini';
 
@@ -10,7 +12,7 @@
 	$: url = new URL($page.url);
 </script>
 
-<main class="grid gap-2 bg-base-200 p-2 sm:gap-4 sm:p-4">
+<main class="grid gap-2 py-2 sm:gap-4 sm:py-4">
 	<form method="get" class="flex justify-start gap-2 sm:gap-8">
 		<select name="by" id="" class="select">
 			<option value="realease_date" selected>Release date</option>
@@ -24,13 +26,13 @@
 		<button type="submit" class=" btn-secondary btn cursor-default">sort</button>
 	</form>
 
-	<ol class="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,1fr))] gap-2 sm:gap-4">
-		{#each $BooksQuery.data?.books?.edges ?? [] as book (book?.node?.id)}
-			{#if book?.node}
-				<li class="grid">
-					<Book book={book.node} />
-				</li>
-			{/if}
+	<ol
+		class="grid grid-cols-1 gap-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+	>
+		{#each $BooksQuery.data?.books?.edges?.filter(isNotNull) ?? [] as book (book?.node?.id)}
+			<li class="grid">
+				<Book book={book.node} />
+			</li>
 		{/each}
 	</ol>
 

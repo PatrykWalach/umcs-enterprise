@@ -46,7 +46,6 @@ public interface TransformationMapper {
 	@Mapping(target = "chainWith", ignore = true)
 	@Mapping(target = "border", ignore = true)
 	@Mapping(target = "bitRate", ignore = true)
-	@Mapping(target = "background", ignore = true)
 	@Mapping(target = "audioFrequency", ignore = true)
 	@Mapping(target = "audioCodec", ignore = true)
 	@Mapping(target = "angle", ignore = true)
@@ -71,6 +70,9 @@ public interface TransformationMapper {
 
 	@EnumMapping(nameTransformationStrategy = "case", configuration = "lower")
 	String gravityToString(com.umcs.enterprise.types.Gravity value);
+
+	@EnumMapping(nameTransformationStrategy = "case", configuration = "lower")
+	String backgroundToString(com.umcs.enterprise.types.Background value);
 
 	@ValueMappings(
 		{
