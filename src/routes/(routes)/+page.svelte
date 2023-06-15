@@ -13,11 +13,7 @@
 	<meta name="description" content="All bestseller books avalible in our shop. Buy them now!" />
 </svelte:head>
 
-
-
-
 <main class="grid gap-2 py-2 sm:gap-4 sm:py-4">
-
 	<!-- <pre>{JSON.stringify(data)}</pre> -->
 	<section class="grid gap-2 sm:gap-4" aria-labelledby="bestsellers">
 		<h2 class="mt-4 text-3xl" id="bestsellers">

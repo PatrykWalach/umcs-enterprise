@@ -64,18 +64,24 @@
 					<form method="POST" action="?/basket_book" use:enhance class="grid gap-2 md:gap-4" aria-label="Actions">
 						<input type="hidden" name="id" value={$BookQuery.data.node.id} />
 						{#if $BookQuery.data.viewer?.__typename === 'Admin'}
-						<button type="submit" class="btn-error btn-lg btn cursor-default" formaction="?/delete">Delete</button>
-					{:else}
-					<button type="submit" class="btn-secondary btn-lg btn cursor-default">
-						Add to basket
-						</button>
-						<button
-							type="submit"
-							class="btn-primary btn-lg btn cursor-default"
-							formaction="?/buy_now"
+							<button
+								type="submit"
+								class="btn-error btn-lg btn cursor-default"
+								formaction="?/delete"
 							>
-							Buy now
-						</button>
+								Delete
+							</button>
+						{:else}
+							<button type="submit" class="btn-secondary btn-lg btn cursor-default">
+								Add to basket
+							</button>
+							<button
+								type="submit"
+								class="btn-primary btn-lg btn cursor-default"
+								formaction="?/buy_now"
+							>
+								Buy now
+							</button>
 						{/if}
 					</form>
 				</div>
