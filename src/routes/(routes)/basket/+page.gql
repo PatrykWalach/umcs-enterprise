@@ -40,7 +40,7 @@ query BasketQuery($after: String, $id: ID) {
 				hasNextPage
 			}
 		}
-
+		id
 		price {
 			formatted
 		}

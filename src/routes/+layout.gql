@@ -1,5 +1,6 @@
 query NavbarQuery($id: ID) {
 	basket(id: $id) {
+		id
 		price {
 			formatted
 		}

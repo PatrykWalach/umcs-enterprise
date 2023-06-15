@@ -2,6 +2,7 @@ mutation UserDataFetcherTestRegister($input: RegisterInput!) {
 	register(input: $input) {
 		... on RegisterSuccess {
 			user {
+				id
 				name
 			}
 		}

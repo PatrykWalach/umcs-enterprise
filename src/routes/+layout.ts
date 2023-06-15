@@ -1,4 +1,3 @@
-import { getSession } from '$houdini';
 import { getBasket } from '$lib/setBasket';
 import type { NavbarQueryVariables } from './$houdini';
 

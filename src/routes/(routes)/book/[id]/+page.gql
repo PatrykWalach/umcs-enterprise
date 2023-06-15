@@ -1,4 +1,4 @@
-query BookQuery($id: ID!, $basketId: ID) {
+query BookQuery($basketId: ID, $id: ID!) {
 	node(id: $id) {
 		__typename
 		id
