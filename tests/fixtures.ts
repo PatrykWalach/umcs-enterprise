@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
 import * as crypto from 'crypto';
 
 interface User {
@@ -20,6 +20,8 @@ export const test = base.extend<{
 			await main.getByLabel('Username').fill(name);
 			await main.getByLabel('Password').fill(password);
 			await main.getByRole('button', { name: 'register' }).click();
+			await expect(page).toHaveTitle("Home")
+
 			users.push({ name, password });
 			await login({ name, password });
 			return { name, password };
