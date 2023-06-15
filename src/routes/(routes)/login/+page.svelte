@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 </script>
+
 <svelte:head>
-	<title>	
-		Login
-	</title>	
-</svelte:head>		
+	<title>Login</title>
+</svelte:head>
 <main class="hero grid min-h-screen grid-cols-2 bg-base-200">
 	<div class="hero-content h-full bg-base-300">
 		<div class="text-center md:px-20 lg:text-left">

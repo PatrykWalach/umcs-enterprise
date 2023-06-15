@@ -20,7 +20,7 @@ export const test = base.extend<{
 			await main.getByLabel('Username').fill(name);
 			await main.getByLabel('Password').fill(password);
 			await main.getByRole('button', { name: 'register' }).click();
-			await expect(page).toHaveTitle("Home")
+			await expect(page).toHaveTitle('Home');
 
 			users.push({ name, password });
 			await login({ name, password });
