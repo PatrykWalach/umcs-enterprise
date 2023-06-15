@@ -32,14 +32,14 @@ public class BasketService {
 		Map<String, Book> books = bookRepository
 			.findAllById(globalId.databaseId().keySet().stream().map(UUID::fromString).toList())
 			.stream()
-			.collect(
-				Collectors.toMap(
-						book -> (book.getDatabaseId().toString()),
-					Function.identity()
+			.collect(Collectors.toMap(book -> (book.getDatabaseId().toString()), Function.identity()));
 
-				)
-			);
-
-		return new Basket(globalId.databaseId().entrySet().stream().collect(Collectors.toMap(e->books.get(e.getKey()), Map.Entry::getValue)));
+		return new Basket(
+			globalId
+				.databaseId()
+				.entrySet()
+				.stream()
+				.collect(Collectors.toMap(e -> books.get(e.getKey()), Map.Entry::getValue))
+		);
 	}
 }
