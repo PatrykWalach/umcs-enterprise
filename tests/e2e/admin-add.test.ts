@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
 import { AddBookPage, BookPage } from './HomePage.js';
 
-test.only('can upload cover', async ({ page, admin }) => {
+test('can upload cover', async ({ page, admin }) => {
 	// given
 
 	await page.goto('/admin/add');
