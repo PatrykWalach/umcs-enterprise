@@ -6,5 +6,8 @@ export default defineConfig({
 	plugins: [houdini(), sveltekit()],
 	server: {
 		strictPort: true
+	},
+	preview: {
+		port: 5173
 	}
 });
