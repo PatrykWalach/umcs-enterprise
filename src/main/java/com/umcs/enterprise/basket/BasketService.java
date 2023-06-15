@@ -25,9 +25,6 @@ public class BasketService {
 
 		GlobalId<HashMap<String, Integer>> globalId = GlobalId.from(id);
 
-
-
-
 		assert Objects.equals(globalId.className(), "Basket");
 
 		Map<String, Book> books = bookRepository
@@ -42,6 +39,5 @@ public class BasketService {
 				.stream()
 				.collect(Collectors.toMap(e -> books.get(e.getKey()), Map.Entry::getValue))
 		);
-
 	}
 }
