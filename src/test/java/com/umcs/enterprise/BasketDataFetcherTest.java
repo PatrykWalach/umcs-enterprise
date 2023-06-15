@@ -78,7 +78,7 @@ class BasketDataFetcherTest {
 			)
 		);
 
-		Basket basket = new Basket(new HashMap<>());
+		Basket basket = new Basket();
 
 		books.forEach(basket::add);
 
@@ -91,7 +91,7 @@ class BasketDataFetcherTest {
 			.verify()
 			.path("basket.books.edges[*].node.title")
 			.entity(List.class)
-			.isEqualTo(books.stream().map(Book::getTitle).toList())
+			.isEqualTo(basket.getBooks().stream().map(BookEdge::getBook).map(Book::getTitle).toList())
 			.path("basket.books.edges[*].quantity")
 			.entity(List.class)
 			.isEqualTo(basket.getBooks().stream().map(BookEdge::getQuantity).toList());

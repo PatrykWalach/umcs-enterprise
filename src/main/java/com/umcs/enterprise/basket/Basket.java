@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.node.Node;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class Basket implements Node {
 	}
 
 	public Basket() {
-		this(new HashMap<>());
+		this(new LinkedHashMap<>());
 	}
 
 	public List<BookEdge> getBooks() {

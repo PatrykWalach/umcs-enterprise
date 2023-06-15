@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.NonNull;
@@ -25,10 +23,10 @@ public class BasketService {
 
 	public Basket getBasket(String id) throws JsonProcessingException {
 		if (id == null) {
-			return new Basket(new HashMap<>());
+			return new Basket();
 		}
 
-		GlobalId<Map<String, Integer>> globalId = GlobalId.from(id);
+		GlobalId<LinkedHashMap<String, Integer>> globalId = GlobalId.from(id);
 
 		assert Objects.equals(globalId.className(), "Basket");
 
