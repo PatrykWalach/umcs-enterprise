@@ -6,11 +6,13 @@ import java.util.concurrent.Future;
 //import static org.springframework.boot.SpringApplication.logger;
 
 import lombok.NonNull;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.RequestContextListener;
 
 public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 
@@ -43,62 +45,31 @@ public class RequestAttributesAsyncTaskExecutor implements AsyncTaskExecutor {
 	}
 
 	private Runnable wrap(Runnable delegate) {
-		Optional<RequestAttributes> optRequestAttributes = getRequestAttributes();
-		SecurityContext context = SecurityContextHolder.getContext();
+		Callable<Exception> cleanup = wrap(() -> {
+			delegate.run();
+			return null;
+		});
 
 		return () -> {
-			SecurityContextHolder.setContext(context);
-			setRequestAttributes(optRequestAttributes);
 			try {
-				delegate.run();
-			} finally {
-				resetRequestAttributes(optRequestAttributes);
-				SecurityContextHolder.clearContext();
-			}
+				cleanup.call();
+			} catch (Exception ignored) {}
 		};
 	}
 
 	private <T> Callable<T> wrap(Callable<T> delegate) {
-		Optional<RequestAttributes> optRequestAttributes = getRequestAttributes();
+		RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
 		SecurityContext context = SecurityContextHolder.getContext();
 		return () -> {
+			RequestContextHolder.setRequestAttributes(attrs);
 			SecurityContextHolder.setContext(context);
-			setRequestAttributes(optRequestAttributes);
+
 			try {
 				return delegate.call();
 			} finally {
-				resetRequestAttributes(optRequestAttributes);
+				RequestContextHolder.resetRequestAttributes();
 				SecurityContextHolder.clearContext();
 			}
 		};
-	}
-
-	private Optional<RequestAttributes> getRequestAttributes() {
-		try {
-			return Optional.ofNullable(RequestContextHolder.getRequestAttributes());
-		} catch (Exception e) {
-			//            logger.warn(
-			//                    "Unable to fetch the RequestAttributes based on the RequestContextHolder.getRequestAttributes method.",
-			//                    e);
-			return Optional.empty();
-		}
-	}
-
-	private void setRequestAttributes(final Optional<RequestAttributes> optionalRequestAttributes) {
-		try {
-			optionalRequestAttributes.ifPresent(RequestContextHolder::setRequestAttributes);
-		} catch (Exception e) {
-			//            logger.warn("Unable to set the RequestAttributes.", e);
-		}
-	}
-
-	private void resetRequestAttributes(final Optional<RequestAttributes> optionalRequestAttributes) {
-		try {
-			optionalRequestAttributes.ifPresent(requestAttributes ->
-				RequestContextHolder.resetRequestAttributes()
-			);
-		} catch (Exception e) {
-			//            logger.warn("Unable to reset the RequestAttributes.", e);
-		}
 	}
 }

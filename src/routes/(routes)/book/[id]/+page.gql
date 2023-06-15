@@ -1,0 +1,41 @@
+query BookQuery($basketId: ID, $id: ID!) {
+	node(id: $id) {
+		__typename
+		id
+		... on Book {
+			author
+			covers(
+				transformation: {
+					aspectRatio: { width: 3, height: 5 }
+					crop: FILL_PAD
+					background: AUTO
+					gravity: AUTO
+					quality: { auto: DEFAULT }
+					format: AUTO
+				}
+				widths: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000]
+			) {
+				url @required
+				width @required
+			}
+			inBasket(id: $basketId)
+			price {
+				formatted
+			}
+			recommended(first: 6) {
+				edges {
+					node @required {
+						...Book_book
+						id
+					}
+				}
+			}
+			synopsis
+			title @required
+		}
+	}
+	viewer {
+		__typename
+		id
+	}
+}

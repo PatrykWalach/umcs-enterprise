@@ -2,9 +2,9 @@ package com.umcs.enterprise.basket;
 
 import com.umcs.enterprise.book.Book;
 import jakarta.persistence.*;
+import java.util.Objects;
 import lombok.*;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,18 +12,19 @@ import lombok.*;
 @Builder(builderMethodName = "newBuilder")
 public class BookEdge {
 
-	@Id
-	@GeneratedValue
-	@Column(name = "database_id")
-	private Long databaseId;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "basket_id")
-	private Basket basket;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "book_id")
 	private Book book;
-
 	private Integer quantity;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		BookEdge bookEdge = (BookEdge) o;
+		return book.equals(bookEdge.book);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(book);
+	}
 }

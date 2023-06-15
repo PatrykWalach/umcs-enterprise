@@ -1,42 +1,52 @@
 package com.umcs.enterprise;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import com.umcs.enterprise.auth.JwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.umcs.enterprise.basket.Basket;
+import com.umcs.enterprise.basket.BookEdge;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.Predicate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@SpringBootTest(classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)
 class BasketDataFetcherTest {
 
 	@Autowired
+	WebApplicationContext context;
+
+	@BeforeEach
+	public void beforeEach() {
+		WebTestClient client = MockMvcWebTestClient
+			.bindToApplicationContext(context)
+			.configureClient()
+			.baseUrl("/graphql")
+			.build();
+
+		graphQlTester = HttpGraphQlTester.create(client);
+	}
+
 	private HttpGraphQlTester graphQlTester;
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private JwtService jwtService;
 
 	@Test
 	void basket() {
@@ -52,55 +62,60 @@ class BasketDataFetcherTest {
 			.isEqualTo(Collections.emptyList());
 	}
 
+	@Test
+	@WithMockUser(username = "user")
+	void basket_user() throws JsonProcessingException {
+		//        given
+
+		var user = userService.save(
+			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+		);
+
+		List<Book> books = bookRepository.saveAll(
+			List.of(
+				Book.newBuilder().price(BigDecimal.valueOf(2)).title("Title 1").build(),
+				Book.newBuilder().price(BigDecimal.valueOf(3)).title("Title 2").build()
+			)
+		);
+
+		Basket basket = new Basket();
+
+		books.forEach(basket::add);
+
+		this.graphQlTester.documentName("BasketDataFetcherTest_basket")
+			.variable("id", basket.getId())
+			//        when
+			.execute()
+			//                then
+			.errors()
+			.verify()
+			.path("basket.books.edges[*].node.title")
+			.entity(List.class)
+			.isEqualTo(basket.getBooks().stream().map(BookEdge::getBook).map(Book::getTitle).toList())
+			.path("basket.books.edges[*].quantity")
+			.entity(List.class)
+			.isEqualTo(basket.getBooks().stream().map(BookEdge::getQuantity).toList());
+	}
+
 	@Autowired
 	private BookRepository bookRepository;
 
-	@Autowired
-	private CoverRepository coverRepository;
-
-	@ParameterizedTest
-	@CsvSource({ "true", "false" })
-	void basketBook(Boolean isUser) {
+	@Test
+	void basketBook_anonymous() throws JsonProcessingException {
 		//        given
 
-		String token = null;
+		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
 
-		if (isUser) {
-			var user = userService.save(
-				User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
-			);
-
-			token =
-				jwtService.signToken(
-					Jwts
-						.builder()
-						.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-						.setSubject(user.getUsername())
-				);
-		}
-
-		var book = bookRepository.save(
-			Book
-				.newBuilder()
-				.cover(coverRepository.save(new Cover()))
-				.price(BigDecimal.valueOf(10))
-				.build()
-		);
-
-		var tester = this.graphQlTester;
+		String id = new Basket().getId();
 
 		for (int i = 1; i < 3; i++) {
-			if (token != null) {
-				tester = this.graphQlTester.mutate().header("Authorization", "Bearer " + token).build();
-			}
-
-			token =
-				tester
-					.documentName("BasketDataFetcherTest_basketBook")
+			id =
+				this.graphQlTester.documentName("BasketDataFetcherTest_basketBook")
 					.variable(
 						"input",
 						BasketBookInput
 							.newBuilder()
+							.basket(new WhereUniqueBasketInput(id))
 							.book(WhereUniqueBookInput.newBuilder().id(book.getId()).build())
 							.build()
 					)
@@ -109,13 +124,54 @@ class BasketDataFetcherTest {
 					//                then
 					.errors()
 					.verify()
-					.path("basketBook.basket.books.edges[*].node.id")
-					.entity(List.class)
-					.isEqualTo(Collections.singletonList(book.getId()))
-					.path("basketBook.basket.books.edges[*].quantity")
-					.entity(List.class)
-					.isEqualTo(Collections.singletonList(i))
-					.path("basketBook.token")
+					.path("basketBook.edge.node.id")
+					.entity(String.class)
+					.isEqualTo((book.getId()))
+					.path("basketBook.edge.quantity")
+					.entity(Integer.class)
+					.isEqualTo((i))
+					.path("basketBook.basket.id")
+					.entity(String.class)
+					.get();
+		}
+	}
+
+	@Test
+	@WithMockUser(username = "user")
+	void basketBook_user() throws JsonProcessingException {
+		//        given
+
+		var user = userService.save(
+			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+		);
+
+		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
+
+		String id = new Basket().getId();
+
+		for (int i = 1; i < 3; i++) {
+			id =
+				this.graphQlTester.documentName("BasketDataFetcherTest_basketBook")
+					.variable(
+						"input",
+						BasketBookInput
+							.newBuilder()
+							.basket(new WhereUniqueBasketInput(id))
+							.book(WhereUniqueBookInput.newBuilder().id(book.getId()).build())
+							.build()
+					)
+					//        when
+					.execute()
+					//                then
+					.errors()
+					.verify()
+					.path("basketBook.edge.node.id")
+					.entity(String.class)
+					.isEqualTo((book.getId()))
+					.path("basketBook.edge.quantity")
+					.entity(Integer.class)
+					.isEqualTo((i))
+					.path("basketBook.basket.id")
 					.entity(String.class)
 					.get();
 		}

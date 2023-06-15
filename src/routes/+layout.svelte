@@ -1,19 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { isNotNull } from '$lib/isNotNull';
+	import { page } from '$app/stores';
 	import '../app.css';
 	import type { LayoutData } from './$houdini';
-
 	export let data: LayoutData;
-
-	const pluralRules = new Intl.PluralRules();
 
 	$: ({ NavbarQuery } = data);
 </script>
 
-<div class="container mx-auto">
-	<div class="">
-		<header class="navbar bg-base-100 shadow-xl">
+<div class="">
+	<div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+		<header class="navbar p-0">
 			<div class="flex-1">
 				<a
 					class="btn-primary btn-ghost btn flex gap-2 normal-case text-3xl max-sm:btn-square"
@@ -38,79 +35,35 @@
 				</a>
 			</div>
 			<nav class="flex flex-none gap-1">
-				<div class="dropdown-end dropdown">
-					<button type="button" aria-label="Show cart total" class="btn-ghost btn-square btn">
-						<div class="indicator">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.5"
-								stroke="currentColor"
-								class="h-5 w-5"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-								/>
-							</svg>
-							<span class="badge badge-sm indicator-item">
-								{$NavbarQuery.data?.basket?.quantity ?? 0}
-							</span>
-						</div>
-					</button>
-					<div
-						tabindex="-1"
-						class="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow-xl"
-					>
-						<div class="card-body grid gap-4">
-							<span class="font-bold text-xl">
-								{$NavbarQuery.data?.basket?.quantity || 'Brak'}
-								{(() => ({
-									one: 'Książka',
-									many: 'Książek',
-									few: 'Książki',
-									other: null,
-									zero: 'Książek',
-									two: 'Książki'
-								}))()[pluralRules.select($NavbarQuery.data?.basket?.quantity ?? 0)] ?? 'Książek'}
-							</span>
-							<ul class="grid gap-4">
-								{#each $NavbarQuery.data?.basket?.books?.edges
-									?.map((edge) => edge?.node)
-									.filter(isNotNull) ?? [] as node (node.id)}
-									<li class="grid grid-cols-3 gap-2">
-										<figure>
-											<img
-												loading="lazy"
-												class="h-auto w-16 mix-blend-darken"
-												srcset={node.covers
-													?.filter(isNotNull)
-													.map((cover) => `${cover.url} ${cover.width}w`)
-													.join(', ')}
-												sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
-												alt=""
-											/>
-										</figure>
-										<article class="col-span-2">
-											<h4><a href="/book/{node.id}" class="link-hover link">{node.title}</a></h4>
-										</article>
-									</li>
-								{/each}
-							</ul>
-							<div class="card-actions">
-								<span class="font-semibold text-info text-lg">
-									Total: <strong>{$NavbarQuery.data?.basket?.price?.formatted ?? 0}</strong>
-								</span>
-								<a href="/basket" class="btn-primary btn-block btn">To checkout</a>
-							</div>
-						</div>
+				<a class="btn-ghost btn-square btn" href="/basket" aria-label="Go to basket">
+					<div class="indicator">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="h-5 w-5"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+							/>
+						</svg>
+						<span class="badge badge-neutral badge-sm indicator-item">
+							{$NavbarQuery.data?.basket?.quantity ?? 0}
+						</span>
 					</div>
-				</div>
+				</a>
+
 				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
-					<div class="dropdown-end dropdown">
-						<button type="button" aria-label="Show menu" class="btn-ghost btn-square avatar btn">
+					<div class="dropdown-end dropdown z-10">
+						<button
+							type="button"
+							aria-label="Show menu"
+							class="btn-ghost btn-square avatar btn cursor-default"
+						>
 							<!--
 			 <div class="w-10 rounded-full">
 						 <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
@@ -134,12 +87,12 @@
 						<form action="/logout" method="POST" use:enhance>
 							<ul
 								tabindex="-1"
-								class="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow-xl"
+								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 bg-base-100 p-2 shadow-xl"
 							>
 								<li>
 									<a class="justify-between" href="">
 										Profile
-										<span class="badge">New</span>
+										<span class="badge badge-neutral">New</span>
 									</a>
 								</li>
 								<li><a href="">Settings</a></li>
@@ -150,7 +103,18 @@
 						</form>
 					</div>
 				{:else}
-					<a href="/login" class="btn-ghost btn">Login</a>
+					<a
+						href={`http://localhost:8080/oauth2/authorize?${new URLSearchParams({
+							client_id: 'bookstore',
+							redirect_uri: 'http://localhost:5173/login/callback',
+							response_type: 'code',
+							scope: 'openid profile read write',
+							state: $page.url.pathname
+						})}`}
+						class="btn-ghost btn"
+					>
+						Login
+					</a>
 					<a href="/register" class="btn-ghost btn">Register</a>
 				{/if}
 			</nav>

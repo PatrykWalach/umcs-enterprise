@@ -23,7 +23,7 @@ public class Purchase implements Node {
 	@Column(nullable = false)
 	private UUID databaseId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	@CreatedBy
 	private User user;

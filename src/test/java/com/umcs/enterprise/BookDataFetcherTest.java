@@ -6,29 +6,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.cloudinary.Cloudinary;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
-import com.umcs.enterprise.cover.CoverRepository;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,42 +39,41 @@ import org.springframework.core.io.Resource;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@SpringBootTest(classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)
 @AutoConfigureMockMvc
 class BookDataFetcherTest {
 
 	@Autowired
+	WebApplicationContext context;
+
+	@BeforeEach
+	public void beforeEach() {
+		WebTestClient client = MockMvcWebTestClient
+			.bindToApplicationContext(context)
+			.configureClient()
+			.baseUrl("/graphql")
+			.build();
+
+		graphQlTester = HttpGraphQlTester.create(client);
+	}
+
 	private HttpGraphQlTester graphQlTester;
 
 	@Autowired
 	private BookRepository bookRepository;
 
-	@AfterEach
-	void afterEach() throws Exception {
-		List<String> ids = coverRepository
-			.findAll()
-			.stream()
-			.map(Cover::getUuid)
-			.filter(Objects::nonNull)
-			.toList();
-
-		if (ids.isEmpty()) {
-			return;
-		}
-
-		cloudinary.api().deleteResources(ids, Map.of());
-	}
-
 	@Autowired
 	private MockMvc mvc;
 
-	@Autowired
-	private Cloudinary cloudinary;
-
 	@Test
+	@WithMockUser(username = "user", authorities = { "ADMIN" })
 	void createBook_admin() throws Exception {
 		//        given
 		var user = userRepository.save(
@@ -86,12 +83,6 @@ class BookDataFetcherTest {
 				.password("user")
 				.username("user")
 				.build()
-		);
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();
@@ -129,7 +120,6 @@ class BookDataFetcherTest {
 						new ObjectMapper()
 							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
-					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
 			)
 			//                then
@@ -146,16 +136,13 @@ class BookDataFetcherTest {
 			.andExpect(jsonPath("data.createBook.book.covers[0].url").isNotEmpty());
 
 		Assertions.assertEquals(1L, bookRepository.count());
-		Assertions.assertEquals(1L, coverRepository.count());
 	}
 
 	@Autowired
 	private UserService userRepository;
 
-	@Autowired
-	private JwtService jwtService;
-
 	@Test
+	@WithMockUser(username = "user")
 	void createBook_user() throws Exception {
 		//        given
 		var user = userRepository.save(
@@ -165,13 +152,6 @@ class BookDataFetcherTest {
 				.password("user")
 				.username("user")
 				.build()
-		);
-
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();
@@ -209,7 +189,6 @@ class BookDataFetcherTest {
 						new ObjectMapper()
 							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
-					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
 			)
 			//                then
@@ -218,7 +197,6 @@ class BookDataFetcherTest {
 			.andExpect(jsonPath("data.createBook").isEmpty());
 
 		Assertions.assertEquals(0L, bookRepository.count());
-		Assertions.assertEquals(0L, coverRepository.count());
 	}
 
 	@ParameterizedTest
@@ -242,10 +220,8 @@ class BookDataFetcherTest {
 		String endCursor
 	) {
 		//        given
-		var cover = coverRepository.save(new Cover());
-		bookRepository.saveAll(
-			IntStream.range(0, 14).mapToObj(i -> Book.newBuilder().cover(cover).build()).toList()
-		);
+
+		bookRepository.saveAll(IntStream.range(0, 14).mapToObj(i -> new Book()).toList());
 
 		this.graphQlTester.documentName("BookControllerTest_books")
 			.variable("first", first)
@@ -281,21 +257,15 @@ class BookDataFetcherTest {
 	private PurchaseService purchaseRepository;
 
 	@Test
-	void recommended() {
+	void recommended() throws JsonProcessingException {
 		//        given
-		Cover cover = coverRepository.save(new Cover());
-		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
+
+		Book book = bookRepository.save(new Book());
 		bookRepository.saveAll(
-			IntStream
-				.range(0, 10)
-				.mapToObj(i -> Book.newBuilder().title("" + i).cover(cover).build())
-				.toList()
+			IntStream.range(0, 10).mapToObj(i -> Book.newBuilder().title("" + i).build()).toList()
 		);
 		var recommended = bookRepository.saveAll(
-			IntStream
-				.range(0, 7)
-				.mapToObj(i -> Book.newBuilder().cover(cover).title("" + (10 + i)).build())
-				.toList()
+			IntStream.range(0, 7).mapToObj(i -> Book.newBuilder().title("" + (10 + i)).build()).toList()
 		);
 
 		List<Purchase> purchases = purchaseRepository.saveAll(
@@ -333,18 +303,14 @@ class BookDataFetcherTest {
 	}
 
 	@Test
-	void recommended_2() {
+	void recommended_2() throws JsonProcessingException {
 		//        given
-		Cover cover = coverRepository.save(new Cover());
 
 		var recommended = bookRepository.saveAll(
-			IntStream
-				.range(0, 2)
-				.mapToObj(i -> Book.newBuilder().cover(cover).title("" + (i)).build())
-				.toList()
+			IntStream.range(0, 2).mapToObj(i -> Book.newBuilder().title("" + (i)).build()).toList()
 		);
 
-		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
+		Book book = bookRepository.save(new Book());
 
 		Purchase purchase = purchaseRepository.save(new Purchase());
 
@@ -384,7 +350,6 @@ class BookDataFetcherTest {
 	)
 	void books_sort(String order, String out0, String out1, String out2, String out3) {
 		//        given
-		Cover cover = coverRepository.save(new Cover());
 
 		HashMap<String, BookOrderBy> sort = new HashMap<>();
 		sort.put(
@@ -412,20 +377,20 @@ class BookDataFetcherTest {
 			BookOrderBy.newBuilder().releasedAt(com.umcs.enterprise.types.Order.DESC).build()
 		);
 
-		Book book0 = Book.newBuilder().cover(cover).build();
-		Book book1 = Book.newBuilder().cover(cover).build();
-		Book book2 = Book.newBuilder().cover(cover).build();
-		Book book3 = Book.newBuilder().cover(cover).build();
+		Book book0 = new Book();
+		Book book1 = new Book();
+		Book book2 = new Book();
+		Book book3 = new Book();
 
 		book0.setTitle("Book:0");
 		book1.setTitle("Book:1");
 		book2.setTitle("Book:2");
 		book3.setTitle("Book:3");
 
-		book2.setReleasedAt(ZonedDateTime.now());
-		book3.setReleasedAt(ZonedDateTime.now().plusDays(1));
-		book1.setReleasedAt(ZonedDateTime.now().plusDays(2));
-		book0.setReleasedAt(ZonedDateTime.now().plusDays(3));
+		book2.setReleasedAt(OffsetDateTime.now());
+		book3.setReleasedAt(OffsetDateTime.now().plusDays(1));
+		book1.setReleasedAt(OffsetDateTime.now().plusDays(2));
+		book0.setReleasedAt(OffsetDateTime.now().plusDays(3));
 
 		book3.setPrice(BigDecimal.valueOf(50));
 		book0.setPrice(BigDecimal.valueOf(60));
@@ -495,13 +460,10 @@ class BookDataFetcherTest {
 			.valueIsNull();
 	}
 
-	@Autowired
-	private CoverRepository coverRepository;
-
 	@Test
-	void cover() {
+	void cover() throws JsonProcessingException {
 		//        given
-		Cover cover = coverRepository.save(Cover.newBuilder().uuid("12").build());
+		Cover cover = (Cover.newBuilder().uuid("12").build());
 		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());
 
 		this.graphQlTester.documentName("BookControllerTest_bookCover")

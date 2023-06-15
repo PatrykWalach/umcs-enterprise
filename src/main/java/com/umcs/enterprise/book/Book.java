@@ -6,7 +6,7 @@ import com.umcs.enterprise.purchase.BookPurchase;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -36,9 +36,10 @@ public class Book implements Node {
 	@Column(length = 2_000)
 	private String synopsis;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "cover_id", nullable = false)
-	private Cover cover;
+	@Builder.Default
+	private Cover cover = new Cover();
 
 	@Column(precision = 19, scale = 4)
 	private BigDecimal price;
@@ -47,7 +48,7 @@ public class Book implements Node {
 	@Column(nullable = false)
 	private Instant createdAt;
 
-	private ZonedDateTime releasedAt;
+	private OffsetDateTime releasedAt;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
 	private List<BookPurchase> purchases;

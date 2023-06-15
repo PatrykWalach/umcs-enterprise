@@ -3,6 +3,7 @@ package com.umcs.enterprise.auth;
 import com.umcs.enterprise.user.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserDetailsService
 	public UserDetails loadUserByUsername(String username) {
 		return userRepository
 			.findByUsername(username)
+			.map(user -> Mappers.getMapper(UserDetailsMapper.class).userToUserDetails(user))
 			.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username)
 			);
 	}

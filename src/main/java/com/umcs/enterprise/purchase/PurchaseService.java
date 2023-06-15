@@ -12,9 +12,7 @@ public class PurchaseService {
 
 	private final PurchaseRepository purchaseRepository;
 
-	@PostFilter(
-		"hasRole('ADMIN') or filterObject.user.databaseId == authentication.principal.databaseId"
-	)
+	@PostFilter("hasRole('ADMIN') or filterObject.user.username == authentication.name")
 	public List<Purchase> findAllById(Iterable<UUID> ids) {
 		return purchaseRepository.findAllById(ids);
 	}

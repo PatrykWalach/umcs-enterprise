@@ -1,0 +1,48 @@
+query BasketQuery($after: String, $id: ID) {
+	basket(id: $id) {
+		books(after: $after, first: 10) {
+			edges {
+				node @required {
+					author
+					covers(
+						transformation: { quality: { auto: DEFAULT }, format: AUTO }
+						widths: [
+							100
+							200
+							300
+							400
+							500
+							600
+							700
+							800
+							900
+							1000
+							1200
+							1400
+							1600
+							1800
+							2000
+						]
+					) {
+						url @required
+						width @required
+					}
+					id
+					title @required
+				}
+				price {
+					formatted
+				}
+				quantity
+			}
+			pageInfo {
+				endCursor
+				hasNextPage
+			}
+		}
+		id
+		price {
+			formatted
+		}
+	}
+}

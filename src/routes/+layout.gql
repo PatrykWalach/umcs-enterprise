@@ -1,18 +1,6 @@
-query NavbarQuery {
-	basket {
-		books(first: 3) {
-			edges {
-				node @required {
-					covers(transformation: { quality: { auto: DEFAULT }, format: AUTO }, widths: [50]) {
-						url @required
-						width @required
-					}
-					id
-					title @required
-				}
-			}
-		}
-
+query NavbarQuery($id: ID) {
+	basket(id: $id) {
+		id
 		price {
 			formatted
 		}

@@ -9,6 +9,7 @@ type Price {
 
 input Transformation {
 	aspectRatio: AspectRatio
+	background: Background
 	crop: Crop
 	format: Format
 	gravity: Gravity
@@ -16,6 +17,11 @@ input Transformation {
 	quality: Quality
 	width: Int
 }
+
+enum Background {
+	AUTO
+}
+
 enum Gravity {
 	AUTO
 }
@@ -131,6 +137,7 @@ type Book implements Node {
 	covers(transformation: Transformation, widths: [Int]): [Cover]
 	createdAt: DateTime
 	id: ID!
+	inBasket(id: ID): Boolean
 	popularity: Int
 	price: Price
 	recommended(after: String, before: String, first: Int, last: Int): BookConnection
@@ -208,8 +215,9 @@ type BasketBookConnection {
 	pageInfo: PageInfo!
 }
 
-type Basket {
+type Basket implements Node {
 	books(after: String, before: String, first: Int, last: Int): BasketBookConnection
+	id: ID!
 	price: Price
 	quantity: Int
 }
@@ -234,7 +242,7 @@ type Query {
 	"""
 	3.5
 	"""
-	basket: Basket
+	basket(id: ID): Basket
 	"""
 	3
 	"""
@@ -294,13 +302,11 @@ input CreateBookInput {
 type BasketBookResult {
 	basket: Basket
 	edge: BasketBookEdge
-	token: String
 }
 
 type UnbasketBookResult {
 	basket: Basket
 	edge: BasketBookEdge
-	token: String
 }
 
 type UpdateStatusResult {
@@ -308,7 +314,7 @@ type UpdateStatusResult {
 }
 
 input WhereUniqueBasketInput {
-	id: ID!
+	id: ID
 }
 
 input WhereUniqueBookInput {
@@ -316,10 +322,12 @@ input WhereUniqueBookInput {
 }
 
 input BasketBookInput {
+	basket: WhereUniqueBasketInput
 	book: WhereUniqueBookInput!
 }
 
 input UnbasketBookInput {
+	basket: WhereUniqueBasketInput
 	book: WhereUniqueBookInput!
 }
 
@@ -353,10 +361,6 @@ type Mutation {
 	3 requires role Admin
 	"""
 	delete(input: DeleteInput!): DeleteResult
-	"""
-	3
-	"""
-	login(input: LoginInput!): LoginResult
 
 	"""
 	4 requires role User
@@ -376,34 +380,23 @@ type Mutation {
 	updateStatus(input: UpdateStatusInput!): UpdateStatusResult
 }
 
-type LoginSuccess {
-	token: String
-}
-
-type LoginError {
-	username: String
-}
-
-union LoginResult = LoginSuccess | LoginError
-
 type RegisterSuccess {
-	token: String
+	user: User
 }
 
 type RegisterError {
-	username: String
+	name: String
 }
 
 union RegisterResult = RegisterSuccess | RegisterError
 
-input LoginInput {
+input CreateUserInput {
+	name: String!
 	password: String!
-	username: String!
 }
 
 input RegisterInput {
-	password: String!
-	username: String!
+	user: CreateUserInput!
 }
 
 schema {

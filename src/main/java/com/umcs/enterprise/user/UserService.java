@@ -1,8 +1,5 @@
 package com.umcs.enterprise.user;
 
-import com.umcs.enterprise.basket.Basket;
-import com.umcs.enterprise.basket.BasketRepository;
-import com.umcs.enterprise.basket.BookEdgeRepository;
 import jakarta.transaction.Transactional;
 import java.util.*;
 import lombok.NonNull;
@@ -25,32 +22,21 @@ public class UserService {
 		return userRepository.findByUsername(username);
 	}
 
-	@NonNull
-	private final BasketRepository basketRepository;
-
-	@NonNull
-	private final BookEdgeRepository bookEdgeRepository;
-
 	@Transactional
 	public User save(User user) {
-		Optional
-			.ofNullable(user.getPassword())
-			.map(passwordEncoder::encode)
-			.ifPresent(user::setPassword);
-
-		if (user.getBasket() == null) {
-			user.setBasket(basketRepository.save(new Basket()));
-		} else {
-			Basket saved = basketRepository.save(user.getBasket());
-			user.getBasket().getBooks().forEach(edge -> edge.setBasket(saved));
-			bookEdgeRepository.saveAll(user.getBasket().getBooks());
+		if (user.getPassword() != null) {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
 		}
 
 		return userRepository.save(user);
 	}
 
-	@PostFilter("hasRole('ADMIN') or filterObject.username == authentication.principal.username")
+	@PostFilter("hasRole('ADMIN') or filterObject.username == authentication.name")
 	public List<User> findAllById(Iterable<UUID> ids) {
 		return userRepository.findAllById(ids);
+	}
+
+	public Long count() {
+		return userRepository.count();
 	}
 }
