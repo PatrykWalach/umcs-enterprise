@@ -1,18 +1,49 @@
 package com.umcs.enterprise.basket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.umcs.enterprise.types.Token;
-import io.jsonwebtoken.*;
-import java.util.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.umcs.enterprise.book.Book;
+import com.umcs.enterprise.book.BookRepository;
+import com.umcs.enterprise.node.GlobalId;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface BasketService {
+@Service
+@RequiredArgsConstructor
+public class BasketService {
+
 	@NonNull
-	Basket getBasket() throws JsonProcessingException;
+	private final BookRepository bookRepository;
 
-	Token getToken() throws JsonProcessingException;
+	public Basket getBasket(String id) throws JsonProcessingException {
+		if (id == null) {
+			return new Basket(new HashMap<>());
+		}
 
-	BookEdge basketBook(@NonNull UUID databaseId) throws JsonProcessingException;
+		GlobalId<Map<String, Integer>> globalId = GlobalId.from(id);
 
-	BookEdge unbasketBook(@NonNull UUID databaseId) throws JsonProcessingException;
+		System.out.println(globalId.databaseId().getClass());
+
+		assert Objects.equals(globalId.className(), "Basket");
+
+		Map<Book, Integer> books = bookRepository
+			.findAllById(globalId.databaseId().keySet().stream().map(UUID::fromString).toList())
+			.stream()
+			.collect(
+				Collectors.toMap(
+					Function.identity(),
+					book -> globalId.databaseId().get(book.getDatabaseId().toString())
+				)
+			);
+
+		return new Basket(books);
+	}
 }

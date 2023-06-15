@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
 	import '../app.css';
 	import type { LayoutData } from './$houdini';
-
 	export let data: LayoutData;
-
-	const pluralRules = new Intl.PluralRules();
 
 	$: ({ NavbarQuery } = data);
 </script>
@@ -15,7 +13,7 @@
 		<header class="navbar bg-base-100 shadow-xl">
 			<div class="flex-1">
 				<a
-					class="btn-primary btn-ghost btn flex gap-2 normal-case text-3xl max-sm:btn-square"
+					class="btn-ghost btn-primary btn flex gap-2 normal-case text-3xl max-sm:btn-square"
 					href="/"
 				>
 					<svg
@@ -105,7 +103,18 @@
 						</form>
 					</div>
 				{:else}
-					<a href="/login" class="btn-ghost btn">Login</a>
+					<a
+						href={`http://localhost:8080/oauth2/authorize?${new URLSearchParams({
+							client_id: 'bookstore',
+							redirect_uri: 'http://localhost:5173/login/callback',
+							response_type: 'code',
+							scope: 'openid profile read write',
+							state: $page.url.pathname
+						})}`}
+						class="btn-ghost btn"
+					>
+						Login
+					</a>
 					<a href="/register" class="btn-ghost btn">Register</a>
 				{/if}
 			</nav>

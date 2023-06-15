@@ -6,8 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.cloudinary.Cloudinary;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.umcs.enterprise.auth.JwtService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
@@ -16,7 +16,6 @@ import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-import io.jsonwebtoken.Jwts;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -27,6 +26,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -39,14 +39,31 @@ import org.springframework.core.io.Resource;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = EnterpriseApplication.class)
+@SpringBootTest(classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)
 @AutoConfigureMockMvc
 class BookDataFetcherTest {
 
 	@Autowired
+	WebApplicationContext context;
+
+	@BeforeEach
+	public void beforeEach() {
+		WebTestClient client = MockMvcWebTestClient
+			.bindToApplicationContext(context)
+			.configureClient()
+			.baseUrl("/graphql")
+			.build();
+
+		graphQlTester = HttpGraphQlTester.create(client);
+	}
+
 	private HttpGraphQlTester graphQlTester;
 
 	@Autowired
@@ -56,6 +73,7 @@ class BookDataFetcherTest {
 	private MockMvc mvc;
 
 	@Test
+	@WithMockUser(username = "user", authorities = { "ADMIN" })
 	void createBook_admin() throws Exception {
 		//        given
 		var user = userRepository.save(
@@ -65,12 +83,6 @@ class BookDataFetcherTest {
 				.password("user")
 				.username("user")
 				.build()
-		);
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();
@@ -108,7 +120,6 @@ class BookDataFetcherTest {
 						new ObjectMapper()
 							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
-					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
 			)
 			//                then
@@ -130,10 +141,8 @@ class BookDataFetcherTest {
 	@Autowired
 	private UserService userRepository;
 
-	@Autowired
-	private JwtService jwtService;
-
 	@Test
+	@WithMockUser(username = "user")
 	void createBook_user() throws Exception {
 		//        given
 		var user = userRepository.save(
@@ -143,13 +152,6 @@ class BookDataFetcherTest {
 				.password("user")
 				.username("user")
 				.build()
-		);
-
-		String token = jwtService.signToken(
-			Jwts
-				.builder()
-				.setExpiration(Date.from(Instant.now().plusSeconds(60 * 24)))
-				.setSubject(user.getUsername())
 		);
 
 		var input = new LinkedHashMap<>();
@@ -187,7 +189,6 @@ class BookDataFetcherTest {
 						new ObjectMapper()
 							.writeValueAsString(Map.of("0", List.of("variables.input.cover.file")))
 					)
-					.header("Authorization", "Bearer " + token)
 					.header("graphql-require-preflight", "")
 			)
 			//                then
@@ -256,7 +257,7 @@ class BookDataFetcherTest {
 	private PurchaseService purchaseRepository;
 
 	@Test
-	void recommended() {
+	void recommended() throws JsonProcessingException {
 		//        given
 
 		Book book = bookRepository.save(new Book());
@@ -302,7 +303,7 @@ class BookDataFetcherTest {
 	}
 
 	@Test
-	void recommended_2() {
+	void recommended_2() throws JsonProcessingException {
 		//        given
 
 		var recommended = bookRepository.saveAll(
@@ -460,7 +461,7 @@ class BookDataFetcherTest {
 	}
 
 	@Test
-	void cover() {
+	void cover() throws JsonProcessingException {
 		//        given
 		Cover cover = (Cover.newBuilder().uuid("12").build());
 		Book book = bookRepository.save(Book.newBuilder().cover(cover).build());

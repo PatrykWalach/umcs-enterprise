@@ -17,7 +17,6 @@
 		"lint": { "dependsOn": ["generate"] },
 		"test": {
 			"outputs": ["playwright-report", "test-results"],
-			"dependsOn": ["build"],
 			"inputs": ["tests/**", "src/main/**", "build.gradle", "playwright.config.ts"],
 			"env": ["CI"]
 		},
