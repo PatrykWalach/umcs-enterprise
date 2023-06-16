@@ -4,7 +4,6 @@ import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -28,9 +27,6 @@ public class Purchase implements Node<UUID> {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
 	private UUID databaseId;
-
-
-
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
