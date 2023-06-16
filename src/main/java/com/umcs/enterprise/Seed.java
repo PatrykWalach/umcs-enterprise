@@ -48,7 +48,7 @@ public class Seed {
 			userRepository.save(
 				User
 					.newBuilder()
-					.authorities(Collections.singletonList("ADMIN"))
+					.authorities(List.of("USER","ADMIN"))
 					.username("admin")
 					.password("admin")
 					.build()

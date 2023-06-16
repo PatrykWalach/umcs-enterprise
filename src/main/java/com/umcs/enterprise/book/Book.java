@@ -22,7 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Book implements Node {
+public class Book implements Node<UUID> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

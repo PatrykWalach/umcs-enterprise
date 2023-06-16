@@ -62,7 +62,7 @@
 					</div>
 
 					<form
-						method="POST"
+						method="post"
 						action="?/basket_book"
 						use:enhance
 						class="grid gap-2 md:gap-4"

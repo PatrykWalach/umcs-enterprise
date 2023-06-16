@@ -13,7 +13,7 @@ import lombok.*;
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Node {
+public class User implements Node<UUID> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,5 +28,7 @@ public class User implements Node {
 	@Column(unique = true)
 	private String username;
 
-	private List<String> authorities;
+
+	@Builder.Default
+	private List<String> authorities = List.of("USER");
 }

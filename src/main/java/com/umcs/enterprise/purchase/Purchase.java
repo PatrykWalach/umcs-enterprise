@@ -4,12 +4,15 @@ import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -19,12 +22,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Purchase implements Node {
+public class Purchase implements Node<UUID> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
 	private UUID databaseId;
+
+
+
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
@@ -34,6 +40,10 @@ public class Purchase implements Node {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")
 	private List<BookPurchase> books;
 
+	@CreatedDate
+	@Column(nullable = false)
+	private Instant createdAt;
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -42,7 +52,9 @@ public class Purchase implements Node {
 		return getDatabaseId() != null && Objects.equals(getDatabaseId(), purchase.getDatabaseId());
 	}
 
-	private PurchaseStatus status;
+	@Column(nullable = false)
+	@Builder.Default
+	private PurchaseStatus status = PurchaseStatus.PAID;
 
 	@Override
 	public int hashCode() {

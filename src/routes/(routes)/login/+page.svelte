@@ -16,7 +16,7 @@
 		</div>
 		<div class="grid gap-4">
 			<form
-				method="POST"
+				method="post"
 				action="http://localhost:8080/login"
 				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow"
 			>

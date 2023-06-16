@@ -1,6 +1,8 @@
+import { setSession } from '$houdini';
 import BasketBook from '$lib/BasketBook.server';
 import UnbasketBook from '$lib/UnbasketBook.server';
-import { error } from '@sveltejs/kit';
+import { BASKET_COOKIE, TOKEN_COOKIE } from '$lib/constants';
+import { error, redirect } from '@sveltejs/kit';
 import type { Actions } from './$houdini';
 
 export const actions: Actions = {
@@ -12,7 +14,7 @@ export const actions: Actions = {
 
 		await BasketBook({ input: { book: { id } } }, event);
 
-		return {};
+		return redirect(303, '/basket')
 	},
 	unbasket_book: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());
@@ -22,6 +24,15 @@ export const actions: Actions = {
 
 		await UnbasketBook({ input: { book: { id } } }, event);
 
-		return {};
+		return redirect(303, '/basket')
+	},
+	clear_basket: async (event) => {
+		event.cookies.delete(BASKET_COOKIE)
+		setSession(event, {
+			token: event.cookies.get(TOKEN_COOKIE),
+			basket: undefined
+		});
+		
+		return redirect(303, '/basket')
 	}
 };

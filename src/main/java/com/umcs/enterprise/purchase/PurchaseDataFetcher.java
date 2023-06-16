@@ -9,23 +9,26 @@ import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
-import graphql.relay.Connection;
+import graphql.relay.*;
+import graphql.relay.PageInfo;
 import graphql.schema.DataFetchingEnvironment;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.annotation.Secured;
 
 @DgsComponent
 @RequiredArgsConstructor
 public class PurchaseDataFetcher {
-
-	private ConnectionService connectionService;
+	@NonNull
+	private final ConnectionService connectionService;
 
 	@DgsData(parentType = "Purchase")
 	public CompletableFuture<User> user(DgsDataFetchingEnvironment dfe) {
@@ -39,15 +42,35 @@ public class PurchaseDataFetcher {
 
 	@NonNull
 	private final BasketService basketService;
-
+	@NonNull
 	private final BookPurchaseRepository bookPurchaseRepository;
+
+	
+
 
 	@DgsData(parentType = "Viewer")
 	public Connection<Purchase> purchases(
-		@InputArgument PurchaseWhere where,
+@InputArgument PurchaseWhere where,
 		DataFetchingEnvironment dfe
 	) {
-		return connectionService.getConnection(purchaseService.findAllWhere(), dfe);
+
+		if (where == null) {
+			return connectionService.getConnection(
+					purchaseService.findByUserDatabaseId(
+							dfe.<User>getSource().getDatabaseId()
+					), dfe
+
+			);
+		}
+
+		return connectionService.getConnection(
+				purchaseService.findByUserDatabaseId(
+						dfe.<User>getSource().getDatabaseId(),
+						where.getStatus()
+				), dfe
+
+		);
+
 	}
 
 	@DgsMutation

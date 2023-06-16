@@ -54,7 +54,7 @@
 									</div>
 								</td>
 								<td class="hidden p-2 xl:table-cell">
-									<form action="" class="" method="POST" use:enhance>
+									<form action="" class="" method="post" use:enhance>
 										<input type="hidden" value={edge.node.id} name="id" />
 										<div class="join">
 											<button
@@ -90,11 +90,11 @@
 			</div>
 		</div>
 		<div class="card flex-1 bg-base-100">
-			<div class="card-body">
+			<form use:enhance method="post" class="card-body">
 				<button class="btn-primary btn cursor-default" type="button">Login</button>
 				<button class="btn-accent btn cursor-default" type="button">Register</button>
-				<button class="btn-ghost btn cursor-default" type="button">Order without account</button>
-			</div>
+				<button class="btn-error btn cursor-default" formaction="?/clear_basket" type="button">Clear basket</button>
+			</form>
 		</div>
 	</div>
 </main>

@@ -6,7 +6,7 @@ import com.umcs.enterprise.node.Node;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Basket implements Node {
+public class Basket implements Node<Map<UUID, Integer>> {
 
 	private final SortedMap<Book, Integer> books;
 
