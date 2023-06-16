@@ -1434,10 +1434,7 @@ public class Seed {
 
 								return BookPurchase
 									.newBuilder()
-										.databaseId(new BookPurchaseId(	purchase.getDatabaseId(),
-book.getDatabaseId()
-
-										))
+									.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book.getDatabaseId()))
 									.book(repository.save(book))
 									.purchase(purchase)
 									.build();

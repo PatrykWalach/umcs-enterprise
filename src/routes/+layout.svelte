@@ -13,7 +13,7 @@
 		<header class="navbar p-0">
 			<div class="flex-1">
 				<a
-					class="btn-ghost btn-primary btn flex gap-2 normal-case text-3xl max-sm:btn-square"
+					class="btn-primary btn-ghost btn flex gap-2 normal-case text-3xl max-sm:btn-square"
 					href="/"
 				>
 					<svg
@@ -91,7 +91,9 @@
 							>
 								<li>
 									<a href="/user/{$NavbarQuery.data.viewer.id}/orders">
-										Orders <span class="badge badge-neutral">{$NavbarQuery.data.viewer.purchases?.edges.length}</span>
+										Orders <span class="badge badge-neutral">
+											{$NavbarQuery.data.viewer.purchases?.edges.length}
+										</span>
 									</a>
 								</li>
 								<li><a href="">Settings</a></li>

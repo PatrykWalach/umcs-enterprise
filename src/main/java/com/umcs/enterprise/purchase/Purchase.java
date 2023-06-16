@@ -42,7 +42,7 @@ public class Purchase implements Node {
 		return getDatabaseId() != null && Objects.equals(getDatabaseId(), purchase.getDatabaseId());
 	}
 
-private 	PurchaseStatus status;
+	private PurchaseStatus status;
 
 	@Override
 	public int hashCode() {

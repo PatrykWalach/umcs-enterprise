@@ -17,7 +17,6 @@ public class BookPurchase {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("purchaseId")
-
 	@JoinColumn(name = "purchase_id")
 	private Purchase purchase;
 

@@ -8,12 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(builder = @Builder(disableBuilder = true))
 public interface BookEdgeMapper {
-
-    @Mapping(target = "databaseId.purchaseId", source = "purchase.databaseId")
-    @Mapping(target = "databaseId.bookId", source = "edge.book.databaseId")
-    BookPurchase bookEdgeToBookPurchase(BookEdge edge, Purchase purchase);
-
-
-
-
+	@Mapping(target = "databaseId.purchaseId", source = "purchase.databaseId")
+	@Mapping(target = "databaseId.bookId", source = "edge.book.databaseId")
+	BookPurchase bookEdgeToBookPurchase(BookEdge edge, Purchase purchase);
 }
