@@ -158,6 +158,7 @@ public class OAuthSecurity implements WebMvcConfigurer {
 			.keyID(UUID.randomUUID().toString())
 			.build();
 		JWKSet jwkSet = new JWKSet(rsaKey);
+
 		return new ImmutableJWKSet<>(jwkSet);
 	}
 

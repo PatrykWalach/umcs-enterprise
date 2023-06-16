@@ -12,17 +12,18 @@ import lombok.*;
 @Builder(builderMethodName = "newBuilder")
 public class BookPurchase {
 
-	@Id
-	@GeneratedValue
-	@Column(name = "database_id")
-	private Long databaseId;
+	@EmbeddedId
+	private BookPurchaseId databaseId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("purchaseId")
+
 	@JoinColumn(name = "purchase_id")
 	private Purchase purchase;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "book_id")
+	@MapsId("bookId")
 	private Book book;
 
 	private Integer quantity;

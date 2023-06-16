@@ -146,23 +146,49 @@ type Book implements Node {
 	title: String
 }
 
+input PurchaseWhere {
+	status: PurchaseStatus
+}
+
 interface Viewer implements Node {
 	id: ID!
+	name: String
+	purchases(
+		after: String
+		before: String
+		first: Int
+		last: Int
+		where: PurchaseWhere
+	): PurchaseConnection
 }
 
 type User implements Viewer & Node {
 	id: ID!
 	name: String
-	purchases(after: String, before: String, first: Int, last: Int): PurchaseConnection
+	purchases(
+		after: String
+		before: String
+		first: Int
+		last: Int
+		where: PurchaseWhere
+	): PurchaseConnection
 }
 
 type Admin implements Viewer & Node {
 	id: ID!
+	name: String
+	purchases(
+		after: String
+		before: String
+		first: Int
+		last: Int
+		where: PurchaseWhere
+	): PurchaseConnection
 }
 
 enum PurchaseStatus {
-	AWAITING_PAYMENT
-	COMPLETE
+	PAID
+	SENT
 }
 
 scalar DateTime
@@ -271,9 +297,8 @@ type Query {
 	viewer: Viewer
 }
 
-input UpdateStatusInput {
+input SendPurchaseInput {
 	iD: ID!
-	status: PurchaseStatus!
 }
 
 type MakePurchaseResult {
@@ -309,7 +334,7 @@ type UnbasketBookResult {
 	edge: BasketBookEdge
 }
 
-type UpdateStatusResult {
+type SendPurchaseResult {
 	purchase: Purchase
 }
 
@@ -371,13 +396,13 @@ type Mutation {
 	"""
 	register(input: RegisterInput!): RegisterResult
 	"""
+	4 requires role Admin
+	"""
+	sendPurchase(input: SendPurchaseInput!): SendPurchaseResult
+	"""
 	3.5 requires role User
 	"""
 	unbasketBook(input: UnbasketBookInput!): UnbasketBookResult
-	"""
-	4 requires role Admin
-	"""
-	updateStatus(input: UpdateStatusInput!): UpdateStatusResult
 }
 
 type RegisterSuccess {

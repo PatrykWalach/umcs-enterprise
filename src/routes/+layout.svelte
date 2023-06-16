@@ -13,7 +13,7 @@
 		<header class="navbar p-0">
 			<div class="flex-1">
 				<a
-					class="btn-primary btn-ghost btn flex gap-2 normal-case text-3xl max-sm:btn-square"
+					class="btn-ghost btn-primary btn flex gap-2 normal-case text-3xl max-sm:btn-square"
 					href="/"
 				>
 					<svg
@@ -57,7 +57,7 @@
 					</div>
 				</a>
 
-				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
+				{#if $NavbarQuery.data?.viewer}
 					<div class="dropdown-end dropdown z-10">
 						<button
 							type="button"
@@ -87,18 +87,29 @@
 						<form action="/logout" method="POST" use:enhance>
 							<ul
 								tabindex="-1"
-								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 bg-base-100 p-2 shadow-xl"
+								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 border border-base-200 bg-base-100 p-2 shadow-xl"
 							>
 								<li>
-									<a class="justify-between" href="">
-										Profile
-										<span class="badge badge-neutral">New</span>
+									<a href="/user/{$NavbarQuery.data.viewer.id}/orders">
+										Orders <span class="badge badge-neutral">{$NavbarQuery.data.viewer.purchases?.edges.length}</span>
 									</a>
 								</li>
 								<li><a href="">Settings</a></li>
 								<li>
 									<button type="submit">Logout</button>
 								</li>
+								{#if $NavbarQuery.data.viewer.__typename === 'Admin'}
+									<div class="divider">Admin</div>
+									<li>
+										<a href="/admin/add">Add book</a>
+									</li>
+									<li>
+										<a href="/users">Users</a>
+									</li>
+									<li>
+										<a href="/orders">Orders</a>
+									</li>
+								{/if}
 							</ul>
 						</form>
 					</div>

@@ -1,6 +1,7 @@
 package com.umcs.enterprise.purchase;
 
 import com.umcs.enterprise.node.Node;
+import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.UUID;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
@@ -16,6 +18,7 @@ import org.springframework.data.annotation.CreatedBy;
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Purchase implements Node {
 
 	@Id
@@ -38,6 +41,8 @@ public class Purchase implements Node {
 		Purchase purchase = (Purchase) o;
 		return getDatabaseId() != null && Objects.equals(getDatabaseId(), purchase.getDatabaseId());
 	}
+
+private 	PurchaseStatus status;
 
 	@Override
 	public int hashCode() {

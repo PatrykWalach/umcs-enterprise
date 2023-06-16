@@ -9,5 +9,19 @@ query NavbarQuery($id: ID) {
 	viewer {
 		__typename
 		id
+		purchases(first: 10) {
+			edges {
+				__typename
+			}
+			pageInfo {
+				hasNextPage
+			}
+		}
+		... on User {
+			__typename
+		}
+		... on Admin {
+			__typename
+		}
 	}
 }
