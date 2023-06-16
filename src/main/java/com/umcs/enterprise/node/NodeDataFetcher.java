@@ -65,7 +65,7 @@ public class NodeDataFetcher {
 			purchaseRepository::deleteById
 		);
 
-		GlobalId<UUID> globalId = GlobalId.from(input.getId());
+		GlobalId<String> globalId = GlobalId.from(input.getId());
 
 		Consumer<UUID> consumer = delete.get(globalId.className());
 
@@ -73,7 +73,7 @@ public class NodeDataFetcher {
 			throw new DgsEntityNotFoundException();
 		}
 
-		consumer.accept(globalId.databaseId());
+		consumer.accept(UUID.fromString(globalId.databaseId()));
 
 		return DeleteResult.newBuilder().id(input.getId()).build();
 	}
