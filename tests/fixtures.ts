@@ -1,17 +1,22 @@
 import { test as base, expect } from '@playwright/test';
 import * as crypto from 'crypto';
 
-interface User {
+interface Viewer {
 	name: string;
 	password: string;
 }
 
 export const test = base.extend<{
-	register: (options?: Partial<User>) => Promise<User>;
-	login: (options: User) => Promise<User>;
+	register: (options?: Partial<Viewer>) => Promise<Viewer>;
+	login: (options: Viewer) => Promise<Viewer>;
+	admin: Viewer;
 }>({
+	async admin({ page, login }, use) {
+		await page.goto('/');
+		await use(await login({ name: 'admin', password: 'admin' }));
+	},
 	async register({ page, login }, use) {
-		const users: User[] = [];
+		const users: Viewer[] = [];
 
 		await use(async ({ name = crypto.randomUUID(), password = crypto.randomUUID() } = {}) => {
 			const main = page.getByRole('main');

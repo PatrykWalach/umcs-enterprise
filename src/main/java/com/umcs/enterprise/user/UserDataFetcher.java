@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @DgsComponent
@@ -35,6 +36,15 @@ public class UserDataFetcher {
 
 	@NonNull
 	private final BookRepository bookRepository;
+
+	@DgsTypeResolver(name = "Viewer")
+	public String resolveViewer(User user) {
+		if (user.getAuthorities().contains(("ADMIN"))) {
+			return "Admin";
+		}
+
+		return "User";
+	}
 
 	@DgsMutation
 	public RegisterResult register(@InputArgument RegisterInput input) {

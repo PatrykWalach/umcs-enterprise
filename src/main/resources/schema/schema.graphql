@@ -135,6 +135,7 @@ type Book implements Node {
 	author: String
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
 	covers(transformation: Transformation, widths: [Int]): [Cover]
+	createdAt: DateTime
 	id: ID!
 	inBasket(id: ID): Boolean
 	popularity: Int
@@ -231,6 +232,7 @@ input PriceOrderBy {
 }
 
 input BookOrderBy {
+	createdAt: Order
 	popularity: Order
 	price: PriceOrderBy
 	releasedAt: Order
@@ -338,7 +340,7 @@ type CreateBookResult {
 }
 
 type DeleteResult {
-	node: Node
+	id: ID
 }
 
 input MakePurchaseInput {

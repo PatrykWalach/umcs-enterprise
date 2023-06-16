@@ -20,6 +20,7 @@ public interface BookOrderByMapper {
 		map.put("popularity", orderBy.popularity());
 		map.put("price", orderBy.price());
 		map.put("releasedAt", orderBy.releasedAt());
+		map.put("createdAt", orderBy.createdAt());
 
 		return map
 			.entrySet()
@@ -33,6 +34,7 @@ public interface BookOrderByMapper {
 	record BookOrderByDTO(
 		Sort.Direction popularity,
 		Sort.Direction price,
-		Sort.Direction releasedAt
+		Sort.Direction releasedAt,
+		Sort.Direction createdAt
 	) {}
 }
