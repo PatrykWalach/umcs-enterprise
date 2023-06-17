@@ -326,7 +326,9 @@ class BookDataFetcherTest {
 		bookPurchaseRepository.saveAll(
 			Stream
 				.concat(recommended.stream(), Stream.of(book))
-				.map(book1 -> BookPurchase.newBuilder().book(book1).purchase(purchase).build())
+				.map(book1 -> BookPurchase.newBuilder()					.databaseId(
+						new BookPurchaseId(purchase.getDatabaseId(), book1.getDatabaseId())
+				).book(book1).purchase(purchase).build())
 				.toList()
 		);
 
