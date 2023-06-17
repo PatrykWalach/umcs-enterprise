@@ -93,7 +93,9 @@
 			<form use:enhance method="post" class="card-body">
 				<button class="btn-primary btn cursor-default" type="button">Login</button>
 				<button class="btn-accent btn cursor-default" type="button">Register</button>
-				<button class="btn-error btn cursor-default" formaction="?/clear_basket" type="button">Clear basket</button>
+				<button class="btn-error btn cursor-default" formaction="?/clear_basket" type="button">
+					Clear basket
+				</button>
 			</form>
 		</div>
 	</div>

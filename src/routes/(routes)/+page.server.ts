@@ -15,6 +15,5 @@ export const actions: Actions = {
 		if (response.data?.basketBook?.edge?.node?.id) {
 			throw redirect(303, '/book/' + response.data.basketBook.edge.node.id);
 		}
-
 	}
 };

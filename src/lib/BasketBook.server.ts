@@ -33,7 +33,5 @@ export default async function basketBook(variables: BasketBook$input, event: Req
 		setBasket(event, response.data.basketBook.basket.id);
 	}
 
-
-
 	return response;
 }
