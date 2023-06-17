@@ -6,4 +6,3 @@ export const _houdini_afterLoad = (event: AfterLoadEvent) => {
 		throw error(404);
 	}
 };
-

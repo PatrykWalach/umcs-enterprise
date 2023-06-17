@@ -46,6 +46,4 @@ public class SummableEdgeDataFetcher {
 
 		return dataLoader.load(edge.getNode().getBook().getDatabaseId());
 	}
-
-
 }

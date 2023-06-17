@@ -210,10 +210,7 @@ type PurchaseEdge {
 	node: Purchase
 }
 
-
-
-
-type Purchase implements Node  {
+type Purchase implements Node {
 	books(after: String, before: String, first: Int, last: Int): SummableBookConnection
 	createdAt: DateTime
 	id: ID!

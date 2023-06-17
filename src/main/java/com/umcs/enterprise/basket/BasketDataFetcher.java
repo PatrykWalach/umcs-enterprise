@@ -31,15 +31,12 @@ public class BasketDataFetcher {
 	@NonNull
 	private final BookRepository bookRepository;
 
-
-
 	@NonNull
 	private final ConnectionService connectionService;
 
 	@DgsData(parentType = "Basket")
 	public Connection<BookEdge> books(DgsDataFetchingEnvironment env) {
 		Basket basket = env.getSource();
-
 
 		return connectionService.getConnection(basket.getBooks(), env);
 	}
@@ -54,18 +51,15 @@ public class BasketDataFetcher {
 	public BigDecimal price(DgsDataFetchingEnvironment env) {
 		Basket basket = env.getSource();
 
-		return  summableService.sumPrice(basket
-						.getBooks())
-;
+		return summableService.sumPrice(basket.getBooks());
 	}
-	
+
 	@DgsData(parentType = "Basket")
 	public Integer quantity(DgsDataFetchingEnvironment env) {
 		Basket basket = env.getSource();
-		return  summableService.sumQuantity(basket
-				.getBooks());
+		return summableService.sumQuantity(basket.getBooks());
 	}
-	
+
 	@DgsData(parentType = "Book")
 	public Boolean inBasket(DgsDataFetchingEnvironment env, String id)
 		throws JsonProcessingException {
@@ -77,7 +71,6 @@ public class BasketDataFetcher {
 			.map(BookEdge::getBook)
 			.anyMatch(book::equals);
 	}
-
 
 	@DgsMutation
 	public BasketBookResult basketBook(

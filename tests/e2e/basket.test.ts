@@ -43,4 +43,3 @@ test('keeps after logout', async ({ page, register }) => {
 	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
-

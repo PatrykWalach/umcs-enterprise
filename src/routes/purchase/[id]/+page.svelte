@@ -31,7 +31,7 @@
 		</div>
 
 		<div class="grid gap-2 p-2 sm:gap-4 sm:p-4 lg:grid-cols-3">
-			<div class="card card-compact bg-base-100 lg:col-span-2">
+			<div class="card-compact card bg-base-100 lg:col-span-2">
 				<div class="card-body">
 					<table class="">
 						{#each $PurchaseQuery.data?.node?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}

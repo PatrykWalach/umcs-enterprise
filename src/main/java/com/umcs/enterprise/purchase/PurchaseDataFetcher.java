@@ -17,14 +17,12 @@ import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
 import graphql.relay.*;
 import graphql.schema.DataFetchingEnvironment;
-
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
@@ -75,15 +73,14 @@ public class PurchaseDataFetcher {
 		);
 	}
 
-	@NonNull private  final SummableService summableService;
+	@NonNull
+	private final SummableService summableService;
 
 	@DgsData(parentType = "Purchase")
 	public BigDecimal price(DgsDataFetchingEnvironment env) {
 		Purchase purchase = env.getSource();
 
-		return  summableService.sumPrice(purchase
-				.getBooks())
-				;
+		return summableService.sumPrice(purchase.getBooks());
 	}
 
 	@DgsData(parentType = "Purchase")
@@ -96,10 +93,7 @@ public class PurchaseDataFetcher {
 	public Integer quantity(DgsDataFetchingEnvironment env) {
 		Purchase purchase = env.getSource();
 
-
-
-		return  summableService.sumQuantity(purchase
-				.getBooks());
+		return summableService.sumQuantity(purchase.getBooks());
 	}
 
 	@DgsData(parentType = "Purchase")

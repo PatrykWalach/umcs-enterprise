@@ -1,8 +1,8 @@
 query PurchaseQuery($id: ID!) {
-  node(id: $id) {
+	node(id: $id) {
 		id
 		... on Purchase {
-      books(first: 10) {
+			books(first: 10) {
 				edges {
 					node @required {
 						id
@@ -18,7 +18,8 @@ query PurchaseQuery($id: ID!) {
 			status
 		}
 	}
-	viewer {__typename
-    id
-  }
+	viewer {
+		__typename
+		id
+	}
 }

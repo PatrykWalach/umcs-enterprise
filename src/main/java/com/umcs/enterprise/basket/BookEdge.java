@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newBuilder")
-public class BookEdge implements SummableEdge{
+public class BookEdge implements SummableEdge {
 
 	private Book book;
 	private Integer quantity;
