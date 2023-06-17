@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { PurchaseStatus } from '$houdini';
 	import { isNotNull } from '$lib/isNotNull';
-	import Summable from '../../(routes)/basket/Summable.svelte';
+	import Summable from '../../basket/Summable.svelte';
 	import type { PageData } from './$houdini';
 
 	export let data: PageData;
