@@ -16,7 +16,7 @@ import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecu
 
 @DgsDataLoader(name = "UserDataLoader")
 @RequiredArgsConstructor
-public class UserDataLoader implements MappedBatchLoader<UUID, User> {
+public class UserDataLoader implements MappedBatchLoader<Long, User> {
 
 	@NonNull
 	private final UserService repository;
@@ -25,13 +25,13 @@ public class UserDataLoader implements MappedBatchLoader<UUID, User> {
 	private final DelegatingSecurityContextAsyncTaskExecutor executor;
 
 	@Override
-	public CompletionStage<Map<UUID, User>> load(Set<UUID> keys) {
+	public CompletionStage<Map<Long, User>> load(Set<Long> keys) {
 		return CompletableFuture.supplyAsync(
 			() ->
 				repository
 					.findAllById(keys)
 					.stream()
-					.collect(Collectors.toMap(Node<UUID>::getDatabaseId, Function.identity())),
+					.collect(Collectors.toMap(Node<Long>::getDatabaseId, Function.identity())),
 			executor
 		);
 	}

@@ -1,6 +1,7 @@
 package com.umcs.enterprise.purchase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.basket.Basket;
@@ -33,7 +34,7 @@ public class PurchaseDataFetcher {
 	@DgsData(parentType = "Purchase")
 	public CompletableFuture<User> user(DgsDataFetchingEnvironment dfe) {
 		return dfe
-			.<UUID, User>getDataLoader(UserDataLoader.class)
+			.<Long, User>getDataLoader(UserDataLoader.class)
 			.load(dfe.<Purchase>getSource().getUser().getDatabaseId());
 	}
 
@@ -99,12 +100,13 @@ public class PurchaseDataFetcher {
 		@InputArgument SendPurchaseInput input,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId<String> from = GlobalId.from(input.getID());
+		GlobalId<Long> from = GlobalId.from(input.getID(), new TypeReference<GlobalId<Long>>() {
+		});
 		assert Objects.equals(from.className(), "Purchase");
 
 		return dfe
-			.<UUID, Purchase>getDataLoader(PurchaseDataLoader.class)
-			.load(UUID.fromString(from.databaseId()))
+			.<Long, Purchase>getDataLoader(PurchaseDataLoader.class)
+			.load((from.databaseId()))
 			.thenApply(purchase -> {
 				assert Objects.equals(purchase.getStatus(), PurchaseStatus.MADE);
 				purchase.setStatus(PurchaseStatus.SENT);

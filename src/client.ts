@@ -18,7 +18,7 @@ export default new HoudiniClient({
 		operations: ['all'],
 		error(errors) {
 			if (errors.some(isErrorType('UNAUTHENTICATED'))) {
-				throw redirect(303, '/login');
+				throw redirect(303, '/');
 			}
 		}
 	},

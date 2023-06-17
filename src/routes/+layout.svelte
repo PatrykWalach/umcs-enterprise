@@ -92,7 +92,7 @@
 								<li>
 									<a href="/user/{$NavbarQuery.data.viewer.id}/orders">
 										Orders <span class="badge badge-neutral">
-											{$NavbarQuery.data.viewer.purchases?.edges.length}
+											{$NavbarQuery.data.viewer.purchases?.edges?.length ?? 0}
 										</span>
 									</a>
 								</li>
@@ -106,10 +106,10 @@
 										<a href="/admin/add">Add book</a>
 									</li>
 									<li>
-										<a href="/users">Users</a>
+										<a href="/admin/users">Users</a>
 									</li>
 									<li>
-										<a href="/orders">Orders</a>
+										<a href="/admin/orders">Orders</a>
 									</li>
 								{/if}
 							</ul>

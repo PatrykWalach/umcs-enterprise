@@ -9,7 +9,7 @@ query NavbarQuery($id: ID) {
 	viewer {
 		__typename
 		id
-		purchases(first: 10) {
+		purchases(first: 10, where: { status: MADE }) {
 			edges {
 				__typename
 			}

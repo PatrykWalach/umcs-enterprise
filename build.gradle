@@ -58,7 +58,7 @@ generateJava {
                    "Book":"com.umcs.enterprise.book.Book",
                    "Purchase":"com.umcs.enterprise.purchase.Purchase",
                    "Node":"com.umcs.enterprise.node.Node",
-                   "UUID":"java.util.UUID",
+    
                    "BasketBookEdge":"graphql.relay.Edge<com.umcs.enterprise.basket.BookEdge>"]
 }
 

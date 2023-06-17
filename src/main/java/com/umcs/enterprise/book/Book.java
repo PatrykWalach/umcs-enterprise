@@ -22,12 +22,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Book implements Node<UUID> {
+public class Book implements Node<Long> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
-	private UUID databaseId;
+	private Long databaseId;
 
 	private String author;
 

@@ -179,7 +179,7 @@ class NodeDataFetcherTest {
 	void notFound() throws JsonProcessingException {
 		//        given
 		var book = bookRepository.save(Book.newBuilder().title("Book title").build());
-		book.setDatabaseId(UUID.randomUUID());
+		book.setDatabaseId(-1L);
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", book.getId())

@@ -1,5 +1,5 @@
 import { graphql, type BasketBook$input } from '$houdini';
-import { type RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 
 import { BASKET_COOKIE } from './constants';
 import { setBasket } from './setBasket';

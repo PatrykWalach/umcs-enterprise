@@ -26,7 +26,7 @@ public class BookEdgeDataFetcher {
 	public CompletableFuture<BigDecimal> price(DgsDataFetchingEnvironment env) {
 		var edge = env.<Edge<BookEdge>>getSource();
 
-		DataLoader<UUID, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
+		DataLoader<Long, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
 		return dataLoader
 			.load(edge.getNode().getBook().getDatabaseId())
 			.thenApply(book -> book.getPrice().multiply(BigDecimal.valueOf(edge.getNode().getQuantity()))
@@ -42,7 +42,7 @@ public class BookEdgeDataFetcher {
 
 	@DgsData(parentType = "BasketBookEdge")
 	public CompletableFuture<Book> node(DgsDataFetchingEnvironment env) {
-		DataLoader<UUID, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
+		DataLoader<Long, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
 
 		var edge = env.<Edge<BookEdge>>getSource();
 

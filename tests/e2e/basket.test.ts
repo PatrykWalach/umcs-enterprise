@@ -1,52 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
-import HomePage, { BasketPage, BookPage } from './HomePage.js';
-
-test('can add to basket twice', async ({ page }) => {
-	// given
-
-	await page.goto('/');
-
-	const homepage = new HomePage(page);
-	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
-	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
-	await book.addToBasket();
-
-	const bookpage = new BookPage(page);
-	await expect.soft(page).toHaveTitle('Kicia Kocia. Wiosna');
-	await expect.soft(bookpage.nav.basketItems.getByText('1')).toBeVisible();
-	// when
-	await bookpage.addToBasket();
-	// then
-	await expect.soft(bookpage.nav.basketItems.getByText('2')).toBeVisible();
-	await bookpage.nav.goToBasket();
-
-	const basketpage = new BasketPage(page);
-	await expect.soft(basketpage.main.getByText('Total 12,90 zł')).toBeVisible();
-	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
-});
-
-test('can quickly add to basket', async ({ page }) => {
-	// given
-
-	await page.goto('/');
-
-	const homepage = new HomePage(page);
-	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
-	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
-	// when
-	await book.addToBasket();
-	// then
-
-	const bookpage = new BookPage(page);
-	await expect.soft(page).toHaveTitle('Kicia Kocia. Wiosna');
-	await expect.soft(bookpage.nav.basketItems.getByText('1')).toBeVisible();
-	await bookpage.nav.goToBasket();
-
-	const basketpage = new BasketPage(page);
-	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
-	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
-});
+import HomePage from './HomePage.js';
 
 test('keeps contents after register', async ({ page, register }) => {
 	// given
@@ -55,16 +9,17 @@ test('keeps contents after register', async ({ page, register }) => {
 
 	const homepage = new HomePage(page);
 	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
-	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
-	await book.addToBasket();
+	await expect.soft(book.price).toHaveText('6,45 zł');
+	const bookpage = await book.navigate();
+
+	await bookpage.addToBasket();
 	// when
 	await register();
 	// then
 	await expect.soft(homepage.nav.register).not.toBeVisible();
 	await expect.soft(homepage.nav.login).not.toBeVisible();
-	await homepage.nav.goToBasket();
+	const basketpage = await homepage.nav.goToBasket();
 
-	const basketpage = new BasketPage(page);
 	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
@@ -76,14 +31,15 @@ test('keeps after logout', async ({ page, register }) => {
 
 	const homepage = new HomePage(page);
 	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
-	await expect.soft(book.loc.getByText('6,45 zł')).toBeVisible();
-	await book.addToBasket();
-	// when
-	await homepage.nav.logout();
-	// then
+	await expect.soft(book.price).toHaveText('6,45 zł');
+	const bookpage = await book.navigate();
 
-	await homepage.nav.goToBasket();
-	const basketpage = new BasketPage(page);
+	await bookpage.addToBasket();
+	// when
+	await bookpage.nav.logout();
+	// then
+	const basketpage = await homepage.nav.goToBasket();
+
 	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });

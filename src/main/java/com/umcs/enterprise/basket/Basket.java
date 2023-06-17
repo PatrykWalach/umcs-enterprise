@@ -6,7 +6,7 @@ import com.umcs.enterprise.node.Node;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Basket implements Node<Map<UUID, Integer>> {
+public class Basket implements Node<Map<Long, Integer>> {
 
 	private final SortedMap<Book, Integer> books;
 
@@ -48,7 +48,7 @@ public class Basket implements Node<Map<UUID, Integer>> {
 	}
 
 	@Override
-	public Map<UUID, Integer> getDatabaseId() {
+	public Map<Long, Integer> getDatabaseId() {
 		return books
 			.entrySet()
 			.stream()

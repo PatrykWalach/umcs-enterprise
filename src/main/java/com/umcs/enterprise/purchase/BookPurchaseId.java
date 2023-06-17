@@ -15,8 +15,8 @@ import lombok.*;
 public class BookPurchaseId {
 
 	@Column(name = "purchase_id")
-	UUID purchaseId;
+	Long purchaseId;
 
 	@Column(name = "book_id")
-	UUID bookId;
+	Long bookId;
 }

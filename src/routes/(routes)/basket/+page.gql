@@ -28,6 +28,9 @@ query BasketQuery($after: String, $id: ID) {
 						width @required
 					}
 					id
+					price {
+						formatted
+					}
 					title @required
 				}
 				price {
@@ -44,5 +47,8 @@ query BasketQuery($after: String, $id: ID) {
 		price {
 			formatted
 		}
+	}
+	viewer {
+		id
 	}
 }

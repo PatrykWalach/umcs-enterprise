@@ -51,6 +51,7 @@
 										<div class="">
 											{edge.node.author}
 										</div>
+										<div>{edge.node.price?.formatted}</div>
 									</div>
 								</td>
 								<td class="hidden p-2 xl:table-cell">
@@ -73,7 +74,9 @@
 										</div>
 									</form>
 								</td>
-								<td class="p-2">{edge.price?.formatted}</td>
+								<td class="p-2">
+									{edge.price?.formatted}
+								</td>
 							</tr>
 						{/if}
 					{/each}
@@ -91,10 +94,17 @@
 		</div>
 		<div class="card flex-1 bg-base-100">
 			<form use:enhance method="post" class="card-body">
-				<button class="btn-primary btn cursor-default" type="button">Login</button>
-				<button class="btn-accent btn cursor-default" type="button">Register</button>
-				<button class="btn-error btn cursor-default" formaction="?/clear_basket" type="button">
-					Clear basket
+				{#if $BasketQuery.data?.viewer}
+					<button class="btn-primary btn cursor-default" type="submit" formaction="?/make_purchase">
+						Make purchase
+					</button>
+				{:else}
+					Login or register to make a purchase
+				{/if}
+
+				<div class="divider">Or</div>
+				<button class="btn-error btn cursor-default" formaction="?/reset_basket" type="submit">
+					Reset basket
 				</button>
 			</form>
 		</div>

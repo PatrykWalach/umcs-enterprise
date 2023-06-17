@@ -17,16 +17,16 @@ public class PurchaseService {
 
 	private final PurchaseRepository purchaseRepository;
 
-	public List<Purchase> findByUserDatabaseId(UUID databaseId) {
+	public List<Purchase> findByUserDatabaseId(Long databaseId) {
 		return purchaseRepository.findAllByUserDatabaseId(databaseId);
 	}
 
-	public List<Purchase> findByUserDatabaseId(UUID databaseId, PurchaseStatus status) {
+	public List<Purchase> findByUserDatabaseId(Long databaseId, PurchaseStatus status) {
 		return purchaseRepository.findAllByUserDatabaseIdAndStatus(databaseId, status);
 	}
 
 	@PostFilter("hasRole('ADMIN') or filterObject.user.username == authentication.name")
-	public List<Purchase> findAllById(Iterable<UUID> ids) {
+	public List<Purchase> findAllById(Iterable<Long> ids) {
 		return purchaseRepository.findAllById(ids);
 	}
 

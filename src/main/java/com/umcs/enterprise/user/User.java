@@ -13,12 +13,12 @@ import lombok.*;
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Node<UUID> {
+public class User implements Node<Long> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false)
-	private UUID databaseId;
+	private Long databaseId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Purchase> purchases;

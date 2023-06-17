@@ -24,22 +24,29 @@ class Section {
 			this.page,
 			this.locator.getByRole('article', {
 				name: title
-			})
+			}),
+			title
 		);
 	}
 }
 
 class Book {
-	constructor(private page: Page, public loc: Locator) {}
+	price: Locator;
 
-	async addToBasket() {
-		await this.loc.getByRole('button', { name: 'add to basket' }).click();
-		await expect.soft(this.page.getByText('In the basket')).toBeVisible();
+	constructor(private page: Page, private loc: Locator, private title: string) {
+		this.price = this.loc.getByTestId('price');
+	}
+
+	async navigate() {
+		await this.loc.getByRole('link').click();
+		await expect.soft(this.page).toHaveTitle(this.title);
+		return new BookPage(this.page)
 	}
 }
 
 export class BasketPage {
 	main: Locator;
+	nav: Navigation;
 	book(title: string) {
 		return this.main.getByRole('heading', {
 			name: title
@@ -48,6 +55,7 @@ export class BasketPage {
 
 	constructor(private page: Page) {
 		this.main = page.getByRole('main');
+		this.nav = new Navigation(page, page.getByRole("navigation"))
 	}
 }
 
@@ -64,12 +72,14 @@ export class Navigation {
 	async addBook() {
 		await this.locator.getByRole('button', { name: 'show menu' }).click();
 		await this.locator.getByRole('link', { name: 'Add book' }).click();
-		await expect(this.page).toHaveTitle('Add book');
+		await expect.soft(this.page).toHaveTitle('Add book');
+		return new AddBookPage(this.page)
 	}
 
 	async goToBasket() {
 		await this.basketItems.click();
 		await expect.soft(this.page).toHaveTitle('Basket');
+		return new BasketPage(this.page)
 	}
 
 	login: Locator;
@@ -112,30 +122,29 @@ export class AddBookPage {
 }
 
 export class BookPage {
+	private actions: Locator;
+ 
 	main: Locator;
 	nav: Navigation;
 
 	async addToBasket() {
-		await this.main
-			.getByRole('form', { name: 'Actions' })
-			.getByRole('button', { name: 'Add to basket' })
-			.click();
+		await this.actions.getByRole('button', { name: 'Add to basket' }).click();
 		await expect.soft(this.page.getByText('In the basket')).toBeVisible();
-
-		return this;
 	}
 
 	async delete() {
-		await this.main
+		await this.actions
 			.getByRole('button', {
 				name: 'Delete'
 			})
 			.click();
 		await expect.soft(this.page).toHaveTitle('Home');
+		return new HomePage(this.page)
 	}
 
 	constructor(private page: Page) {
 		this.main = page.getByRole('main');
 		this.nav = new Navigation(page, page.getByRole('navigation'));
+		this.actions = this.main.getByRole('form', { name: 'Actions' });
 	}
 }

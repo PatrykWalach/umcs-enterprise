@@ -9,8 +9,8 @@ import org.springframework.data.domain.Window;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-public interface PurchaseRepository extends JpaRepository<Purchase, UUID> {
-	List<Purchase> findAllByUserDatabaseId(UUID databaseId);
+public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
+	List<Purchase> findAllByUserDatabaseId(Long databaseId);
 
-	List<Purchase> findAllByUserDatabaseIdAndStatus(UUID databaseId, PurchaseStatus status);
+	List<Purchase> findAllByUserDatabaseIdAndStatus(Long databaseId, PurchaseStatus status);
 }
