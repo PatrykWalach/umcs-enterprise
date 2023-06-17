@@ -90,13 +90,13 @@
 								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 border border-base-200 bg-base-100 p-2 shadow-xl"
 							>
 								<li>
-									<a href="/user/{$NavbarQuery.data.viewer.id}/orders">
-										Orders <span class="badge badge-neutral">
+									<a href="/user/{$NavbarQuery.data.viewer.id}/purchases">
+										Purchases <span class="badge badge-neutral">
 											{$NavbarQuery.data.viewer.purchases?.edges?.length ?? 0}
 										</span>
 									</a>
 								</li>
-								<li><a href="">Settings</a></li>
+								<li><a href="/user/{$NavbarQuery.data.viewer.id}">Settings</a></li>
 								<li>
 									<button type="submit">Logout</button>
 								</li>
@@ -109,7 +109,7 @@
 										<a href="/admin/users">Users</a>
 									</li>
 									<li>
-										<a href="/admin/orders">Orders</a>
+										<a href="/admin/purchases">Purchases</a>
 									</li>
 								{/if}
 							</ul>

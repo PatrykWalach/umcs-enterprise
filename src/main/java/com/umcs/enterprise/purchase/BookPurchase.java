@@ -1,5 +1,6 @@
 package com.umcs.enterprise.purchase;
 
+import com.umcs.enterprise.basket.SummableEdge;
 import com.umcs.enterprise.book.Book;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newBuilder")
-public class BookPurchase {
+public class BookPurchase implements SummableEdge {
 
 	@EmbeddedId
 	private BookPurchaseId databaseId;
@@ -20,7 +21,7 @@ public class BookPurchase {
 	@JoinColumn(name = "purchase_id")
 	private Purchase purchase;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "book_id")
 	@MapsId("bookId")
 	private Book book;

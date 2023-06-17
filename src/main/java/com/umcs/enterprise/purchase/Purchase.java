@@ -5,6 +5,8 @@ import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -33,7 +35,7 @@ public class Purchase implements Node<Long> {
 	@CreatedBy
 	private User user;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "purchase")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "purchase")
 	private List<BookPurchase> books;
 
 	@CreatedDate

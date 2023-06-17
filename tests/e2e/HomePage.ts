@@ -1,13 +1,19 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-
-export default class HomePage {
+class Layout {
 	main: Locator;
 	nav: Navigation;
-	bestsellers: Section;
 
-	constructor(private page: Page) {
+	constructor(protected page: Page) {
 		this.main = page.getByRole('main');
 		this.nav = new Navigation(page, page.getByRole('navigation'));
+	}
+}
+export default class HomePage extends Layout {
+	bestsellers: Section;
+
+	constructor(page: Page) {
+		super(page);
+
 		this.bestsellers = new Section(
 			page,
 			this.main.getByRole('region', {
@@ -44,18 +50,29 @@ class Book {
 	}
 }
 
-export class BasketPage {
-	main: Locator;
-	nav: Navigation;
+class PurchasePage extends Layout {
+	send: Locator;
+	constructor(page: Page) {
+		super(page);
+		this.status = this.main.getByTestId('status');
+		this.total = this.main.getByTestId('total');
+		this.send = this.main.getByRole('button', { name: 'Send' });
+	}
+	status: Locator;
+	total: Locator;
+}
+
+export class BasketPage extends Layout {
+	async makePurchase() {
+		await this.main.getByRole('button', { name: 'Make Purchase' }).click();
+		await expect.soft(this.page).toHaveTitle('Purchase');
+		return new PurchasePage(this.page);
+	}
+
 	book(title: string) {
 		return this.main.getByRole('heading', {
 			name: title
 		});
-	}
-
-	constructor(private page: Page) {
-		this.main = page.getByRole('main');
-		this.nav = new Navigation(page, page.getByRole('navigation'));
 	}
 }
 
@@ -92,9 +109,7 @@ export class Navigation {
 	}
 }
 
-export class AddBookPage {
-	main: Locator;
-	nav: Navigation;
+export class AddBookPage extends Layout {
 	form: {
 		title: Locator;
 		author: Locator;
@@ -104,9 +119,8 @@ export class AddBookPage {
 		submit: Locator;
 	};
 
-	constructor(private page: Page) {
-		this.main = page.getByRole('main');
-		this.nav = new Navigation(page, page.getByRole('navigation'));
+	constructor(page: Page) {
+		super(page);
 
 		const form = this.main.getByRole('group', { name: 'Add book' });
 
@@ -121,11 +135,8 @@ export class AddBookPage {
 	}
 }
 
-export class BookPage {
+export class BookPage extends Layout {
 	private actions: Locator;
-
-	main: Locator;
-	nav: Navigation;
 
 	async addToBasket() {
 		await this.actions.getByRole('button', { name: 'Add to basket' }).click();
@@ -142,9 +153,8 @@ export class BookPage {
 		return new HomePage(this.page);
 	}
 
-	constructor(private page: Page) {
-		this.main = page.getByRole('main');
-		this.nav = new Navigation(page, page.getByRole('navigation'));
+	constructor(page: Page) {
+		super(page);
 		this.actions = this.main.getByRole('form', { name: 'Actions' });
 	}
 }

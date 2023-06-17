@@ -58,8 +58,7 @@ generateJava {
                    "Book":"com.umcs.enterprise.book.Book",
                    "Purchase":"com.umcs.enterprise.purchase.Purchase",
                    "Node":"com.umcs.enterprise.node.Node",
-    
-                   "BasketBookEdge":"graphql.relay.Edge<com.umcs.enterprise.basket.BookEdge>"]
+                   "SummableBookEdge":"graphql.relay.Edge<? extends com.umcs.enterprise.basket.SummableEdge>"]
 }
 
 tasks.named('test') {

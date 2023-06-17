@@ -1,0 +1,24 @@
+query PurchaseQuery($id: ID!) {
+  node(id: $id) {
+		id
+		... on Purchase {
+      books(first: 10) {
+				edges {
+					node @required {
+						id
+					}
+					...Summable_edge
+				}
+			}
+			createdAt
+			id
+			price {
+				formatted
+			}
+			status
+		}
+	}
+	viewer {__typename
+    id
+  }
+}

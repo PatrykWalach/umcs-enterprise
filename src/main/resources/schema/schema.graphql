@@ -120,6 +120,7 @@ type BookConnection {
 	edges: [BookEdge]
 	pageInfo: PageInfo!
 }
+
 type BookEdge {
 	cursor: String
 	node: Book
@@ -208,41 +209,34 @@ type PurchaseEdge {
 	cursor: String
 	node: Purchase
 }
-type Purchase implements Node {
-	books(after: String, before: String, first: Int, last: Int): PurchaseBookConnection
+
+
+
+
+type Purchase implements Node  {
+	books(after: String, before: String, first: Int, last: Int): SummableBookConnection
 	createdAt: DateTime
 	id: ID!
 	price: Price
+	quantity: Int
 	status: PurchaseStatus
 	user: User
 }
 
-type PurchaseBookEdge {
+type SummableBookEdge {
 	cursor: String
 	node: Book
 	price: Price
 	quantity: Int
 }
 
-type PurchaseBookConnection {
-	edges: [PurchaseBookEdge]
-	pageInfo: PageInfo!
-}
-
-type BasketBookEdge {
-	cursor: String
-	node: Book
-	price: Price
-	quantity: Int
-}
-
-type BasketBookConnection {
-	edges: [BasketBookEdge]
+type SummableBookConnection {
+	edges: [SummableBookEdge]
 	pageInfo: PageInfo!
 }
 
 type Basket implements Node {
-	books(after: String, before: String, first: Int, last: Int): BasketBookConnection
+	books(after: String, before: String, first: Int, last: Int): SummableBookConnection
 	id: ID!
 	price: Price
 	quantity: Int
@@ -326,12 +320,12 @@ input CreateBookInput {
 
 type BasketBookResult {
 	basket: Basket
-	edge: BasketBookEdge
+	edge: SummableBookEdge
 }
 
 type UnbasketBookResult {
 	basket: Basket
-	edge: BasketBookEdge
+	edge: SummableBookEdge
 }
 
 type SendPurchaseResult {
