@@ -187,7 +187,7 @@ type Admin implements Viewer & Node {
 }
 
 enum PurchaseStatus {
-	PAID
+	MADE
 	SENT
 }
 

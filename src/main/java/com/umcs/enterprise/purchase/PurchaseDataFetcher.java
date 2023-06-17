@@ -12,7 +12,6 @@ import com.umcs.enterprise.user.UserDataLoader;
 import graphql.relay.*;
 import graphql.relay.PageInfo;
 import graphql.schema.DataFetchingEnvironment;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,6 +26,7 @@ import org.springframework.security.access.annotation.Secured;
 @DgsComponent
 @RequiredArgsConstructor
 public class PurchaseDataFetcher {
+
 	@NonNull
 	private final ConnectionService connectionService;
 
@@ -42,35 +42,29 @@ public class PurchaseDataFetcher {
 
 	@NonNull
 	private final BasketService basketService;
+
 	@NonNull
 	private final BookPurchaseRepository bookPurchaseRepository;
 
-	
-
-
 	@DgsData(parentType = "Viewer")
 	public Connection<Purchase> purchases(
-@InputArgument PurchaseWhere where,
+		@InputArgument PurchaseWhere where,
 		DataFetchingEnvironment dfe
 	) {
-
 		if (where == null) {
 			return connectionService.getConnection(
-					purchaseService.findByUserDatabaseId(
-							dfe.<User>getSource().getDatabaseId()
-					), dfe
-
+				purchaseService.findByUserDatabaseId(dfe.<User>getSource().getDatabaseId()),
+				dfe
 			);
 		}
 
 		return connectionService.getConnection(
-				purchaseService.findByUserDatabaseId(
-						dfe.<User>getSource().getDatabaseId(),
-						where.getStatus()
-				), dfe
-
+			purchaseService.findByUserDatabaseId(
+				dfe.<User>getSource().getDatabaseId(),
+				where.getStatus()
+			),
+			dfe
 		);
-
 	}
 
 	@DgsMutation
@@ -83,15 +77,13 @@ public class PurchaseDataFetcher {
 
 		purchase.setBooks(
 			bookPurchaseRepository.saveAll(
-				(
-					basket
-						.getBooks()
-						.stream()
-						.map(book ->
-							Mappers.getMapper(BookEdgeMapper.class).bookEdgeToBookPurchase(book, purchase)
-						)
-						.toList()
-				)
+				basket
+					.getBooks()
+					.stream()
+					.map(book ->
+						Mappers.getMapper(BookEdgeMapper.class).bookEdgeToBookPurchase(book, purchase)
+					)
+					.toList()
 			)
 		);
 
@@ -114,7 +106,7 @@ public class PurchaseDataFetcher {
 			.<UUID, Purchase>getDataLoader(PurchaseDataLoader.class)
 			.load(UUID.fromString(from.databaseId()))
 			.thenApply(purchase -> {
-				assert Objects.equals(purchase.getStatus(), PurchaseStatus.PAID);
+				assert Objects.equals(purchase.getStatus(), PurchaseStatus.MADE);
 				purchase.setStatus(PurchaseStatus.SENT);
 
 				return purchaseService.save(purchase);

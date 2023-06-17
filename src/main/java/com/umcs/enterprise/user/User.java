@@ -28,7 +28,6 @@ public class User implements Node<UUID> {
 	@Column(unique = true)
 	private String username;
 
-
 	@Builder.Default
 	private List<String> authorities = List.of("USER");
 }
