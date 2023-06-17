@@ -25,7 +25,7 @@ export const actions: Actions = {
 
 		await BasketBook({ input: { book: { id } } }, event);
 
-		throw redirect(303, '/basket');;
+		throw redirect(303, '/basket');
 	},
 	unbasket_book: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());
@@ -35,7 +35,7 @@ export const actions: Actions = {
 
 		await UnbasketBook({ input: { book: { id } } }, event);
 
-		throw redirect(303, '/basket');;
+		throw redirect(303, '/basket');
 	},
 	reset_basket: async (event) => {
 		setBasket(event, undefined);
@@ -43,8 +43,6 @@ export const actions: Actions = {
 		throw redirect(303, '/basket');
 	},
 	make_purchase: async (event) => {
-	
-
 		const response = await MakePurchase.mutate(
 			{ input: { basket: { id: event.cookies.get(BASKET_COOKIE) } } },
 			{ event }

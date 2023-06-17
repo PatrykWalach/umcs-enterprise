@@ -23,7 +23,6 @@ test('can add to basket', async ({ page }) => {
 	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna')).toBeVisible();
 });
- 
 
 test('can add to basket twice', async ({ page }) => {
 	// given

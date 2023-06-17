@@ -40,7 +40,7 @@ class Book {
 	async navigate() {
 		await this.loc.getByRole('link').click();
 		await expect.soft(this.page).toHaveTitle(this.title);
-		return new BookPage(this.page)
+		return new BookPage(this.page);
 	}
 }
 
@@ -55,7 +55,7 @@ export class BasketPage {
 
 	constructor(private page: Page) {
 		this.main = page.getByRole('main');
-		this.nav = new Navigation(page, page.getByRole("navigation"))
+		this.nav = new Navigation(page, page.getByRole('navigation'));
 	}
 }
 
@@ -73,13 +73,13 @@ export class Navigation {
 		await this.locator.getByRole('button', { name: 'show menu' }).click();
 		await this.locator.getByRole('link', { name: 'Add book' }).click();
 		await expect.soft(this.page).toHaveTitle('Add book');
-		return new AddBookPage(this.page)
+		return new AddBookPage(this.page);
 	}
 
 	async goToBasket() {
 		await this.basketItems.click();
 		await expect.soft(this.page).toHaveTitle('Basket');
-		return new BasketPage(this.page)
+		return new BasketPage(this.page);
 	}
 
 	login: Locator;
@@ -123,7 +123,7 @@ export class AddBookPage {
 
 export class BookPage {
 	private actions: Locator;
- 
+
 	main: Locator;
 	nav: Navigation;
 
@@ -139,7 +139,7 @@ export class BookPage {
 			})
 			.click();
 		await expect.soft(this.page).toHaveTitle('Home');
-		return new HomePage(this.page)
+		return new HomePage(this.page);
 	}
 
 	constructor(private page: Page) {

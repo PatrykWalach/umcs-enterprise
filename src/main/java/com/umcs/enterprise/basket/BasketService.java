@@ -24,19 +24,23 @@ public class BasketService {
 			return new Basket();
 		}
 
-		GlobalId<HashMap<Long, Integer>> globalId = GlobalId.from(id, new TypeReference<GlobalId<HashMap<Long, Integer>>>() {
-		});
+		GlobalId<HashMap<Long, Integer>> globalId = GlobalId.from(
+			id,
+			new TypeReference<GlobalId<HashMap<Long, Integer>>>() {}
+		);
 
 		assert Objects.equals(globalId.className(), "Basket");
 
 		var books = bookRepository
 			.findAllById(globalId.databaseId().keySet().stream().toList())
 			.stream()
-			.collect(Collectors.toMap( Function.identity(), (book)-> globalId.databaseId().get(book.getDatabaseId())));
+			.collect(
+				Collectors.toMap(
+					Function.identity(),
+					book -> globalId.databaseId().get(book.getDatabaseId())
+				)
+			);
 
-		return new Basket(
-
-				books
-		);
+		return new Basket(books);
 	}
 }

@@ -100,8 +100,7 @@ public class PurchaseDataFetcher {
 		@InputArgument SendPurchaseInput input,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId<Long> from = GlobalId.from(input.getID(), new TypeReference<GlobalId<Long>>() {
-		});
+		GlobalId<Long> from = GlobalId.from(input.getID(), new TypeReference<GlobalId<Long>>() {});
 		assert Objects.equals(from.className(), "Purchase");
 
 		return dfe

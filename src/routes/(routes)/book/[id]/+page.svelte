@@ -73,7 +73,6 @@
 							Add to basket
 						</button>
 
-						
 						{#if $BookQuery.data.viewer?.__typename === 'Admin'}
 							<button
 								type="submit"

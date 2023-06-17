@@ -36,8 +36,7 @@ public class NodeDataFetcher {
 		@InputArgument String id,
 		DgsDataFetchingEnvironment enf
 	) throws JsonProcessingException {
-		GlobalId<Long> globalId = GlobalId.from(id, new TypeReference<GlobalId<Long>>() {
-		});
+		GlobalId<Long> globalId = GlobalId.from(id, new TypeReference<GlobalId<Long>>() {});
 
 		DataLoader<Long, Node<Long>> loader = enf.getDataLoader(globalId.className() + "DataLoader");
 
@@ -67,8 +66,7 @@ public class NodeDataFetcher {
 			purchaseRepository::deleteById
 		);
 
-		GlobalId<Long> globalId = GlobalId.from(input.getId(), new TypeReference<GlobalId<Long>>() {
-		});
+		GlobalId<Long> globalId = GlobalId.from(input.getId(), new TypeReference<GlobalId<Long>>() {});
 
 		Consumer<Long> consumer = delete.get(globalId.className());
 

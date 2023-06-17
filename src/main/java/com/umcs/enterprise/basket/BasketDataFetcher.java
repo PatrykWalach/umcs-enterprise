@@ -9,7 +9,6 @@ import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
 import graphql.relay.DefaultConnectionCursor;
-
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
@@ -68,8 +67,10 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId<Long> globalId = GlobalId.from(input.getBook().getId(), new TypeReference<GlobalId<Long>>() {
-		});
+		GlobalId<Long> globalId = GlobalId.from(
+			input.getBook().getId(),
+			new TypeReference<GlobalId<Long>>() {}
+		);
 		assert Objects.equals(globalId.className(), "Book");
 
 		Book book = bookRepository
@@ -94,9 +95,10 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId<Long> globalId = GlobalId.from(input.getBook().getId(), new TypeReference<GlobalId<Long>>() {
-
-		});
+		GlobalId<Long> globalId = GlobalId.from(
+			input.getBook().getId(),
+			new TypeReference<GlobalId<Long>>() {}
+		);
 		assert Objects.equals(globalId.className(), "Book");
 
 		Book book = bookRepository
