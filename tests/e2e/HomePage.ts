@@ -64,7 +64,7 @@ export class Navigation {
 	async addBook() {
 		await this.locator.getByRole('button', { name: 'show menu' }).click();
 		await this.locator.getByRole('link', { name: 'Add book' }).click();
-		await expect(this.page).toHaveTitle('Add book')
+		await expect(this.page).toHaveTitle('Add book');
 	}
 
 	async goToBasket() {
