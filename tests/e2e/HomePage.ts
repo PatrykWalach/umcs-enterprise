@@ -53,11 +53,18 @@ export class BasketPage {
 
 export class Navigation {
 	basketItems: Locator;
+
 	async logout() {
 		await this.locator.getByRole('button', { name: 'show menu' }).click();
 		await this.locator.getByRole('button', { name: 'logout' }).click();
 		await expect.soft(this.register).toBeVisible();
 		await expect.soft(this.login).toBeVisible();
+	}
+
+	async addBook() {
+		await this.locator.getByRole('button', { name: 'show menu' }).click();
+		await this.locator.getByRole('link', { name: 'Add book' }).click();
+		await expect(this.page).toHaveTitle('Add book')
 	}
 
 	async goToBasket() {
