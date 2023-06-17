@@ -1,0 +1,14 @@
+query PurchasesQuery($id: ID!) {
+	node(id: $id) {
+		... on User {
+			id
+			purchases(first: 10) {
+				edges {
+					node {
+						id
+					}
+				}
+			}
+		}
+	}
+}

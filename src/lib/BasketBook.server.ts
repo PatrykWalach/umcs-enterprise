@@ -1,8 +1,8 @@
 import { graphql, type BasketBook$input } from '$houdini';
-import { redirect, type RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 
-import { setBasket } from './setBasket';
 import { BASKET_COOKIE } from './constants';
+import { setBasket } from './setBasket';
 
 const BasketBook = graphql(`
 	mutation BasketBook($input: BasketBookInput!) {
@@ -31,10 +31,6 @@ export default async function basketBook(variables: BasketBook$input, event: Req
 
 	if (response.data?.basketBook) {
 		setBasket(event, response.data.basketBook.basket.id);
-	}
-
-	if (response.data?.basketBook?.edge?.node?.id) {
-		throw redirect(303, '/book/' + response.data.basketBook.edge.node.id);
 	}
 
 	return response;

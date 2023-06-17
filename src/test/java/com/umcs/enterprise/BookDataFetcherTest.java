@@ -285,7 +285,16 @@ class BookDataFetcherTest {
 				.flatMap(i ->
 					Stream
 						.concat(slices.get(i).stream(), Stream.of(book))
-						.map(book1 -> BookPurchase.newBuilder().book(book1).purchase(purchases.get(i)).build())
+						.map(book1 ->
+							BookPurchase
+								.newBuilder()
+								.databaseId(
+									new BookPurchaseId(purchases.get(i).getDatabaseId(), book1.getDatabaseId())
+								)
+								.book(book1)
+								.purchase(purchases.get(i))
+								.build()
+						)
 				)
 				.toList()
 		);
@@ -317,7 +326,14 @@ class BookDataFetcherTest {
 		bookPurchaseRepository.saveAll(
 			Stream
 				.concat(recommended.stream(), Stream.of(book))
-				.map(book1 -> BookPurchase.newBuilder().book(book1).purchase(purchase).build())
+				.map(book1 ->
+					BookPurchase
+						.newBuilder()
+						.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book1.getDatabaseId()))
+						.book(book1)
+						.purchase(purchase)
+						.build()
+				)
 				.toList()
 		);
 

@@ -1,6 +1,7 @@
 package com.umcs.enterprise.node;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
 import com.umcs.enterprise.book.Book;
@@ -31,20 +32,20 @@ public class NodeDataFetcher {
 	}
 
 	@DgsQuery
-	public CompletableFuture<Node<UUID>> node(
+	public CompletableFuture<Node<Long>> node(
 		@InputArgument String id,
 		DgsDataFetchingEnvironment enf
 	) throws JsonProcessingException {
-		GlobalId<String> globalId = GlobalId.from(id);
+		GlobalId<Long> globalId = GlobalId.from(id, new TypeReference<GlobalId<Long>>() {});
 
-		DataLoader<UUID, Node<UUID>> loader = enf.getDataLoader(globalId.className() + "DataLoader");
+		DataLoader<Long, Node<Long>> loader = enf.getDataLoader(globalId.className() + "DataLoader");
 
 		if (loader == null) {
 			throw new DgsEntityNotFoundException();
 		}
 
 		return loader
-			.load(UUID.fromString(globalId.databaseId()))
+			.load((globalId.databaseId()))
 			.thenApply(Optional::ofNullable)
 			.thenApply(optional -> optional.orElseThrow(DgsEntityNotFoundException::new));
 	}
@@ -56,7 +57,7 @@ public class NodeDataFetcher {
 	@DgsMutation
 	@Secured("ADMIN")
 	public DeleteResult delete(@InputArgument DeleteInput input) throws JsonProcessingException {
-		Map<String, Consumer<UUID>> delete = Map.of(
+		Map<String, Consumer<Long>> delete = Map.of(
 			"Book",
 			bookRepository::deleteById,
 			"User",
@@ -65,15 +66,15 @@ public class NodeDataFetcher {
 			purchaseRepository::deleteById
 		);
 
-		GlobalId<String> globalId = GlobalId.from(input.getId());
+		GlobalId<Long> globalId = GlobalId.from(input.getId(), new TypeReference<GlobalId<Long>>() {});
 
-		Consumer<UUID> consumer = delete.get(globalId.className());
+		Consumer<Long> consumer = delete.get(globalId.className());
 
 		if (consumer == null) {
 			throw new DgsEntityNotFoundException();
 		}
 
-		consumer.accept(UUID.fromString(globalId.databaseId()));
+		consumer.accept((globalId.databaseId()));
 
 		return DeleteResult.newBuilder().id(input.getId()).build();
 	}

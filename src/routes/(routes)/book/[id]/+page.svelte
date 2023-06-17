@@ -62,13 +62,17 @@
 					</div>
 
 					<form
-						method="POST"
+						method="post"
 						action="?/basket_book"
 						use:enhance
 						class="grid gap-2 md:gap-4"
 						aria-label="Actions"
 					>
 						<input type="hidden" name="id" value={$BookQuery.data.node.id} />
+						<button type="submit" class="btn-secondary btn-lg btn cursor-default">
+							Add to basket
+						</button>
+
 						{#if $BookQuery.data.viewer?.__typename === 'Admin'}
 							<button
 								type="submit"
@@ -76,17 +80,6 @@
 								formaction="?/delete"
 							>
 								Delete
-							</button>
-						{:else}
-							<button type="submit" class="btn-secondary btn-lg btn cursor-default">
-								Add to basket
-							</button>
-							<button
-								type="submit"
-								class="btn-primary btn-lg btn cursor-default"
-								formaction="?/buy_now"
-							>
-								Buy now
 							</button>
 						{/if}
 					</form>

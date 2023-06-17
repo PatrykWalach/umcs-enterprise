@@ -57,7 +57,7 @@
 					</div>
 				</a>
 
-				{#if $NavbarQuery.data?.viewer?.__typename === 'User'}
+				{#if $NavbarQuery.data?.viewer}
 					<div class="dropdown-end dropdown z-10">
 						<button
 							type="button"
@@ -84,21 +84,34 @@
 								/>
 							</svg>
 						</button>
-						<form action="/logout" method="POST" use:enhance>
+						<form action="/logout" method="post" use:enhance>
 							<ul
 								tabindex="-1"
-								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 bg-base-100 p-2 shadow-xl"
+								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 border border-base-200 bg-base-100 p-2 shadow-xl"
 							>
 								<li>
-									<a class="justify-between" href="">
-										Profile
-										<span class="badge badge-neutral">New</span>
+									<a href="/user/{$NavbarQuery.data.viewer.id}/purchases">
+										Purchases <span class="badge badge-neutral">
+											{$NavbarQuery.data.viewer.purchases?.edges?.length ?? 0}
+										</span>
 									</a>
 								</li>
-								<li><a href="">Settings</a></li>
+								<li><a href="/user/{$NavbarQuery.data.viewer.id}">Settings</a></li>
 								<li>
 									<button type="submit">Logout</button>
 								</li>
+								{#if $NavbarQuery.data.viewer.__typename === 'Admin'}
+									<div class="divider">Admin</div>
+									<li>
+										<a href="/admin/add">Add book</a>
+									</li>
+									<li>
+										<a href="/admin/users">Users</a>
+									</li>
+									<li>
+										<a href="/admin/purchases">Purchases</a>
+									</li>
+								{/if}
 							</ul>
 						</form>
 					</div>

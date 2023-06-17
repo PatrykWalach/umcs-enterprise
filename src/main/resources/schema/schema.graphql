@@ -120,6 +120,7 @@ type BookConnection {
 	edges: [BookEdge]
 	pageInfo: PageInfo!
 }
+
 type BookEdge {
 	cursor: String
 	node: Book
@@ -146,23 +147,49 @@ type Book implements Node {
 	title: String
 }
 
+input PurchaseWhere {
+	status: PurchaseStatus
+}
+
 interface Viewer implements Node {
 	id: ID!
+	name: String
+	purchases(
+		after: String
+		before: String
+		first: Int
+		last: Int
+		where: PurchaseWhere
+	): PurchaseConnection
 }
 
 type User implements Viewer & Node {
 	id: ID!
 	name: String
-	purchases(after: String, before: String, first: Int, last: Int): PurchaseConnection
+	purchases(
+		after: String
+		before: String
+		first: Int
+		last: Int
+		where: PurchaseWhere
+	): PurchaseConnection
 }
 
 type Admin implements Viewer & Node {
 	id: ID!
+	name: String
+	purchases(
+		after: String
+		before: String
+		first: Int
+		last: Int
+		where: PurchaseWhere
+	): PurchaseConnection
 }
 
 enum PurchaseStatus {
-	AWAITING_PAYMENT
-	COMPLETE
+	MADE
+	SENT
 }
 
 scalar DateTime
@@ -182,41 +209,31 @@ type PurchaseEdge {
 	cursor: String
 	node: Purchase
 }
+
 type Purchase implements Node {
-	books(after: String, before: String, first: Int, last: Int): PurchaseBookConnection
+	books(after: String, before: String, first: Int, last: Int): SummableBookConnection
 	createdAt: DateTime
 	id: ID!
 	price: Price
+	quantity: Int
 	status: PurchaseStatus
 	user: User
 }
 
-type PurchaseBookEdge {
+type SummableBookEdge {
 	cursor: String
 	node: Book
 	price: Price
 	quantity: Int
 }
 
-type PurchaseBookConnection {
-	edges: [PurchaseBookEdge]
-	pageInfo: PageInfo!
-}
-
-type BasketBookEdge {
-	cursor: String
-	node: Book
-	price: Price
-	quantity: Int
-}
-
-type BasketBookConnection {
-	edges: [BasketBookEdge]
+type SummableBookConnection {
+	edges: [SummableBookEdge]
 	pageInfo: PageInfo!
 }
 
 type Basket implements Node {
-	books(after: String, before: String, first: Int, last: Int): BasketBookConnection
+	books(after: String, before: String, first: Int, last: Int): SummableBookConnection
 	id: ID!
 	price: Price
 	quantity: Int
@@ -271,9 +288,8 @@ type Query {
 	viewer: Viewer
 }
 
-input UpdateStatusInput {
+input SendPurchaseInput {
 	iD: ID!
-	status: PurchaseStatus!
 }
 
 type MakePurchaseResult {
@@ -301,15 +317,15 @@ input CreateBookInput {
 
 type BasketBookResult {
 	basket: Basket
-	edge: BasketBookEdge
+	edge: SummableBookEdge
 }
 
 type UnbasketBookResult {
 	basket: Basket
-	edge: BasketBookEdge
+	edge: SummableBookEdge
 }
 
-type UpdateStatusResult {
+type SendPurchaseResult {
 	purchase: Purchase
 }
 
@@ -371,13 +387,13 @@ type Mutation {
 	"""
 	register(input: RegisterInput!): RegisterResult
 	"""
+	4 requires role Admin
+	"""
+	sendPurchase(input: SendPurchaseInput!): SendPurchaseResult
+	"""
 	3.5 requires role User
 	"""
 	unbasketBook(input: UnbasketBookInput!): UnbasketBookResult
-	"""
-	4 requires role Admin
-	"""
-	updateStatus(input: UpdateStatusInput!): UpdateStatusResult
 }
 
 type RegisterSuccess {

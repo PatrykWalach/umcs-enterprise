@@ -13,7 +13,7 @@
 
 <svelte:head><title>Add book</title></svelte:head>
 <main>
-	<form method="POST" encType="multipart/form-data" use:enhance class="grid grid-cols-3">
+	<form method="post" encType="multipart/form-data" use:enhance class="grid grid-cols-3">
 		<fieldset disabled={$delayed} class="">
 			<legend>Add book</legend>
 

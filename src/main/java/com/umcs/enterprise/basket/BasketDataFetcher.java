@@ -1,13 +1,18 @@
 package com.umcs.enterprise.basket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
+import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
+import com.zaxxer.hikari.HikariDataSource;
+import graphql.relay.Connection;
 import graphql.relay.DefaultConnectionCursor;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 import lombok.NonNull;
@@ -27,18 +32,32 @@ public class BasketDataFetcher {
 	private final BookRepository bookRepository;
 
 	@NonNull
+	private final ConnectionService connectionService;
+
+	@DgsData(parentType = "Basket")
+	public Connection<BookEdge> books(DgsDataFetchingEnvironment env) {
+		Basket basket = env.getSource();
+
+		return connectionService.getConnection(basket.getBooks(), env);
+	}
+
+	@NonNull
 	private final BasketService basketService;
+
+	@NonNull
+	private final SummableService summableService;
 
 	@DgsData(parentType = "Basket")
 	public BigDecimal price(DgsDataFetchingEnvironment env) {
 		Basket basket = env.getSource();
 
-		return basket
-			.getBooks()
-			.stream()
-			.filter(Objects::nonNull)
-			.map(edge -> edge.getBook().getPrice().multiply(BigDecimal.valueOf(edge.getQuantity())))
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		return summableService.sumPrice(basket.getBooks());
+	}
+
+	@DgsData(parentType = "Basket")
+	public Integer quantity(DgsDataFetchingEnvironment env) {
+		Basket basket = env.getSource();
+		return summableService.sumQuantity(basket.getBooks());
 	}
 
 	@DgsData(parentType = "Book")
@@ -53,23 +72,20 @@ public class BasketDataFetcher {
 			.anyMatch(book::equals);
 	}
 
-	@DgsData(parentType = "Basket")
-	public Integer quantity(DgsDataFetchingEnvironment env) {
-		Basket basket = env.getSource();
-		return basket.getBooks().stream().mapToInt(BookEdge::getQuantity).sum();
-	}
-
 	@DgsMutation
 	public BasketBookResult basketBook(
 		@InputArgument BasketBookInput input,
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId<String> globalId = GlobalId.from(input.getBook().getId());
+		GlobalId<Long> globalId = GlobalId.from(
+			input.getBook().getId(),
+			new TypeReference<GlobalId<Long>>() {}
+		);
 		assert Objects.equals(globalId.className(), "Book");
 
 		Book book = bookRepository
-			.findById(UUID.fromString(globalId.databaseId()))
+			.findById((globalId.databaseId()))
 			.orElseThrow(DgsEntityNotFoundException::new);
 
 		Basket basket = basketService.getBasket(input.getBasket().getId());
@@ -90,11 +106,14 @@ public class BasketDataFetcher {
 		@RequestHeader(required = false) String Authorization,
 		DgsDataFetchingEnvironment dfe
 	) throws JsonProcessingException {
-		GlobalId<String> globalId = GlobalId.from(input.getBook().getId());
+		GlobalId<Long> globalId = GlobalId.from(
+			input.getBook().getId(),
+			new TypeReference<GlobalId<Long>>() {}
+		);
 		assert Objects.equals(globalId.className(), "Book");
 
 		Book book = bookRepository
-			.findById(UUID.fromString(globalId.databaseId()))
+			.findById((globalId.databaseId()))
 			.orElseThrow(DgsEntityNotFoundException::new);
 
 		Basket basket = basketService.getBasket(input.getBasket().getId());

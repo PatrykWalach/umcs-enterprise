@@ -11,9 +11,11 @@ export const actions: Actions = {
 			throw error(500, 'No book id');
 		}
 
-		await BasketBook({ input: { book: { id } } }, event);
+		const response = await BasketBook({ input: { book: { id } } }, event);
 
-		return {};
+		if (response.data?.basketBook?.edge?.node?.id) {
+			throw redirect(303, '/book/' + response.data.basketBook.edge.node.id);
+		}
 	},
 	delete: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());

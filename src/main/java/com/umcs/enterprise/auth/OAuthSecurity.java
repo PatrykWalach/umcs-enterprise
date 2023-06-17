@@ -58,6 +58,9 @@ public class OAuthSecurity implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**");
+		// registry.addMapping("/graphql").allowedOrigins("*");
+		// registry.addMapping("/oauth2/**").allowedOrigins("*");
+		// registry.addMapping("/login").allowedOrigins("http://localhost:5173");
 	}
 
 	@Bean
@@ -158,6 +161,7 @@ public class OAuthSecurity implements WebMvcConfigurer {
 			.keyID(UUID.randomUUID().toString())
 			.build();
 		JWKSet jwkSet = new JWKSet(rsaKey);
+
 		return new ImmutableJWKSet<>(jwkSet);
 	}
 

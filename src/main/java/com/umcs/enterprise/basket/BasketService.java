@@ -1,6 +1,7 @@
 package com.umcs.enterprise.basket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
@@ -23,21 +24,23 @@ public class BasketService {
 			return new Basket();
 		}
 
-		GlobalId<HashMap<String, Integer>> globalId = GlobalId.from(id);
+		GlobalId<HashMap<Long, Integer>> globalId = GlobalId.from(
+			id,
+			new TypeReference<GlobalId<HashMap<Long, Integer>>>() {}
+		);
 
 		assert Objects.equals(globalId.className(), "Basket");
 
-		Map<String, Book> books = bookRepository
-			.findAllById(globalId.databaseId().keySet().stream().map(UUID::fromString).toList())
+		var books = bookRepository
+			.findAllById(globalId.databaseId().keySet().stream().toList())
 			.stream()
-			.collect(Collectors.toMap(book -> (book.getDatabaseId().toString()), Function.identity()));
+			.collect(
+				Collectors.toMap(
+					Function.identity(),
+					book -> globalId.databaseId().get(book.getDatabaseId())
+				)
+			);
 
-		return new Basket(
-			globalId
-				.databaseId()
-				.entrySet()
-				.stream()
-				.collect(Collectors.toMap(e -> books.get(e.getKey()), Map.Entry::getValue))
-		);
+		return new Basket(books);
 	}
 }

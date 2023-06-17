@@ -48,7 +48,7 @@ public class Seed {
 			userRepository.save(
 				User
 					.newBuilder()
-					.authorities(Collections.singletonList("ADMIN"))
+					.authorities(List.of("USER", "ADMIN"))
 					.username("admin")
 					.password("admin")
 					.build()
@@ -1434,6 +1434,7 @@ public class Seed {
 
 								return BookPurchase
 									.newBuilder()
+									.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book.getDatabaseId()))
 									.book(repository.save(book))
 									.purchase(purchase)
 									.build();

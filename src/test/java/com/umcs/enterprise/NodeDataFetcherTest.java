@@ -153,13 +153,15 @@ class NodeDataFetcherTest {
 	@WithMockUser(username = "user")
 	void doesntReturnOtherUserPurchase() throws JsonProcessingException {
 		//        given
-		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
-		);
+
 		var other = userService.save(
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("other").build()
 		);
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(other).build());
+
+		var user = userService.save(
+			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+		);
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", purchase.getId())
@@ -177,7 +179,7 @@ class NodeDataFetcherTest {
 	void notFound() throws JsonProcessingException {
 		//        given
 		var book = bookRepository.save(Book.newBuilder().title("Book title").build());
-		book.setDatabaseId(UUID.randomUUID());
+		book.setDatabaseId(-1L);
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", book.getId())

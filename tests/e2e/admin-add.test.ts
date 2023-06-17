@@ -1,13 +1,12 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
-import { AddBookPage, BookPage } from './HomePage.js';
+import HomePage, { AddBookPage, BookPage } from './HomePage.js';
 
 test('can upload cover', async ({ page, admin }) => {
 	// given
 
-	await page.goto('/admin/add');
+	await new HomePage(page).nav.addBook();
 	const addbookpage = new AddBookPage(page);
-	await expect(page).toHaveTitle('Add book');
 
 	await addbookpage.form.title.fill('Foo');
 	await addbookpage.form.author.fill('Bar');

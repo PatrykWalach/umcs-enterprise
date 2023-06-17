@@ -23,7 +23,7 @@
 		</div>
 		<div class="grid gap-4">
 			<form
-				method="POST"
+				method="post"
 				use:form.enhance
 				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow"
 			>

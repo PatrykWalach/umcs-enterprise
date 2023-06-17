@@ -1,5 +1,5 @@
 import { HoudiniClient } from '$houdini';
-import { redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
 function isErrorType(errorType: string) {
 	return (error: unknown) =>
@@ -14,12 +14,19 @@ function isErrorType(errorType: string) {
 
 export default new HoudiniClient({
 	url: 'http://localhost:8080/graphql',
+
 	throwOnError: {
 		operations: ['all'],
-		error(errors) {
+		error: (errors, ctx) => {
 			if (errors.some(isErrorType('UNAUTHENTICATED'))) {
-				throw redirect(303, '/login');
+				throw redirect(303, '/');
 			}
+			if (errors.some(isErrorType('NOT_FOUND'))) {
+				throw error(404);
+			}
+			throw error(500, {
+				message: `(${ctx.artifact.name}): ` + errors.map(({ message }) => message).join('. ') + '.'
+			});
 		}
 	},
 	fetchParams({ session }) {
