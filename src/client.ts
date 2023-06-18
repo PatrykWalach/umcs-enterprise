@@ -1,3 +1,4 @@
+import { PUBLIC_SERVER_ADDRESS } from '$env/static/public';
 import { HoudiniClient } from '$houdini';
 import { error, redirect } from '@sveltejs/kit';
 
@@ -13,7 +14,7 @@ function isErrorType(errorType: string) {
 }
 
 export default new HoudiniClient({
-	url: 'http://localhost:8080/graphql',
+	url: `http://${PUBLIC_SERVER_ADDRESS}:8080/graphql`,
 
 	throwOnError: {
 		operations: ['all'],

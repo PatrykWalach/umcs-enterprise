@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
+	import { PUBLIC_CLIENT_ADDRESS, PUBLIC_SERVER_ADDRESS } from '$env/static/public';
 	import '../app.css';
 	import type { LayoutData } from './$houdini';
 	export let data: LayoutData;
@@ -117,9 +118,9 @@
 					</div>
 				{:else}
 					<a
-						href={`http://localhost:8080/oauth2/authorize?${new URLSearchParams({
+						href={`http://${PUBLIC_SERVER_ADDRESS}:8080/oauth2/authorize?${new URLSearchParams({
 							client_id: 'bookstore',
-							redirect_uri: 'http://localhost:5173/login/callback',
+							redirect_uri: `http://${PUBLIC_CLIENT_ADDRESS}:5173/login/callback`,
 							response_type: 'code',
 							scope: 'openid profile read write',
 							state: $page.url.pathname
