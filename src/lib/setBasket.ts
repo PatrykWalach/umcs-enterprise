@@ -14,7 +14,9 @@ export function setBasket(event: RequestEvent, basket: string | null | undefined
 	}
 
 	event.cookies.set(BASKET_COOKIE, basket, {
-		path: '/'
+		path: '/',
+		sameSite: 'lax',
+		secure: false
 	});
 }
 

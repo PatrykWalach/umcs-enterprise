@@ -51,7 +51,9 @@ export const load: ServerLoad = async (event) => {
 	event.cookies.set(TOKEN_COOKIE, result.access_token, {
 		expires: new Date(Date.now() + 1000 * result.expires_in),
 		maxAge: 1000 * result.expires_in,
-		path: '/'
+		path: '/',
+		sameSite: 'lax',
+		secure: false
 	});
 
 	setSession(event, {

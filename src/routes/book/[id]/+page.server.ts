@@ -7,6 +7,7 @@ export const actions: Actions = {
 	basket_book: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());
 
+
 		if (typeof id !== 'string') {
 			throw error(500, 'No book id');
 		}

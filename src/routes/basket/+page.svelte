@@ -23,37 +23,41 @@
 		</ul>
 	</div>
 
-	<div class="grid gap-2 p-2 sm:gap-4 sm:p-4 lg:grid-cols-3">
-		<div class="card card-compact bg-base-200 lg:col-span-2">
-			<div class="card-body">
-				<ul class="grid gap-4 sm:grid-cols-2">
-					{#each $BasketQuery.data?.basket?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}
-						<li class="">
-							<Summable {edge}>
-								<form action="" class="" method="post" use:enhance>
-									<input type="hidden" value={edge.node.id} name="id" />
+	<div class="grid gap-2 py-2 sm:gap-4 sm:py-4 lg:grid-cols-3">
+		
 
-									<div class="grid flex-wrap gap-2 sm:flex">
-										<button
-											class="btn-neutral btn-error btn-sm join-item btn cursor-default"
-											formaction="/basket?/unbasket_book&{$page.url.searchParams}"
-										>
-											<span class="">remove</span>
-										</button>
-
-										<button
-											class="btn-neutral btn-primary btn-sm join-item btn cursor-default"
-											formaction="/basket?/basket_book&{$page.url.searchParams}"
-										>
-											<span class="">add more</span>
-										</button>
-									</div>
-								</form>
-							</Summable>
-						</li>
-					{/each}
-				</ul>
-				<div class="grid">
+		<div class="grid gap-2 lg:col-span-2">
+			<div class="card card-compact bg-base-200">
+				<div class="card-body">
+					<ul class="grid gap-4 sm:grid-cols-2">
+						{#each $BasketQuery.data?.basket?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}
+							<li class="">
+								<Summable {edge}>
+									<form action="" class="" method="post" use:enhance>
+										<input type="hidden" value={edge.node.id} name="id" />
+										<div class="grid flex-wrap gap-2 sm:flex">
+											<button
+												class="btn-neutral btn-error btn-sm join-item btn cursor-default"
+												formaction="/basket?/unbasket_book&{$page.url.searchParams}"
+											>
+												<span class="">remove</span>
+											</button>
+											<button
+												class="btn-neutral btn-primary btn-sm join-item btn cursor-default"
+												formaction="/basket?/basket_book&{$page.url.searchParams}"
+											>
+												<span class="">add more</span>
+											</button>
+										</div>
+									</form>
+								</Summable>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			</div>
+			<div	class="">
+				<div class="">
 					<nav class="join mx-auto grid grid-cols-2">
 						<a
 							class="join-item btn {$BasketQuery.data?.basket?.books?.pageInfo?.hasPreviousPage ||
@@ -63,7 +67,7 @@
 							$BasketQuery.data?.basket?.books?.pageInfo.startCursor
 								? `/basket?${new URLSearchParams({
 										before: $BasketQuery.data?.basket?.books.pageInfo.startCursor
-								  })}`
+									})}`
 								: undefined}
 						>
 							Previous
@@ -76,13 +80,14 @@
 							$BasketQuery.data?.basket?.books.pageInfo.endCursor
 								? `/basket?${new URLSearchParams({
 										after: $BasketQuery.data?.basket?.books.pageInfo.endCursor
-								  })}`
+									})}`
 								: undefined}
 						>
 							Next
 						</a>
 					</nav>
 				</div>
+	
 			</div>
 		</div>
 		<div>
