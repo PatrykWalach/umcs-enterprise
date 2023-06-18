@@ -30,34 +30,65 @@
 			</ul>
 		</div>
 
-		<div class="grid gap-2 p-2 sm:gap-4 sm:p-4 lg:grid-cols-3">
-			<div class="card-compact card bg-base-100 lg:col-span-2">
+	<div class="grid gap-2 py-2 sm:gap-4 sm:py-4 lg:grid-cols-3">
+		<div class="grid gap-2 lg:col-span-2">
+			<div class="card card-compact bg-base-200">
 				<div class="card-body">
-					<table class="">
-						{#each $PurchaseQuery.data?.node?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}
-							{#if true}
-								<tr class="p-2">
+					<ul class="grid gap-4 sm:grid-cols-2">
+						{#each $BasketQuery.data?.basket?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}
+							<li class="">
 									<Summable {edge} />
 								</tr>
-							{/if}
+		
 						{/each}
 
-						<tr class="p-2">
-							<td class="p-2" />
-							<td class="p-2"><span class="text-base">Total</span></td>
-							<td class="p-2">
-								<strong class="font-semibold" data-testid="total">
-									{$PurchaseQuery.data?.node?.price?.formatted}
-								</strong>
-							</td>
-						</tr>
-					</table>
+	</ul>
 				</div>
 			</div>
-			<div class="card flex-1 bg-base-200">
+			<div class="">
+				<div class="">
+					<nav class="join mx-auto grid grid-cols-2">
+						<a
+							class="join-item btn {$BasketQuery.data?.basket?.books?.pageInfo?.hasPreviousPage ||
+								'btn-disabled'}"
+							data-sveltekit-replacestate
+							href={$BasketQuery.data?.basket?.books?.pageInfo.hasPreviousPage &&
+							$BasketQuery.data?.basket?.books?.pageInfo.startCursor
+								? `/basket?${new URLSearchParams({
+										before: $BasketQuery.data?.basket?.books.pageInfo.startCursor
+								  })}`
+								: undefined}
+						>
+							Previous
+						</a>
+						<a
+							data-sveltekit-replacestate
+							class="join-item btn {$BasketQuery.data?.basket?.books?.pageInfo?.hasNextPage ||
+								'btn-disabled'}"
+							href={$BasketQuery.data?.basket?.books?.pageInfo?.hasNextPage &&
+							$BasketQuery.data?.basket?.books.pageInfo.endCursor
+								? `/basket?${new URLSearchParams({
+										after: $BasketQuery.data?.basket?.books.pageInfo.endCursor
+								  })}`
+								: undefined}
+						>
+							Next
+						</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+		<div>
+			<div class="card bg-base-200">
 				<div class="card-body">
 					<h2 class="card-title">Purchase</h2>
 					<dl class="">
+						<dt class="font-semibold">Total</dt>
+						<dd class="font-semibold" data-testid="total">
+							<strong>	
+								{$BasketQuery.data?.basket?.price?.formatted}
+							</strong>	
+						</dd>
 						<dt class="font-semibold">Status</dt>
 						<dd class="" data-testid="status">{$PurchaseQuery.data.node.status}</dd>
 						<dt class="font-semibold">Date</dt>

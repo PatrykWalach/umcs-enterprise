@@ -91,12 +91,14 @@
 			<div class="card bg-base-200">
 				<form use:enhance method="post" class="card-body">
 					<h2 class="card-title">Basket</h2>
-					<div class="flex justify-between">
-						<span class="text-base">Total</span>
-						<strong class="font-semibold" data-testid="total">
-							{$BasketQuery.data?.basket?.price?.formatted}
-						</strong>
-					</div>
+					<dl class="flex justify-between">
+						<dt class="text-base">Total</dt>
+						<dd class="font-semibold" data-testid="total">
+							<strong>
+								{$BasketQuery.data?.basket?.price?.formatted}
+							</strong>
+						</dd>
+					</dl>
 					{#if $BasketQuery.data?.viewer}
 						<button
 							class="btn-primary btn cursor-default"
