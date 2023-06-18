@@ -22,7 +22,7 @@ export const test = base.extend<{
 			const main = page.getByRole('main');
 			const nav = page.getByRole('navigation');
 			await nav.getByRole('link', { name: 'register' }).click();
-			await expect.soft(page).toHaveTitle('Register')
+			await expect.soft(page).toHaveTitle('Register');
 			await main.getByLabel('Username').fill(name);
 			await main.getByLabel('Password').fill(password);
 			await main.getByRole('button', { name: 'register' }).click();

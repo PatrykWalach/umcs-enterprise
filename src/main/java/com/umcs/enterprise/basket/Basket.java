@@ -20,9 +20,12 @@ public class Basket implements Node<Map<Long, Integer>> {
 	}
 
 	public List<BookEdge> getBooks() {
-		return books.entrySet().stream().map(e -> new BookEdge(e.getKey(), e.getValue())).sorted(Comparator.comparing(
-				(edge)-> edge.getBook().getDatabaseId()
-		)).toList();
+		return books
+			.entrySet()
+			.stream()
+			.map(e -> new BookEdge(e.getKey(), e.getValue()))
+			.sorted(Comparator.comparing(edge -> edge.getBook().getDatabaseId()))
+			.toList();
 	}
 
 	public BookEdge add(Book book) {

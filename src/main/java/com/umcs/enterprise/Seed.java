@@ -45,7 +45,7 @@ public class Seed {
 	@Bean
 	CommandLineRunner initDatabase(BookRepository repository, CoverService coverService) {
 		return args -> {
-			var admin  = userRepository.save(
+			var admin = userRepository.save(
 				User
 					.newBuilder()
 					.authorities(List.of("USER", "ADMIN"))
@@ -1414,7 +1414,7 @@ public class Seed {
 			repository.saveAll(books);
 
 			var purchases = purchaseRepository.saveAll(
-				Stream.generate(()->Purchase.newBuilder().user(admin).build()).limit(20).toList()
+				Stream.generate(() -> Purchase.newBuilder().user(admin).build()).limit(20).toList()
 			);
 
 			Random random = new Random(0);

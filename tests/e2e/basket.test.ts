@@ -66,16 +66,16 @@ test('can remove on second page @slow', async ({ page, register }) => {
 		const bookpage = await book.navigate();
 		await bookpage.addToBasket();
 		await page.goto('/');
-		await expect.soft(page).toHaveTitle('Home')
+		await expect.soft(page).toHaveTitle('Home');
 	}
 
 	const basketpage = await homepage.nav.goToBasket();
-	
+
 	await expect.soft(basketpage.total).toHaveText('244,24 zł');
 	await basketpage.next();
 	const book = basketpage.book('Lekarz kwantowy');
-	
-	await expect.soft(book.loc).toBeVisible()
+
+	await expect.soft(book.loc).toBeVisible();
 	await book.addMore();
 	await expect.soft(basketpage.total).toHaveText('272,64 zł');
 	await book.remove();
@@ -84,6 +84,5 @@ test('can remove on second page @slow', async ({ page, register }) => {
 	await book.remove();
 	// then
 	await expect.soft(basketpage.total).toHaveText('215,84 zł');
-	await expect.soft(basketpage.book('Kicia Kocia. Wiosna').loc).toBeVisible()
-
+	await expect.soft(basketpage.book('Kicia Kocia. Wiosna').loc).toBeVisible();
 });

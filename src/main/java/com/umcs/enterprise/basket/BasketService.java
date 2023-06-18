@@ -24,11 +24,7 @@ public class BasketService {
 			return new Basket();
 		}
 
-		GlobalId<Map<Long, Integer>> globalId = GlobalId.from(
-			id,
-				new TypeReference<>() {
-				}
-		);
+		GlobalId<Map<Long, Integer>> globalId = GlobalId.from(id, new TypeReference<>() {});
 
 		assert Objects.equals(globalId.className(), "Basket");
 
