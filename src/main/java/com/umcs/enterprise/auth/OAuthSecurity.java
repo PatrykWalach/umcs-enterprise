@@ -76,7 +76,7 @@ public class OAuthSecurity implements WebMvcConfigurer {
 			// authorization endpoint
 			.exceptionHandling(exceptions ->
 				exceptions.defaultAuthenticationEntryPointFor(
-					new LoginUrlAuthenticationEntryPoint("http://"+CLIENT_ADDRESS+":5173/login"),
+					new LoginUrlAuthenticationEntryPoint("http://" + CLIENT_ADDRESS + ":5173/login"),
 					new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
 				)
 			);
@@ -90,7 +90,10 @@ public class OAuthSecurity implements WebMvcConfigurer {
 		http
 			.csrf(AbstractHttpConfigurer::disable)
 			.formLogin(form ->
-				form.loginPage("http://"+CLIENT_ADDRESS+":5173/login").permitAll().loginProcessingUrl("/login")
+				form
+					.loginPage("http://" + CLIENT_ADDRESS + ":5173/login")
+					.permitAll()
+					.loginProcessingUrl("/login")
 			)
 			.authorizeHttpRequests(authorizeHttpRequests ->
 				authorizeHttpRequests
@@ -122,8 +125,8 @@ public class OAuthSecurity implements WebMvcConfigurer {
 		return http.build();
 	}
 
-@Value("${client.address}")
-public String CLIENT_ADDRESS;
+	@Value("${client.address}")
+	public String CLIENT_ADDRESS;
 
 	@Bean
 	public RegisteredClientRepository registeredClientRepository() {
@@ -135,7 +138,7 @@ public String CLIENT_ADDRESS;
 			.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
 			.clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
 			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-			.redirectUri("http://"+CLIENT_ADDRESS+":5173/login/callback")
+			.redirectUri("http://" + CLIENT_ADDRESS + ":5173/login/callback")
 			.scope(OidcScopes.OPENID)
 			.scope(OidcScopes.PROFILE)
 			.scope("read")
