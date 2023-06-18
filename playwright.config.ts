@@ -4,13 +4,13 @@ const config: PlaywrightTestConfig = {
 	webServer: [
 		{
 			command: './gradlew bootRun',
-			url: 'http://localhost:8080/graphiql',
+			url: `http://${process.env.PUBLIC_SERVER_ADDRESS}:8080/graphiql`,
 			timeout: 3 * 60 * 1000,
 			reuseExistingServer: !process.env.CI
 		},
 		{
 			command: 'npx turbo preview',
-			url: 'http://localhost:5173',
+			url: `http://${process.env.PUBLIC_CLIENT_ADDRESS}:5173`,
 			timeout: 3 * 60 * 1000,
 			reuseExistingServer: !process.env.CI
 		}
@@ -37,7 +37,7 @@ const config: PlaywrightTestConfig = {
 	use: {
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
-		baseURL: 'http://localhost:5173',
+		baseURL: `http://${process.env.PUBLIC_CLIENT_ADDRESS}:5173`,
 		video: 'retain-on-failure'
 	},
 	testDir: 'tests/e2e',

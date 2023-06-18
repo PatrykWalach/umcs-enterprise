@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { PUBLIC_SERVER_ADDRESS } from '$env/static/public';
 </script>
 
 <svelte:head>
@@ -17,7 +18,7 @@
 		<div class="grid gap-4">
 			<form
 				method="post"
-				action="http://localhost:8080/login"
+				action="http://{PUBLIC_SERVER_ADDRESS}:8080/login"
 				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow"
 			>
 				<fieldset>

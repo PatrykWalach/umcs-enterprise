@@ -1,5 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
+	"globalEnv": ["PUBLIC_CLIENT_ADDRESS", "PUBLIC_SERVER_ADDRESS"],
 	"pipeline": {
 		"build": {
 			"outputs": [".svelte-kit/**"],
