@@ -62,13 +62,8 @@
 				</div>
 			{/if}
 		</div>
-		<div>
-			<div class="flex items-center justify-between">
-				<input type="hidden" name="id" value={$data?.id} />
-				<div class="font-bold text-lg" data-testid="price">
-					{$data?.price?.formatted}
-				</div>
-			</div>
+		<div class="font-bold text-lg" data-testid="price">
+			{$data?.price?.formatted}
 		</div>
 	</div>
 </article>

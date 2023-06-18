@@ -122,7 +122,12 @@ public class BasketDataFetcher {
 		return UnbasketBookResult
 			.newBuilder()
 			.edge(
-				new graphql.relay.DefaultEdge<>(edge, new DefaultConnectionCursor(edge.getBook().getId()))
+				edge == null
+					? null
+					: new graphql.relay.DefaultEdge<>(
+						edge,
+						new DefaultConnectionCursor(edge.getBook().getId())
+					)
 			)
 			.basket(basket)
 			.build();

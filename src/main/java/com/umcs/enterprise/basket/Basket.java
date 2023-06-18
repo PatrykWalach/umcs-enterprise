@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 public class Basket implements Node<Map<Long, Integer>> {
 
-	private final SortedMap<Book, Integer> books;
+	private final Map<Book, Integer> books;
 
 	public Basket(Map<Book, Integer> books) {
-		this.books = new TreeMap<>(Comparator.comparing(Book::getCreatedAt));
+		this.books = new HashMap<>(books);
 		this.books.putAll(books);
 	}
 
@@ -20,7 +20,12 @@ public class Basket implements Node<Map<Long, Integer>> {
 	}
 
 	public List<BookEdge> getBooks() {
-		return books.entrySet().stream().map(e -> new BookEdge(e.getKey(), e.getValue())).toList();
+		return books
+			.entrySet()
+			.stream()
+			.map(e -> new BookEdge(e.getKey(), e.getValue()))
+			.sorted(Comparator.comparing(edge -> edge.getBook().getDatabaseId()))
+			.toList();
 	}
 
 	public BookEdge add(Book book) {

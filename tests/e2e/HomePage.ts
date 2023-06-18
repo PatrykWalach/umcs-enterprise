@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+
 class Layout {
 	main: Locator;
 	nav: Navigation;
@@ -25,6 +26,7 @@ export default class HomePage extends Layout {
 
 class Section {
 	constructor(private page: Page, private locator: Locator) {}
+
 	public book(title: string) {
 		return new Book(
 			this.page,
@@ -33,6 +35,30 @@ class Section {
 			}),
 			title
 		);
+	}
+}
+
+class BasketBook extends Layout {
+	quantity: Locator;
+	async addMore() {
+		const quantity = await this.nav.basketQuantity.textContent();
+		await this.loc.getByRole('button', { name: 'Add more' }).click();
+		await expect.soft(this.nav.basketQuantity).toHaveText(String(Number(quantity) + 1));
+	}
+	async remove() {
+		const quantity = await this.nav.basketQuantity.textContent();
+		await this.loc.getByRole('button', { name: 'Remove' }).click();
+		await expect.soft(this.nav.basketQuantity).toHaveText(String(Number(quantity) - 1));
+	}
+
+	title: Locator;
+
+	constructor(page: Page, public loc: Locator, title: string) {
+		super(page);
+		this.quantity = this.loc.getByTestId('quantity');
+		this.title = this.loc.getByRole('heading', {
+			name: title
+		});
 	}
 }
 
@@ -63,21 +89,40 @@ class PurchasePage extends Layout {
 }
 
 export class BasketPage extends Layout {
+	total: Locator;
+	constructor(page: Page) {
+		super(page);
+		this.total = this.main.getByTestId('total');
+	}
 	async makePurchase() {
 		await this.main.getByRole('button', { name: 'Make Purchase' }).click();
 		await expect.soft(this.page).toHaveTitle('Purchase');
+		await expect.soft(this.nav.basketQuantity).toHaveText('0');
 		return new PurchasePage(this.page);
 	}
 
+	async next() {
+		await this.main
+			.getByRole('navigation')
+			.getByRole('link', {
+				name: 'Next'
+			})
+			.click();
+	}
+
 	book(title: string) {
-		return this.main.getByRole('heading', {
-			name: title
-		});
+		return new BasketBook(
+			this.page,
+			this.main.getByRole('article', {
+				name: title
+			}),
+			title
+		);
 	}
 }
 
 export class Navigation {
-	basketItems: Locator;
+	basketQuantity: Locator;
 
 	async logout() {
 		await this.locator.getByRole('button', { name: 'show menu' }).click();
@@ -94,7 +139,7 @@ export class Navigation {
 	}
 
 	async goToBasket() {
-		await this.basketItems.click();
+		await this.locator.getByRole('link', { name: 'go to basket' }).click();
 		await expect.soft(this.page).toHaveTitle('Basket');
 		return new BasketPage(this.page);
 	}
@@ -105,7 +150,8 @@ export class Navigation {
 	constructor(private page: Page, private locator: Locator) {
 		this.login = locator.getByRole('link', { name: 'login' });
 		this.register = locator.getByRole('link', { name: 'register' });
-		this.basketItems = locator.getByRole('link', { name: 'go to basket' });
+
+		this.basketQuantity = locator.getByTestId('basket-quantity');
 	}
 }
 
@@ -139,8 +185,10 @@ export class BookPage extends Layout {
 	private actions: Locator;
 
 	async addToBasket() {
+		const quantity = await this.nav.basketQuantity.textContent();
 		await this.actions.getByRole('button', { name: 'Add to basket' }).click();
 		await expect.soft(this.page.getByText('In the basket')).toBeVisible();
+		await expect.soft(this.nav.basketQuantity).toHaveText(String(Number(quantity) + 1));
 	}
 
 	async delete() {

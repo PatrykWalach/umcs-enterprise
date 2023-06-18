@@ -131,6 +131,7 @@ public class PurchaseDataFetcher {
 	}
 
 	@DgsMutation
+	@Secured("ADMIN")
 	public CompletableFuture<Purchase> sendPurchase(
 		@InputArgument SendPurchaseInput input,
 		DgsDataFetchingEnvironment dfe

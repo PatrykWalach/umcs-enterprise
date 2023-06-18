@@ -44,7 +44,7 @@
 				? `/books?${new URLSearchParams({
 						by: $page.url.searchParams.get('by') ?? '',
 						order: $page.url.searchParams.get('order') ?? '',
-						after: $BooksQuery.data?.books.pageInfo.startCursor
+						before: $BooksQuery.data?.books.pageInfo.startCursor
 				  })}`
 				: undefined}
 		>

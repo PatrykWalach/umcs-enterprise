@@ -16,6 +16,16 @@ const MakePurchase = graphql(/* GraphQL */ `
 	}
 `);
 
+function pick(previous: URLSearchParams) {
+	const searchParams = new URLSearchParams();
+	for (const key of ['after', 'before']) {
+		for (const value of previous.getAll(key)) {
+			searchParams.append(key, value);
+		}
+	}
+	return searchParams;
+}
+
 export const actions: Actions = {
 	basket_book: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());
@@ -25,7 +35,7 @@ export const actions: Actions = {
 
 		await BasketBook({ input: { book: { id } } }, event);
 
-		throw redirect(303, '/basket');
+		throw redirect(303, '/basket?' + pick(event.url.searchParams));
 	},
 	unbasket_book: async (event) => {
 		const { id } = Object.fromEntries(await event.request.formData());
@@ -35,7 +45,7 @@ export const actions: Actions = {
 
 		await UnbasketBook({ input: { book: { id } } }, event);
 
-		throw redirect(303, '/basket');
+		throw redirect(303, '/basket?' + pick(event.url.searchParams));
 	},
 	reset_basket: async (event) => {
 		setBasket(event, undefined);
