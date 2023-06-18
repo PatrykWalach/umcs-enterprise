@@ -1,6 +1,6 @@
-query BasketQuery($after: String, $id: ID) {
+query BasketQuery($after: String, $before: String, $first: Int, $id: ID, $last: Int) {
 	basket(id: $id) {
-		books(after: $after, first: 10) {
+		books(after: $after, before: $before, first: $first, last: $last) {
 			edges {
 				node @required {
 					id
@@ -11,6 +11,8 @@ query BasketQuery($after: String, $id: ID) {
 			pageInfo {
 				endCursor
 				hasNextPage
+				hasPreviousPage
+				startCursor
 			}
 		}
 		id

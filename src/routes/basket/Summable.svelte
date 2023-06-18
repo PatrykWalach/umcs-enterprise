@@ -11,7 +11,14 @@
 				node @required {
 					author
 					covers(
-						transformation: { quality: { auto: DEFAULT }, format: AUTO }
+						transformation: {
+							aspectRatio: { width: 3, height: 5 }
+							crop: FILL_PAD
+							background: AUTO
+							gravity: AUTO
+							quality: { auto: DEFAULT }
+							format: AUTO
+						}
 						widths: [
 							100
 							200
@@ -49,11 +56,12 @@
 </script>
 
 {#if $data}
-	<td class="p-2">
-		<figure>
+	<article class="grid grid-cols-3 gap-4" aria-labelledby={$data?.node.id}>
+		<figure class="col-span-1 aspect-[3/5] overflow-hidden rounded">
 			<img
 				loading="lazy"
-				class="h-auto w-16 mix-blend-darken"
+				class="h-full w-full bg-contain bg-no-repeat object-contain object-top"
+				style="background-image: url('{$data?.node.covers?.filter(isNotNull).at(0)?.url}')"
 				srcset={$data.node.covers
 					?.filter(isNotNull)
 					.map((cover) => `${cover.url} ${cover.width}w`)
@@ -62,22 +70,25 @@
 				alt=""
 			/>
 		</figure>
-	</td>
-	<td class="p-2">
-		<div class="">
-			<h2 class="line-clamp-2 text-lg">
-				<a href="/book/{$data.node.id}" class="link-hover link">{$data.node.title}</a>
-			</h2>
-			<div class="">
-				{$data.node.author}
+		<div class="col-span-2">
+			<div class="grid gap-2">
+				<div class="">
+					<h2 class="line-clamp-2 text-xl xl:line-clamp-1">
+						<a href="/book/{$data.node.id}" class="link-hover link" id={$data?.node.id}>
+							{$data.node.title}
+						</a>
+					</h2>
+					<div class="text-sm">
+						{$data.node.author}
+					</div>
+					<div class="font-bold text-lg">
+						<span>{$data.quantity}</span>
+						x
+						{$data.node.price?.formatted}
+					</div>
+				</div>
+				<slot />
 			</div>
-			<div>{$data.node.price?.formatted}</div>
 		</div>
-	</td>
-
-	<slot />
-
-	<td class="p-2">
-		{$data.price?.formatted}
-	</td>
+	</article>
 {/if}
