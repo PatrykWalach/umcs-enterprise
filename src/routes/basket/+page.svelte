@@ -24,8 +24,6 @@
 	</div>
 
 	<div class="grid gap-2 py-2 sm:gap-4 sm:py-4 lg:grid-cols-3">
-		
-
 		<div class="grid gap-2 lg:col-span-2">
 			<div class="card card-compact bg-base-200">
 				<div class="card-body">
@@ -56,7 +54,7 @@
 					</ul>
 				</div>
 			</div>
-			<div	class="">
+			<div class="">
 				<div class="">
 					<nav class="join mx-auto grid grid-cols-2">
 						<a
@@ -67,7 +65,7 @@
 							$BasketQuery.data?.basket?.books?.pageInfo.startCursor
 								? `/basket?${new URLSearchParams({
 										before: $BasketQuery.data?.basket?.books.pageInfo.startCursor
-									})}`
+								  })}`
 								: undefined}
 						>
 							Previous
@@ -80,14 +78,13 @@
 							$BasketQuery.data?.basket?.books.pageInfo.endCursor
 								? `/basket?${new URLSearchParams({
 										after: $BasketQuery.data?.basket?.books.pageInfo.endCursor
-									})}`
+								  })}`
 								: undefined}
 						>
 							Next
 						</a>
 					</nav>
 				</div>
-	
 			</div>
 		</div>
 		<div>

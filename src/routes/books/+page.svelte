@@ -26,9 +26,7 @@
 		<button type="submit" class=" btn-secondary btn cursor-default">sort</button>
 	</form>
 
-	<ol
-		class="grid grid-cols-2 gap-10 gap-x-6  sm:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
-	>
+	<ol class="grid grid-cols-2 gap-10 gap-x-6 sm:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
 		{#each $BooksQuery.data?.books?.edges?.filter(isNotNull) ?? [] as book (book?.node?.id)}
 			<li class="grid">
 				<Book book={book.node} />
