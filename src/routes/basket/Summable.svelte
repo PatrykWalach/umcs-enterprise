@@ -66,7 +66,7 @@
 					?.filter(isNotNull)
 					.map((cover) => `${cover.url} ${cover.width}w`)
 					.join(', ')}
-				sizes="(min-width: 1335px) 410.6666666666667px, (min-width: 992px) calc(calc(100vw - 88px) / 3), (min-width: 768px) calc(calc(100vw - 64px) / 2), 100vw"
+				sizes="(min-width: 1280px) 33vw, 50vw"
 				alt=""
 			/>
 		</figure>

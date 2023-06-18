@@ -6,10 +6,9 @@ query BookQuery($basketId: ID, $id: ID!) {
 			author
 			covers(
 				transformation: {
-					aspectRatio: { width: 3, height: 5 }
-					crop: FILL_PAD
+					aspectRatio: { width: 1, height: 1 }
+					crop: PAD
 					background: AUTO
-					gravity: AUTO
 					quality: { auto: DEFAULT }
 					format: AUTO
 				}

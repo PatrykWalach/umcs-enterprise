@@ -42,10 +42,10 @@
 				</div>
 			{/if}
 
-			<div class="grid gap-2 sm:grid-cols-4 sm:gap-4">
+			<div class="grid gap-2 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
 				<div class="flex flex-col gap-2 md:gap-4">
 					<div class="card">
-						<figure class="aspect-[3/5] overflow-hidden rounded-xl">
+						<figure class="aspect-[1/1] overflow-hidden rounded-xl">
 							<img
 								loading="lazy"
 								class="h-full w-full bg-contain"
@@ -85,11 +85,11 @@
 					</form>
 				</div>
 
-				<div class="flex flex-col gap-2 sm:col-span-3 sm:gap-4">
+				<div class="flex flex-col gap-2 sm:gap-4 xl:col-span-2">
 					<header class="" aria-label="Base information">
 						<div class="card flex-1 bg-base-200 max-sm:card-compact xl:p-6">
 							<div class="card-body">
-								<h1 class="card-title text-7xl">
+								<h1 class="card-title text-5xl">
 									{$BookQuery.data.node?.title}
 								</h1>
 								{#if $BookQuery.data.node?.author}
@@ -122,9 +122,7 @@
 			<aside class="grid gap-2 sm:gap-4" aria-labelledby="frequently-bought-together">
 				{#if $BookQuery.data.node.recommended?.edges?.length}
 					<h2 class="mt-4 text-3xl" id="frequently-bought-together">Frequently bought together</h2>
-					<ol
-						class="grid grid-cols-1 gap-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
-					>
+					<ol class="grid grid-cols-2 gap-10 gap-x-6 sm:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
 						{#each $BookQuery.data.node.recommended?.edges
 							?.map((edge) => edge?.node)
 							.filter(isNotNull) ?? [] as book (book.id)}
