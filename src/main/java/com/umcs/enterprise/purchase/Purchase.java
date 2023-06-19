@@ -4,15 +4,14 @@ import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.Set;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.Instant;
-import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -40,10 +39,10 @@ public class Purchase implements Node<Long> {
 	@Column(nullable = false)
 	private Instant createdAt;
 
-
 	@Column(length = 2_000)
-	private  String payUrl;
-	private  String orderId;
+	private String payUrl;
+
+	private String orderId;
 
 	@Override
 	public boolean equals(Object o) {

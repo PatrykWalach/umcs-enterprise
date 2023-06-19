@@ -8,16 +8,15 @@ import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Stream;
 
 @Configuration
 @RequiredArgsConstructor

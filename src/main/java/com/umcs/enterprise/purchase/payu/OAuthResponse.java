@@ -5,18 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter @Getter
+@Setter
+@Getter
 @NoArgsConstructor
 public class OAuthResponse {
-    @JsonProperty("access_token")
-private  String accessToken;
 
-    @JsonProperty("token_type")
-    private  String tokenType;
+	@JsonProperty("access_token")
+	private String accessToken;
 
-    @JsonProperty("expires_in")
-    private Long expiresIn;
+	@JsonProperty("token_type")
+	private String tokenType;
 
-    @JsonProperty("grant_type")
-    private  String grantType;
+	@JsonProperty("expires_in")
+	private Long expiresIn;
+
+	@JsonProperty("grant_type")
+	private String grantType;
 }

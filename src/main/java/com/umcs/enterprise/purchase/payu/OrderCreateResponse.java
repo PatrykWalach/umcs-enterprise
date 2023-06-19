@@ -9,9 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrderCreateResponse {
 
-     private String  redirectUri;
-     private  String orderId;
-     private  String extOrderId;
-
-
+	private String redirectUri;
+	private String orderId;
+	private String extOrderId;
 }

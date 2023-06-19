@@ -4,15 +4,14 @@ import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.purchase.BookPurchase;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.Hibernate;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
+import lombok.*;
+import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Builder(builderMethodName = "newBuilder")

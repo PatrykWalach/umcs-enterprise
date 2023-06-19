@@ -39,7 +39,7 @@
 
 		<div class="grid gap-2 py-2 sm:gap-4 sm:py-4 lg:grid-cols-3">
 			<div class="grid gap-2 lg:col-span-2">
-				<div class="card card-compact bg-base-200">
+				<div class="card-compact card bg-base-200">
 					<div class="card-body">
 						<ul class="grid gap-4 sm:grid-cols-2">
 							{#each $PurchaseQuery.data?.node?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}

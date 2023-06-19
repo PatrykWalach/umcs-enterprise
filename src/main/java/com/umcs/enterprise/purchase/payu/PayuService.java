@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.basket.SummableService;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.types.PurchaseStatus;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -13,9 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -52,17 +51,15 @@ public class PayuService {
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 			.body(
-				BodyInserters.fromFormData(
-				  "grant_type","client_credentials").with(
-						"client_id", clientId).with(
-						"client_secret",clientSecret)
+				BodyInserters
+					.fromFormData("grant_type", "client_credentials")
+					.with("client_id", clientId)
+					.with("client_secret", clientSecret)
 			)
 			.retrieve()
-			.bodyToMono(OAuthResponse.class).block();
+			.bodyToMono(OAuthResponse.class)
+			.block();
 	}
-
-
-	
 
 	@NonNull
 	private final ObjectMapper mapper;
@@ -73,27 +70,27 @@ public class PayuService {
 	public OrderCreateResponse save(Purchase purchase) {
 		OrderCreateRequest body = Mappers
 			.getMapper(OrderCreateRequestMapper.class)
-			.purchaseToRequest(purchase, posId, "http://"+CLIENT_ADDRESS+":5173/purchase/"+purchase.getId() ,  summableService);
+			.purchaseToRequest(
+				purchase,
+				posId,
+				"http://" + CLIENT_ADDRESS + ":5173/purchase/" + purchase.getId(),
+				summableService
+			);
 
 		OAuthResponse response = authorize();
 
+		assert "bearer".equals(response.getGrantType());
 
-
-		
-				assert "bearer".equals(response.getGrantType());
-
-
-
-				return api
-					.post()
-					.uri("/orders")
-//					.accept(MediaType.APPLICATION_JSON)
-					.contentType(MediaType.APPLICATION_JSON)
-					.header("Authorization",  "Bearer " + response.getAccessToken())
-					.bodyValue(body)
-					.retrieve()
-					.bodyToMono(OrderCreateResponse.class)
-		 .block();
+		return api
+			.post()
+			.uri("/orders")
+			//					.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", "Bearer " + response.getAccessToken())
+			.bodyValue(body)
+			.retrieve()
+			.bodyToMono(OrderCreateResponse.class)
+			.block();
 	}
 
 	public boolean isPaid(Purchase purchase) {

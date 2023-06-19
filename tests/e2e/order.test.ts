@@ -50,7 +50,7 @@ test('can pay order', async ({ page, register }) => {
 	// when
 	const paypalpage = await purchasepage.pay();
 	// then
-	await paypalpage.paymentCard()
+	await paypalpage.paymentCard();
 	await expect.soft(purchasepage.send).not.toBeVisible();
 	await expect.soft(purchasepage.status).toHaveText('PAID');
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
@@ -75,9 +75,8 @@ test('can send order', async ({ page, admin }) => {
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
 	await expect.soft(purchasepage.send).not.toBeVisible();
 
-	
 	const paypalpage = await purchasepage.pay();
-	await paypalpage.paymentCard()
+	await paypalpage.paymentCard();
 	await expect.soft(purchasepage.status).toHaveText('PAID');
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
 	// when

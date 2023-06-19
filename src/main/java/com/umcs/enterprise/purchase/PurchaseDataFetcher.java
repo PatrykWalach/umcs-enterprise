@@ -16,17 +16,16 @@ import com.umcs.enterprise.user.UserDataLoader;
 import com.umcs.enterprise.user.UserRepository;
 import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.factory.Mappers;
-import org.springframework.security.access.annotation.Secured;
-
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
+import org.springframework.security.access.annotation.Secured;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -34,6 +33,7 @@ public class PurchaseDataFetcher {
 
 	@NonNull
 	private final ConnectionService connectionService;
+
 	@NonNull
 	private final PayuService payuService;
 
@@ -77,8 +77,6 @@ public class PurchaseDataFetcher {
 	@NonNull
 	private final SummableService summableService;
 
-	
-
 	@DgsData(parentType = "Purchase")
 	public Long price(DgsDataFetchingEnvironment env) {
 		Purchase purchase = env.getSource();
@@ -106,63 +104,44 @@ public class PurchaseDataFetcher {
 		return connectionService.getConnection(purchase.getBooks().stream().toList(), env);
 	}
 
-
-
 	@DgsMutation
 	@Secured("USER")
 	public MakePurchaseResult makePurchase(@InputArgument MakePurchaseInput input)
 		throws JsonProcessingException {
-		var books = basketService.getBasket(input.getBasket().getId())	.getBooks();
+		var books = basketService.getBasket(input.getBasket().getId()).getBooks();
 
 		assert books.size() > 0;
 
-
 		var purchase = purchaseService.save(Purchase.newBuilder().build());
 
-	
-		
-
 		purchase.setBooks(
-				new HashSet<>(	bookPurchaseRepository.saveAll(
-						books
-
-								.stream()
-								.map(book ->
-										Mappers.getMapper(BookEdgeMapper.class).bookEdgeToBookPurchase(book, purchase)
-								)
-								.collect(Collectors.toSet()))
+			new HashSet<>(
+				bookPurchaseRepository.saveAll(
+					books
+						.stream()
+						.map(book ->
+							Mappers.getMapper(BookEdgeMapper.class).bookEdgeToBookPurchase(book, purchase)
+						)
+						.collect(Collectors.toSet())
 				)
+			)
 		);
-
 
 		OrderCreateResponse response = payuService.save(purchase);
 
+		purchase.setPayUrl(response.getRedirectUri());
 
-
-		purchase.setPayUrl(
-				response.getRedirectUri()
-
-		);
-
-		purchase.setOrderId(
-
-				 (response.getOrderId())
-		);
+		purchase.setOrderId((response.getOrderId()));
 
 		purchaseService.save(purchase);
 
-
-			return (MakePurchaseResult
-						.newBuilder()
-						.purchase(purchase)
-						.basket(basketService.getBasket(null))
-						.build());
-
-
-
-
-
-
+		return (
+			MakePurchaseResult
+				.newBuilder()
+				.purchase(purchase)
+				.basket(basketService.getBasket(null))
+				.build()
+		);
 	}
 
 	@DgsMutation

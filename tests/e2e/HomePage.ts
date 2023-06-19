@@ -114,9 +114,6 @@ class PaypalPage {
 				name: 'Pay'
 			})
 			.click();
-
-
-
 	}
 
 	constructor(private page: Page) {

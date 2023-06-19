@@ -7,11 +7,10 @@ import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookDataLoader;
 import graphql.relay.Edge;
+import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
-
-import java.util.concurrent.CompletableFuture;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -24,9 +23,7 @@ public class SummableEdgeDataFetcher {
 	public Long price(DgsDataFetchingEnvironment env) {
 		var edge = env.<Edge<SummableEdge>>getSource();
 
-
 		return edge.getNode().getPrice();
-
 	}
 
 	@DgsData(parentType = "SummableBookEdge")
