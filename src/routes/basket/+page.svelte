@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	import { isNotNull } from '$lib/isNotNull';
+	import Pagination from '../purchase/[id]/Pagination.svelte';
 	import type { PageData } from './$houdini';
 	import Summable from './Summable.svelte';
 
@@ -17,7 +18,6 @@
 <main class="">
 	<div class="flex justify-center pt-4">
 		<ul class="steps">
-			<li class="step-primary step">Basket</li>
 			<li class="step">Made</li>
 			<li class="step">Sent</li>
 		</ul>
@@ -56,34 +56,7 @@
 			</div>
 			<div class="">
 				<div class="">
-					<nav class="join mx-auto grid grid-cols-2">
-						<a
-							class="join-item btn {$BasketQuery.data?.basket?.books?.pageInfo?.hasPreviousPage ||
-								'btn-disabled'}"
-							data-sveltekit-replacestate
-							href={$BasketQuery.data?.basket?.books?.pageInfo.hasPreviousPage &&
-							$BasketQuery.data?.basket?.books?.pageInfo.startCursor
-								? `/basket?${new URLSearchParams({
-										before: $BasketQuery.data?.basket?.books.pageInfo.startCursor
-								  })}`
-								: undefined}
-						>
-							Previous
-						</a>
-						<a
-							data-sveltekit-replacestate
-							class="join-item btn {$BasketQuery.data?.basket?.books?.pageInfo?.hasNextPage ||
-								'btn-disabled'}"
-							href={$BasketQuery.data?.basket?.books?.pageInfo?.hasNextPage &&
-							$BasketQuery.data?.basket?.books.pageInfo.endCursor
-								? `/basket?${new URLSearchParams({
-										after: $BasketQuery.data?.basket?.books.pageInfo.endCursor
-								  })}`
-								: undefined}
-						>
-							Next
-						</a>
-					</nav>
+					<Pagination replace pageInfo={$BasketQuery.data?.basket?.books?.pageInfo} />
 				</div>
 			</div>
 		</div>
@@ -91,20 +64,28 @@
 			<div class="card bg-base-200">
 				<form use:enhance method="post" class="card-body">
 					<h2 class="card-title">Basket</h2>
-					<div class="flex justify-between">
-						<span class="text-base">Total</span>
-						<strong class="font-semibold" data-testid="total">
-							{$BasketQuery.data?.basket?.price?.formatted}
-						</strong>
-					</div>
+					<dl class="flex justify-between">
+						<dt class="text-base">Total</dt>
+						<dd class="font-semibold" data-testid="total">
+							<strong>
+								{$BasketQuery.data?.basket?.price?.formatted}
+							</strong>
+						</dd>
+					</dl>
 					{#if $BasketQuery.data?.viewer}
-						<button
-							class="btn-primary btn cursor-default"
-							type="submit"
-							formaction="?/make_purchase"
+						<div
+							class="tooltip"
+							data-tip={!$BasketQuery.data.basket?.quantity ? 'Basket empty' : undefined}
 						>
-							Make purchase
-						</button>
+							<button
+								disabled={!$BasketQuery.data.basket?.quantity}
+								class="btn-primary btn w-full cursor-default"
+								type="submit"
+								formaction="?/make_purchase"
+							>
+								Make purchase
+							</button>
+						</div>
 					{:else}
 						Login or register to make a purchase
 					{/if}

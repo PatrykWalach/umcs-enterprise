@@ -20,7 +20,7 @@ test('can add to basket', async ({ page }) => {
 	await bookpage.nav.goToBasket();
 
 	const basketpage = new BasketPage(page);
-	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
+	await expect.soft(basketpage.total).toHaveText('6,45 zł');
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna').loc).toBeVisible();
 });
 
@@ -40,6 +40,6 @@ test('can add to basket twice', async ({ page }) => {
 	// then
 	const basketpage = await bookpage.nav.goToBasket();
 
-	await expect.soft(basketpage.main.getByText('Total 12,90 zł')).toBeVisible();
+	await expect.soft(basketpage.total).toHaveText('12,90 zł');
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna').loc).toBeVisible();
 });
