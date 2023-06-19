@@ -9,14 +9,14 @@ query BasketQuery($after: String, $before: String, $first: Int, $id: ID, $last: 
 				...Summable_edge
 			}
 			pageInfo {
-...Pagination_pageInfo
+				...Pagination_pageInfo
 			}
 		}
 		id
 		price {
 			formatted
 		}
-		
+
 		quantity
 	}
 	viewer {
