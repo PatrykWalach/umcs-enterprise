@@ -9,6 +9,9 @@ query PurchaseQuery($id: ID!) {
 					}
 					...Summable_edge
 				}
+				pageInfo {
+					...Pagination_pageInfo
+				}
 			}
 			createdAt
 			id

@@ -2,32 +2,28 @@ package com.umcs.enterprise.purchase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.jayway.jsonpath.internal.function.numeric.Sum;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.basket.BasketService;
 import com.umcs.enterprise.basket.SummableEdge;
 import com.umcs.enterprise.basket.SummableService;
-import com.umcs.enterprise.book.Book;
-import com.umcs.enterprise.book.BookDataLoader;
 import com.umcs.enterprise.node.GlobalId;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
-import graphql.relay.*;
+import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
+import org.springframework.security.access.annotation.Secured;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.dataloader.DataLoader;
-import org.mapstruct.factory.Mappers;
-import org.springframework.security.access.annotation.Secured;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -109,7 +105,10 @@ public class PurchaseDataFetcher {
 		throws JsonProcessingException {
 		Basket basket = basketService.getBasket(input.getBasket().getId());
 
+		assert basket.getBooks().size() > 0;
+		
 		var purchase = purchaseService.save(Purchase.newBuilder().build());
+
 
 		purchase.setBooks(
 			bookPurchaseRepository.saveAll(
