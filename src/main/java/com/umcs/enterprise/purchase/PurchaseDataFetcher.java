@@ -14,16 +14,15 @@ import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
 import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.factory.Mappers;
-import org.springframework.security.access.annotation.Secured;
-
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
+import org.springframework.security.access.annotation.Secured;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -106,9 +105,8 @@ public class PurchaseDataFetcher {
 		Basket basket = basketService.getBasket(input.getBasket().getId());
 
 		assert basket.getBooks().size() > 0;
-		
-		var purchase = purchaseService.save(Purchase.newBuilder().build());
 
+		var purchase = purchaseService.save(Purchase.newBuilder().build());
 
 		purchase.setBooks(
 			bookPurchaseRepository.saveAll(
