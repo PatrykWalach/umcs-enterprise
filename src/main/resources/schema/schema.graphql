@@ -4,7 +4,10 @@ interface Node {
 
 type Price {
 	formatted: String
-	raw: Float
+	"""
+	w groszach
+	"""
+	raw: Int
 }
 
 input Transformation {
@@ -189,6 +192,7 @@ type Admin implements Viewer & Node {
 
 enum PurchaseStatus {
 	MADE
+	PAID
 	SENT
 }
 
@@ -214,6 +218,7 @@ type Purchase implements Node {
 	books(after: String, before: String, first: Int, last: Int): SummableBookConnection
 	createdAt: DateTime
 	id: ID!
+	payUrl: String
 	price: Price
 	quantity: Int
 	status: PurchaseStatus
@@ -300,7 +305,10 @@ type MakePurchaseResult {
 scalar Upload
 
 input CreatePriceInput {
-	raw: Float!
+	"""
+	w groszach
+	"""
+	raw: Int!
 }
 
 input CreateCoverInput {

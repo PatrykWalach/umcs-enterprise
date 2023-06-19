@@ -77,6 +77,11 @@ class Book {
 }
 
 class PurchasePage extends Layout {
+	async pay() {
+		await this.main.getByRole('link', { name: 'Pay' }).click();
+		return new PaypalPage(this.page);
+	}
+
 	send: Locator;
 	constructor(page: Page) {
 		super(page);
@@ -86,6 +91,37 @@ class PurchasePage extends Layout {
 	}
 	status: Locator;
 	total: Locator;
+}
+
+class PaypalPage {
+	main: Locator;
+
+	async paymentCard() {
+		await this.main
+			.getByRole('link', {
+				name: 'Payment Card'
+			})
+			.click();
+
+		await this.main.getByLabel('Card number').fill('4444 3333 2222 1111');
+		await this.main.getByLabel('Valid thru').fill('12/29');
+		await this.main.getByLabel('CCV').fill('123');
+		await this.main.getByLabel('Name and Surname').fill('Foo Bar');
+		await this.main.getByLabel('E-mail address').fill('email@example.com');
+
+		await this.main
+			.getByRole('button', {
+				name: 'Pay'
+			})
+			.click();
+
+
+
+	}
+
+	constructor(private page: Page) {
+		this.main = page.getByRole('main');
+	}
 }
 
 export class BasketPage extends Layout {

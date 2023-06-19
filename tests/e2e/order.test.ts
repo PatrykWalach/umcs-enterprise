@@ -27,6 +27,35 @@ test('can make order', async ({ page, register }) => {
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
 });
 
+test('can pay order', async ({ page, register }) => {
+	// given
+
+	await page.goto('/');
+	await register();
+
+	const homepage = new HomePage(page);
+	const book = homepage.bestsellers.book('Kicia Kocia. Wiosna');
+	await expect.soft(book.price).toHaveText('6,45 zł');
+
+	const bookpage = await book.navigate();
+	await bookpage.addToBasket();
+
+	const basketpage = await bookpage.nav.goToBasket();
+	await expect.soft(basketpage.total).toHaveText('6,45 zł');
+	await expect.soft(basketpage.book('Kicia Kocia. Wiosna').loc).toBeVisible();
+
+	const purchasepage = await basketpage.makePurchase();
+	await expect.soft(purchasepage.status).toHaveText('MADE');
+	await expect.soft(purchasepage.send).not.toBeVisible();
+	// when
+	const paypalpage = await purchasepage.pay();
+	// then
+	await paypalpage.paymentCard()
+	await expect.soft(purchasepage.send).not.toBeVisible();
+	await expect.soft(purchasepage.status).toHaveText('PAID');
+	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
+});
+
 test('can send order', async ({ page, admin }) => {
 	// given
 
@@ -43,6 +72,13 @@ test('can send order', async ({ page, admin }) => {
 
 	const purchasepage = await basketpage.makePurchase();
 	await expect.soft(purchasepage.status).toHaveText('MADE');
+	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
+	await expect.soft(purchasepage.send).not.toBeVisible();
+
+	
+	const paypalpage = await purchasepage.pay();
+	await paypalpage.paymentCard()
+	await expect.soft(purchasepage.status).toHaveText('PAID');
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
 	// when
 	purchasepage.send.click();

@@ -4,17 +4,15 @@ import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import jakarta.persistence.*;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -36,11 +34,16 @@ public class Purchase implements Node<Long> {
 	private User user;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "purchase")
-	private List<BookPurchase> books;
+	private Set<BookPurchase> books;
 
 	@CreatedDate
 	@Column(nullable = false)
 	private Instant createdAt;
+
+
+	@Column(length = 2_000)
+	private  String payUrl;
+	private  String orderId;
 
 	@Override
 	public boolean equals(Object o) {

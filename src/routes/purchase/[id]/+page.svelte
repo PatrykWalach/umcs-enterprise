@@ -21,6 +21,13 @@
 			<ul class="steps">
 				<li class="step-primary step">Made</li>
 				<li
+					class="{$PurchaseQuery.data.node.status === PurchaseStatus.PAID
+						? 'step-primary'
+						: ''} step"
+				>
+					Paid
+				</li>
+				<li
 					class="{$PurchaseQuery.data.node.status === PurchaseStatus.SENT
 						? 'step-primary'
 						: ''} step"
@@ -32,7 +39,7 @@
 
 		<div class="grid gap-2 py-2 sm:gap-4 sm:py-4 lg:grid-cols-3">
 			<div class="grid gap-2 lg:col-span-2">
-				<div class="card-compact card bg-base-200">
+				<div class="card card-compact bg-base-200">
 					<div class="card-body">
 						<ul class="grid gap-4 sm:grid-cols-2">
 							{#each $PurchaseQuery.data?.node?.books?.edges?.filter(isNotNull) ?? [] as edge (edge.node.id)}
@@ -74,11 +81,21 @@
 								{/if}
 							</dd>
 						</dl>
-						{#if $PurchaseQuery.data.viewer?.__typename === 'Admin' && $PurchaseQuery.data.node.status === PurchaseStatus.MADE}
-							<form use:enhance method="post" class="mt-auto">
-								<button type="submit" class="btn-primary btn w-full cursor-default">Send</button>
-							</form>
-						{/if}
+						<div class="mt-auto">
+							{#if $PurchaseQuery.data.node.payUrl && $PurchaseQuery.data.node.status === PurchaseStatus.MADE}
+								<a
+									href={$PurchaseQuery.data.node.payUrl}
+									class="btn-primary btn w-full cursor-default"
+								>
+									Pay
+								</a>
+							{/if}
+							{#if $PurchaseQuery.data.viewer?.__typename === 'Admin' && $PurchaseQuery.data.node.status === PurchaseStatus.PAID}
+								<form use:enhance method="post">
+									<button type="submit" class="btn-primary btn w-full cursor-default">Send</button>
+								</form>
+							{/if}
+						</div>
 					</div>
 				</div>
 			</div>
