@@ -15,6 +15,12 @@ import com.umcs.enterprise.types.CreatePriceInput;
 import com.umcs.enterprise.types.PriceOrderBy;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,13 +40,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @SpringBootTest(classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)

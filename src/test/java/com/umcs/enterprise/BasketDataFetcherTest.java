@@ -10,6 +10,8 @@ import com.umcs.enterprise.types.WhereUniqueBasketInput;
 import com.umcs.enterprise.types.WhereUniqueBookInput;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,9 +22,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.Collections;
-import java.util.List;
 
 @SpringBootTest(classes = EnterpriseApplication.class)
 @ExtendWith(CleanDb.class)

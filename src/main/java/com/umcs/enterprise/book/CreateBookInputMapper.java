@@ -14,6 +14,4 @@ public interface CreateBookInputMapper {
 	@Mapping(target = "price", source = "price.raw")
 	@Mapping(target = "cover", ignore = true)
 	com.umcs.enterprise.book.Book createBookInputToBook(CreateBookInput input);
-
-
 }
