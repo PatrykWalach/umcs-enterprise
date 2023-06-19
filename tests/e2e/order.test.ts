@@ -16,7 +16,7 @@ test('can make order', async ({ page, register }) => {
 	await bookpage.addToBasket();
 
 	const basketpage = await bookpage.nav.goToBasket();
-	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
+	await expect.soft(basketpage.total).toHaveText('6,45 zł');
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna').loc).toBeVisible();
 
 	// when
@@ -38,7 +38,7 @@ test('can send order', async ({ page, admin }) => {
 	await bookpage.addToBasket();
 
 	const basketpage = await bookpage.nav.goToBasket();
-	await expect.soft(basketpage.main.getByText('Total 6,45 zł')).toBeVisible();
+	await expect.soft(basketpage.total).toHaveText('6,45 zł');
 	await expect.soft(basketpage.book('Kicia Kocia. Wiosna').loc).toBeVisible();
 
 	const purchasepage = await basketpage.makePurchase();
