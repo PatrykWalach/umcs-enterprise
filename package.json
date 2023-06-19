@@ -43,7 +43,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"daisyui": "^3.1.0",
+		"daisyui": "^3.1.1",
 		"dotenv": "^16.3.1",
 		"houdini-svelte": "^1.2.5",
 		"sveltekit-superforms": "^1.0.0",
