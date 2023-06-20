@@ -1,20 +1,13 @@
 package com.umcs.enterprise;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.purchase.BookPurchaseRepository;
 import com.umcs.enterprise.purchase.Purchase;
 import com.umcs.enterprise.purchase.PurchaseService;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,7 +77,7 @@ class NodeDataFetcherTest {
 	void returnsViewer() throws JsonProcessingException {
 		//        given
 		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+			User.newBuilder().username("user").build()
 		);
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
@@ -107,10 +100,10 @@ class NodeDataFetcherTest {
 	void doesntReturnOtherUser() throws JsonProcessingException {
 		//        given
 		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+			User.newBuilder().username("user").build()
 		);
 		var other = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("other").build()
+			User.newBuilder().username("other").build()
 		);
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
@@ -130,7 +123,7 @@ class NodeDataFetcherTest {
 	void returnsPurchase() throws JsonProcessingException {
 		//        given
 		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+			User.newBuilder().username("user").build()
 		);
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(user).build());
 
@@ -155,12 +148,13 @@ class NodeDataFetcherTest {
 		//        given
 
 		var other = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("other").build()
+			User.newBuilder().username("other").build()
 		);
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(other).build());
 
+
 		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
+			User.newBuilder().username("user").build()
 		);
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")

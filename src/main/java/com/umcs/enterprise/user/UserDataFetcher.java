@@ -1,18 +1,19 @@
 package com.umcs.enterprise.user;
 
 import com.netflix.graphql.dgs.*;
-import com.umcs.enterprise.basket.*;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.types.*;
+import com.umcs.enterprise.types.RegisterError;
+import com.umcs.enterprise.types.RegisterInput;
+import com.umcs.enterprise.types.RegisterResult;
+import com.umcs.enterprise.types.RegisterSuccess;
 import graphql.schema.DataFetchingEnvironment;
-import java.util.Collections;
-import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Optional;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -52,7 +53,7 @@ public class UserDataFetcher {
 			User user = userRepository.save(
 				User
 					.newBuilder()
-					.authorities(Collections.singletonList("USER"))
+
 					.username(input.getUser().getName())
 					.password(input.getUser().getPassword())
 					.build()
