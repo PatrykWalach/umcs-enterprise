@@ -105,15 +105,16 @@ class PaypalPage {
 
 		await this.main.getByLabel('Card number').fill('4444 3333 2222 1111');
 		await this.main.getByLabel('Valid thru').fill('12/29');
-		await this.main.getByLabel('CCV').fill('123');
-		await this.main.getByLabel('Name and Surname').fill('Foo Bar');
-		await this.main.getByLabel('E-mail address').fill('email@example.com');
-
+		await this.main.getByLabel('CVV').fill('123');
+		await this.main.getByLabel('Name and surname').fill('Foo Bar');
+		await this.main.locator('input[name="email"]').fill('email@example.com');
 		await this.main
 			.getByRole('button', {
-				name: 'Pay'
+				name: 'Pay PLN'
 			})
 			.click();
+
+			await this.main.getByRole('link', { name: 'Close and go back' }).click();
 	}
 
 	constructor(private page: Page) {

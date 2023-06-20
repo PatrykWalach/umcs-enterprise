@@ -3,12 +3,10 @@ package com.umcs.enterprise.purchase.payu;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.basket.SummableService;
 import com.umcs.enterprise.purchase.Purchase;
+import com.umcs.enterprise.purchase.PurchaseRepository;
 import com.umcs.enterprise.types.PurchaseStatus;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -22,12 +20,9 @@ public class PayuService {
 
 	private final WebClient api = WebClient
 		.builder()
-		.baseUrl("https://secure.snd.payu.com/api/v2_1")
+		.baseUrl("https://secure.snd.payu.com")
 		.build();
-	private final WebClient auth = WebClient
-		.builder()
-		.baseUrl("https://secure.snd.payu.com/pl/standard/user/oauth")
-		.build();
+
 
 	@Value("${payu.pos-id}")
 	private String posId;
@@ -45,9 +40,9 @@ public class PayuService {
 	private final SummableService summableService;
 
 	private OAuthResponse authorize() {
-		return auth
+		 var response = api
 			.post()
-			.uri("/authorize")
+			.uri("/pl/standard/user/oauth/authorize")
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 			.body(
@@ -59,6 +54,9 @@ public class PayuService {
 			.retrieve()
 			.bodyToMono(OAuthResponse.class)
 			.block();
+
+		assert "bearer".equals(response != null ? response.getGrantType() : null);
+		return  response;
 	}
 
 	@NonNull
@@ -66,6 +64,7 @@ public class PayuService {
 
 	@Value("${client.address}")
 	public String CLIENT_ADDRESS;
+	private final PurchaseRepository purchaseRepository;
 
 	public OrderCreateResponse save(Purchase purchase) {
 		OrderCreateRequest body = Mappers
@@ -79,11 +78,11 @@ public class PayuService {
 
 		OAuthResponse response = authorize();
 
-		assert "bearer".equals(response.getGrantType());
+
 
 		return api
 			.post()
-			.uri("/orders")
+			.uri("/api/v2_1/orders")
 			//					.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer " + response.getAccessToken())
@@ -93,13 +92,28 @@ public class PayuService {
 			.block();
 	}
 
-	public boolean isPaid(Purchase purchase) {
-		if (purchase.getStatus().equals(PurchaseStatus.MADE)) {
-			//            request
-			//            if paid update model
-			//            purchaseService
+	public PurchaseStatus getStatus(Purchase purchase) {
+		if (!(purchase.getStatus().equals(PurchaseStatus.MADE) && purchase.getOrderId()!=null)) {
+			return purchase.getStatus();
 		}
 
-		return purchase.getStatus().equals(PurchaseStatus.PAID);
+
+
+			OrderRetrieveRequest response = api.get().uri("/api/v2_1/orders/" + purchase.getOrderId())
+					.header("Authorization", "Bearer " + authorize().getAccessToken())
+					.retrieve().bodyToMono(OrderRetrieveRequest.class).block();
+
+
+
+			if(response!=null && response.getOrders().stream()
+					.anyMatch((order)-> order.orderId().equals(purchase.getOrderId()) && order.status() .equals("COMPLETED"))){
+				purchase.setStatus(PurchaseStatus.PAID);
+				purchaseRepository.save(purchase);
+			}
+
+
+		return purchase.getStatus();
+
+
 	}
 }

@@ -1,4 +1,4 @@
-import { PUBLIC_CLIENT_ADDRESS, PUBLIC_SERVER_ADDRESS } from '$env/static/public';
+import { PUBLIC_SERVER_ADDRESS } from '$env/static/public';
 import { setSession } from '$houdini';
 import { BASKET_COOKIE, TOKEN_COOKIE } from '$lib/constants';
 import { redirect, type Actions } from '@sveltejs/kit';

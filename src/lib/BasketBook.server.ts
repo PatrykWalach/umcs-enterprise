@@ -10,11 +10,6 @@ const BasketBook = graphql(`
 			basket @required {
 				id
 			}
-			edge {
-				node {
-					id
-				}
-			}
 		}
 	}
 `);

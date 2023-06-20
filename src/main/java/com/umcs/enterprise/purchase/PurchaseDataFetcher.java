@@ -13,19 +13,19 @@ import com.umcs.enterprise.purchase.payu.PayuService;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
-import com.umcs.enterprise.user.UserRepository;
 import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
+import org.springframework.security.access.annotation.Secured;
+
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.factory.Mappers;
-import org.springframework.security.access.annotation.Secured;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -144,6 +144,11 @@ public class PurchaseDataFetcher {
 		);
 	}
 
+	@DgsData(parentType = "Purchase")
+	public PurchaseStatus status(DgsDataFetchingEnvironment env){
+		return  payuService.getStatus(env.getSource());
+	}
+
 	@DgsMutation
 	@Secured("ADMIN")
 	public CompletableFuture<Purchase> sendPurchase(
@@ -157,7 +162,7 @@ public class PurchaseDataFetcher {
 			.<Long, Purchase>getDataLoader(PurchaseDataLoader.class)
 			.load((from.databaseId()))
 			.thenApply(purchase -> {
-				assert (payuService.isPaid(purchase));
+				assert (payuService.getStatus(purchase).equals(PurchaseStatus.PAID));
 				purchase.setStatus(PurchaseStatus.SENT);
 
 				return purchaseService.save(purchase);

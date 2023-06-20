@@ -45,6 +45,7 @@ test('keeps after logout', async ({ page, register }) => {
 });
 
 test('can remove on second page @slow', async ({ page, register }) => {
+	test.slow()
 	// given
 	await page.goto('/');
 	await register();

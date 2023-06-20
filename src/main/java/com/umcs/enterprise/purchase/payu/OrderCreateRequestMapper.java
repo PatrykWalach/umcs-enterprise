@@ -3,10 +3,11 @@ package com.umcs.enterprise.purchase.payu;
 import com.umcs.enterprise.basket.SummableService;
 import com.umcs.enterprise.purchase.BookPurchase;
 import com.umcs.enterprise.purchase.Purchase;
-import java.util.Set;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.Set;
 
 @Mapper
 public interface OrderCreateRequestMapper {
@@ -19,7 +20,8 @@ public interface OrderCreateRequestMapper {
 	@Mapping(target = "additionalDescription", ignore = true)
 	@Mapping(target = "totalAmount", source = "purchase.books")
 	@Mapping(target = "merchantPosId", source = "posId")
-	@Mapping(target = "extOrderId", source = "purchase.id")
+	@Mapping(target = "extOrderId",ignore = true//,  source = "purchase.id"
+			 )
 	@Mapping(target = "description", ignore = true)
 	@Mapping(target = "customerIp", ignore = true)
 	@Mapping(target = "currencyCode", ignore = true)

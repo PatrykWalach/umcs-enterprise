@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { test } from '../fixtures.js';
 import HomePage from './HomePage.js';
 
-test('can make order', async ({ page, register }) => {
+test('can make purchase', async ({ page, register }) => {
 	// given
 
 	await page.goto('/');
@@ -27,7 +27,7 @@ test('can make order', async ({ page, register }) => {
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
 });
 
-test('can pay order', async ({ page, register }) => {
+test('can pay purchase', async ({ page, register }) => {
 	// given
 
 	await page.goto('/');
@@ -56,7 +56,7 @@ test('can pay order', async ({ page, register }) => {
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
 });
 
-test('can send order', async ({ page, admin }) => {
+test('can send purchase', async ({ page, admin }) => {
 	// given
 
 	const homepage = new HomePage(page);
