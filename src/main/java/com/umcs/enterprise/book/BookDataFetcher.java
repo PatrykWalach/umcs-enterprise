@@ -6,16 +6,15 @@ import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.types.BookOrderBy;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
+import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
-
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -61,7 +60,6 @@ public class BookDataFetcher {
 	public Book book(DataFetchingEnvironment env) {
 		return env.getSource();
 	}
-
 
 	@DgsData(parentType = "Book")
 	public OffsetDateTime createdAt(DgsDataFetchingEnvironment env) {
