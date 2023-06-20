@@ -126,7 +126,7 @@ public class OAuthSecurity implements WebMvcConfigurer {
 		return http.build();
 	}
 
-	@Value("${client.address}")
+	@Value("${client-address}")
 	public String CLIENT_ADDRESS;
 
 	@Bean

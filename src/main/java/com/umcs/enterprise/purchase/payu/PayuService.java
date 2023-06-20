@@ -58,7 +58,7 @@ public class PayuService {
 	@NonNull
 	private final ObjectMapper mapper;
 
-	@Value("${client.address}")
+	@Value("${client-address}")
 	public String CLIENT_ADDRESS;
 
 	private final PurchaseRepository purchaseRepository;
