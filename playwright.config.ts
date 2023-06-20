@@ -6,7 +6,7 @@ const config: PlaywrightTestConfig = {
 	webServer: [
 		{
 			command: './gradlew bootRun',
-			url: `${process.env.PUBLIC_SERVER_ADDRESS}:8080/graphiql`,
+			url: `${process.env.PUBLIC_SERVER_ADDRESS}/graphiql`,
 			timeout: 3 * 60 * 1000,
 			reuseExistingServer: !process.env.CI
 		},

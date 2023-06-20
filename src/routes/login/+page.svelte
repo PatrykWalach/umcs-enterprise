@@ -18,7 +18,7 @@
 		<div class="grid gap-4">
 			<form
 				method="post"
-				action="{PUBLIC_SERVER_ADDRESS}:8080/login"
+				action="{PUBLIC_SERVER_ADDRESS}/login"
 				class="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow"
 			>
 				<fieldset>

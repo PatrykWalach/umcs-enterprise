@@ -33,7 +33,7 @@ export const load: ServerLoad = async (event) => {
 		// scope: 'openid profile read write',
 	});
 
-	const response = await event.fetch(`${PUBLIC_SERVER_ADDRESS}:8080/oauth2/token`, {
+	const response = await event.fetch(`${PUBLIC_SERVER_ADDRESS}/oauth2/token`, {
 		body: body,
 		method: 'POST',
 		headers: new Headers({

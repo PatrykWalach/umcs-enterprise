@@ -16,7 +16,7 @@ export const actions: Actions = {
 			throw redirect(303, '/');
 		}
 
-		await event.fetch(`${PUBLIC_SERVER_ADDRESS}:8080/logout`, {
+		await event.fetch(`${PUBLIC_SERVER_ADDRESS}/logout`, {
 			method: 'POST',
 			headers: new Headers({
 				Authorization: `Bearer ${token}`
