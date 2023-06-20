@@ -76,9 +76,7 @@ class NodeDataFetcherTest {
 	@WithMockUser(username = "user")
 	void returnsViewer() throws JsonProcessingException {
 		//        given
-		var user = userService.save(
-			User.newBuilder().username("user").build()
-		);
+		var user = userService.save(User.newBuilder().username("user").build());
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", user.getId())
@@ -99,12 +97,8 @@ class NodeDataFetcherTest {
 	@WithMockUser(username = "user")
 	void doesntReturnOtherUser() throws JsonProcessingException {
 		//        given
-		var user = userService.save(
-			User.newBuilder().username("user").build()
-		);
-		var other = userService.save(
-			User.newBuilder().username("other").build()
-		);
+		var user = userService.save(User.newBuilder().username("user").build());
+		var other = userService.save(User.newBuilder().username("other").build());
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", other.getId())
@@ -122,9 +116,7 @@ class NodeDataFetcherTest {
 	@WithMockUser(username = "user")
 	void returnsPurchase() throws JsonProcessingException {
 		//        given
-		var user = userService.save(
-			User.newBuilder().username("user").build()
-		);
+		var user = userService.save(User.newBuilder().username("user").build());
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(user).build());
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
@@ -147,15 +139,10 @@ class NodeDataFetcherTest {
 	void doesntReturnOtherUserPurchase() throws JsonProcessingException {
 		//        given
 
-		var other = userService.save(
-			User.newBuilder().username("other").build()
-		);
+		var other = userService.save(User.newBuilder().username("other").build());
 		Purchase purchase = purchaseRepository.save(Purchase.newBuilder().user(other).build());
 
-
-		var user = userService.save(
-			User.newBuilder().username("user").build()
-		);
+		var user = userService.save(User.newBuilder().username("user").build());
 
 		this.graphQlTester.documentName("NodeControllerTest_returnsNode")
 			.variable("id", purchase.getId())

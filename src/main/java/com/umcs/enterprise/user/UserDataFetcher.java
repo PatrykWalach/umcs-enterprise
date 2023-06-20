@@ -7,13 +7,12 @@ import com.umcs.enterprise.types.RegisterInput;
 import com.umcs.enterprise.types.RegisterResult;
 import com.umcs.enterprise.types.RegisterSuccess;
 import graphql.schema.DataFetchingEnvironment;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Optional;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -53,7 +52,6 @@ public class UserDataFetcher {
 			User user = userRepository.save(
 				User
 					.newBuilder()
-
 					.username(input.getUser().getName())
 					.password(input.getUser().getPassword())
 					.build()
