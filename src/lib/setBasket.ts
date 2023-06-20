@@ -1,6 +1,7 @@
 import { getSession, setSession } from '$houdini';
 import type { LoadEvent, RequestEvent } from '@sveltejs/kit';
 import { BASKET_COOKIE, TOKEN_COOKIE } from './constants';
+import { dev } from '$app/environment';
 
 export function setBasket(event: RequestEvent, basket: string | null | undefined) {
 	setSession(event, {
@@ -10,17 +11,19 @@ export function setBasket(event: RequestEvent, basket: string | null | undefined
 
 	if (!basket) {
 		event.cookies.delete(BASKET_COOKIE, {
-			sameSite: 'lax',
 			path: '/',
-			secure: false
+			sameSite: true,
+			secure: !dev,
+			httpOnly: true
 		});
 		return;
 	}
 
 	event.cookies.set(BASKET_COOKIE, basket, {
 		path: '/',
-		sameSite: 'lax',
-		secure: false
+		sameSite: true,
+		secure: !dev,
+		httpOnly: true
 	});
 }
 

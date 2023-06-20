@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import { PUBLIC_CLIENT_ADDRESS, PUBLIC_SERVER_ADDRESS } from '$env/static/public';
 import { setSession } from '$houdini';
 import { BASKET_COOKIE, TOKEN_COOKIE } from '$lib/constants';
@@ -51,10 +52,11 @@ export const load: ServerLoad = async (event) => {
 
 	event.cookies.set(TOKEN_COOKIE, result.access_token, {
 		expires: new Date(Date.now() + 1000 * result.expires_in),
-		maxAge: 1000 * result.expires_in,
+		maxAge: result.expires_in,
 		path: '/',
-		sameSite: 'lax',
-		secure: false
+		sameSite: true,
+		secure: !dev,
+		httpOnly: true
 	});
 
 	setSession(event, {

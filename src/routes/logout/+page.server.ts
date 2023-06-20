@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import { PUBLIC_SERVER_ADDRESS } from '$env/static/public';
 import { setSession } from '$houdini';
 import { BASKET_COOKIE, TOKEN_COOKIE } from '$lib/constants';
@@ -24,9 +25,10 @@ export const actions: Actions = {
 		});
 
 		event.cookies.delete(TOKEN_COOKIE, {
-			sameSite: 'lax',
 			path: '/',
-			secure: false
+			sameSite: true,
+			secure: !dev,
+			httpOnly: true
 		});
 
 		throw redirect(303, '/');
