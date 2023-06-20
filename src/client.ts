@@ -14,7 +14,7 @@ function isErrorType(errorType: string) {
 }
 
 export default new HoudiniClient({
-	url: `http://${PUBLIC_SERVER_ADDRESS}:8080/graphql`,
+	url: `${PUBLIC_SERVER_ADDRESS}/graphql`,
 
 	throwOnError: {
 		operations: ['all'],

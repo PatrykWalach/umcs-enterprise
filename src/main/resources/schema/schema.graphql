@@ -138,7 +138,7 @@ type Cover {
 type Book implements Node {
 	author: String
 	# eslint-disable-next-line @graphql-eslint/relay-edge-types
-	covers(transformation: Transformation, widths: [Int]): [Cover]
+	covers(transformation: Transformation, widths: [Int]! = [null]): [Cover]
 	createdAt: DateTime
 	id: ID!
 	inBasket(id: ID): Boolean

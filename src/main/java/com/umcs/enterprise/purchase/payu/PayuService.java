@@ -58,7 +58,7 @@ public class PayuService {
 	@NonNull
 	private final ObjectMapper mapper;
 
-	@Value("${client.address}")
+	@Value("${client-address}")
 	public String CLIENT_ADDRESS;
 
 	private final PurchaseRepository purchaseRepository;
@@ -69,7 +69,7 @@ public class PayuService {
 			.purchaseToRequest(
 				purchase,
 				posId,
-				"http://" + CLIENT_ADDRESS + ":5173/purchase/" + purchase.getId(),
+				CLIENT_ADDRESS + "/purchase/" + purchase.getId(),
 				summableService
 			);
 

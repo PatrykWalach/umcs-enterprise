@@ -6,7 +6,7 @@ import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
 import com.netflix.graphql.dgs.InputArgument;
 import com.umcs.enterprise.book.Book;
-import com.umcs.enterprise.types.*;
+import com.umcs.enterprise.types.Transformation;
 import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.List;
@@ -30,6 +30,7 @@ public class CoverDataFetcher {
 
 		return cloudinary
 			.url()
+			.secure(true)
 			.transformation(Mappers.getMapper(TransformationMapper.class).map(transformation))
 			.generate(book.getCover().getUuid());
 	}

@@ -65,9 +65,7 @@ class BasketDataFetcherTest {
 	void basket_user() throws JsonProcessingException {
 		//        given
 
-		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
-		);
+		var user = userService.save(User.newBuilder().username("user").build());
 
 		List<Book> books = bookRepository.saveAll(
 			List.of(
@@ -139,9 +137,7 @@ class BasketDataFetcherTest {
 	void basketBook_user() throws JsonProcessingException {
 		//        given
 
-		var user = userService.save(
-			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
-		);
+		var user = userService.save(User.newBuilder().username("user").build());
 
 		var book = bookRepository.save(Book.newBuilder().price((10L)).build());
 

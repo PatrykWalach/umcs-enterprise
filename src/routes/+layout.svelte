@@ -122,9 +122,9 @@
 					</div>
 				{:else}
 					<a
-						href={`http://${PUBLIC_SERVER_ADDRESS}:8080/oauth2/authorize?${new URLSearchParams({
+						href={`${PUBLIC_SERVER_ADDRESS}/oauth2/authorize?${new URLSearchParams({
 							client_id: 'bookstore',
-							redirect_uri: `http://${PUBLIC_CLIENT_ADDRESS}:5173/login/callback`,
+							redirect_uri: `${PUBLIC_CLIENT_ADDRESS}/login/callback`,
 							response_type: 'code',
 							scope: 'openid profile read write',
 							state: $page.url.pathname
