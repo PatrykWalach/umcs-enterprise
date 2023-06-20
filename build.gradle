@@ -66,3 +66,14 @@ generateJava {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+node {
+//    download = true
+    version = "18.16.0"
+}
+
+task preview(type: NpxTask) {
+    dependsOn npmInstall
+    command = 'turbo'
+    args = ['preview']
+}
