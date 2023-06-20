@@ -217,6 +217,7 @@ type PurchaseEdge {
 type Purchase implements Node {
 	books(after: String, before: String, first: Int, last: Int): SummableBookConnection
 	createdAt: DateTime
+	databaseId: Int
 	id: ID!
 	payUrl: String
 	price: Price

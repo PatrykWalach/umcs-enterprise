@@ -6,6 +6,7 @@ import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.cover.CoverService;
 import com.umcs.enterprise.purchase.*;
+import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
 import java.util.List;
@@ -1415,7 +1416,7 @@ public class Seed {
 			repository.saveAll(books);
 
 			var purchases = purchaseRepository.saveAll(
-				Stream.generate(() -> Purchase.newBuilder().user(admin).build()).limit(20).toList()
+				Stream.generate(() -> Purchase.newBuilder().build()).limit(20).toList()
 			);
 
 			Random random = new Random(0);
@@ -1435,6 +1436,54 @@ public class Seed {
 
 								return BookPurchase
 									.newBuilder()
+									.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book.getDatabaseId()))
+									.book(repository.save(book))
+									.purchase(purchase)
+									.build();
+							})
+					)
+					.toList()
+			);
+
+			var adminPurchases = purchaseRepository.saveAll(
+				Stream
+					.generate(() -> Purchase.newBuilder().status(PurchaseStatus.SENT).user(admin).build())
+					.limit(13)
+					.toList()
+			);
+
+			adminPurchases.addAll(
+				purchaseRepository.saveAll(
+					Stream
+						.generate(() -> Purchase.newBuilder().status(PurchaseStatus.PAID).user(admin).build())
+						.limit(3)
+						.toList()
+				)
+			);
+
+			adminPurchases.addAll(
+				purchaseRepository.saveAll(
+					Stream
+						.generate(() -> Purchase.newBuilder().status(PurchaseStatus.MADE).user(admin).build())
+						.limit(1)
+						.toList()
+				)
+			);
+
+			bookPurchaseRepository.saveAll(
+				adminPurchases
+					.stream()
+					.sequential()
+					.flatMap(purchase ->
+						books
+							.stream()
+							.sequential()
+							.skip(random.nextInt(adminPurchases.size() - 1))
+							.limit(random.nextInt(adminPurchases.size() / 4) + 1)
+							.map(book -> {
+								return BookPurchase
+									.newBuilder()
+									.quantity(random.nextInt(2) + 1)
 									.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book.getDatabaseId()))
 									.book(repository.save(book))
 									.purchase(purchase)

@@ -26,5 +26,7 @@ public class BookPurchase implements SummableEdge {
 	@MapsId("bookId")
 	private Book book;
 
-	private Integer quantity;
+	@Column(nullable = false)
+	@Builder.Default
+	private Integer quantity = 1;
 }

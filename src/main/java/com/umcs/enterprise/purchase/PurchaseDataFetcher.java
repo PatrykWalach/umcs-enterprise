@@ -17,6 +17,7 @@ import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -100,7 +101,14 @@ public class PurchaseDataFetcher {
 	public Connection<? extends SummableEdge> books(DgsDataFetchingEnvironment env) {
 		Purchase purchase = env.getSource();
 
-		return connectionService.getConnection(purchase.getBooks().stream().toList(), env);
+		return connectionService.getConnection(
+			purchase
+				.getBooks()
+				.stream()
+				.sorted(Comparator.comparing(edge -> edge.getBook().getCreatedAt()))
+				.toList(),
+			env
+		);
 	}
 
 	@DgsMutation
