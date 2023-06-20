@@ -3,7 +3,7 @@
 	"globalEnv": ["PUBLIC_CLIENT_ADDRESS", "PUBLIC_SERVER_ADDRESS"],
 	"pipeline": {
 		"build": {
-			"outputs": [".svelte-kit/**"],
+			"outputs": [".svelte-kit/**", "public/**"],
 			"inputs": [
 				"src/**",
 				"!src/main/**",
@@ -18,7 +18,7 @@
 		},
 		"lint": { "dependsOn": ["generate"] },
 		"test": {
-			"outputs": ["playwright-report", "test-results"],
+			"outputs": ["playwright-report/**", "test-results/**"],
 			"inputs": ["tests/**", "src/main/**", "build.gradle", "playwright.config.ts"],
 			"env": ["CI"]
 		},
