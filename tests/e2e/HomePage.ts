@@ -162,6 +162,13 @@ export class BasketPage extends Layout {
 	}
 }
 
+class PurchasesPage extends Layout {
+	constructor(page: Page) {
+		super(page);
+	}
+
+	purchase(id: string) {}
+}
 export class Navigation {
 	basketQuantity: Locator;
 
@@ -177,6 +184,13 @@ export class Navigation {
 		await this.locator.getByRole('link', { name: 'Add book' }).click();
 		await expect.soft(this.page).toHaveTitle('Add book');
 		return new AddBookPage(this.page);
+	}
+
+	async purchases() {
+		await this.locator.getByRole('button', { name: 'show menu' }).click();
+		await this.locator.getByRole('link', { name: 'Purchases' }).click();
+		await expect.soft(this.page).toHaveTitle('Purchases');
+		return new PurchasesPage(this.page);
 	}
 
 	async goToBasket() {

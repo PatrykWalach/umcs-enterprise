@@ -10,6 +10,10 @@
 	$: ({ PurchasesQuery } = data);
 </script>
 
+<svelte:head>
+	<title>Purchases</title>	
+</svelte:head>
+
 {#if $PurchasesQuery.data?.node?.__typename === 'User'}
 	<main class="grid gap-2">
 		<div class="card bg-base-200">
