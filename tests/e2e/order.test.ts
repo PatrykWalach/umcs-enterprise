@@ -80,7 +80,7 @@ test('can send purchase', async ({ page, admin }) => {
 	await expect.soft(purchasepage.status).toHaveText('PAID');
 	await expect.soft(purchasepage.total).toHaveText('6,45 zł');
 	// when
-	purchasepage.send.click();
+	await purchasepage.send.click();
 	// then
 	await expect.soft(purchasepage.status).toHaveText('SENT');
 });
