@@ -114,7 +114,7 @@ class PaypalPage {
 			})
 			.click();
 
-			await this.main.getByRole('link', { name: 'Close and go back' }).click();
+		await this.main.getByRole('link', { name: 'Close and go back' }).click();
 	}
 
 	constructor(private page: Page) {

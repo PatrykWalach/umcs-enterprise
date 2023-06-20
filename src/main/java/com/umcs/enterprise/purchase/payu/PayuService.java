@@ -18,11 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class PayuService {
 
-	private final WebClient api = WebClient
-		.builder()
-		.baseUrl("https://secure.snd.payu.com")
-		.build();
-
+	private final WebClient api = WebClient.builder().baseUrl("https://secure.snd.payu.com").build();
 
 	@Value("${payu.pos-id}")
 	private String posId;
@@ -40,7 +36,7 @@ public class PayuService {
 	private final SummableService summableService;
 
 	private OAuthResponse authorize() {
-		 var response = api
+		var response = api
 			.post()
 			.uri("/pl/standard/user/oauth/authorize")
 			.accept(MediaType.APPLICATION_JSON)
@@ -56,7 +52,7 @@ public class PayuService {
 			.block();
 
 		assert "bearer".equals(response != null ? response.getGrantType() : null);
-		return  response;
+		return response;
 	}
 
 	@NonNull
@@ -64,6 +60,7 @@ public class PayuService {
 
 	@Value("${client.address}")
 	public String CLIENT_ADDRESS;
+
 	private final PurchaseRepository purchaseRepository;
 
 	public OrderCreateResponse save(Purchase purchase) {
@@ -78,8 +75,6 @@ public class PayuService {
 
 		OAuthResponse response = authorize();
 
-
-
 		return api
 			.post()
 			.uri("/api/v2_1/orders")
@@ -93,27 +88,31 @@ public class PayuService {
 	}
 
 	public PurchaseStatus getStatus(Purchase purchase) {
-		if (!(purchase.getStatus().equals(PurchaseStatus.MADE) && purchase.getOrderId()!=null)) {
+		if (!(purchase.getStatus().equals(PurchaseStatus.MADE) && purchase.getOrderId() != null)) {
 			return purchase.getStatus();
 		}
 
+		OrderRetrieveRequest response = api
+			.get()
+			.uri("/api/v2_1/orders/" + purchase.getOrderId())
+			.header("Authorization", "Bearer " + authorize().getAccessToken())
+			.retrieve()
+			.bodyToMono(OrderRetrieveRequest.class)
+			.block();
 
-
-			OrderRetrieveRequest response = api.get().uri("/api/v2_1/orders/" + purchase.getOrderId())
-					.header("Authorization", "Bearer " + authorize().getAccessToken())
-					.retrieve().bodyToMono(OrderRetrieveRequest.class).block();
-
-
-
-			if(response!=null && response.getOrders().stream()
-					.anyMatch((order)-> order.orderId().equals(purchase.getOrderId()) && order.status() .equals("COMPLETED"))){
-				purchase.setStatus(PurchaseStatus.PAID);
-				purchaseRepository.save(purchase);
-			}
-
+		if (
+			response != null &&
+			response
+				.getOrders()
+				.stream()
+				.anyMatch(order ->
+					order.orderId().equals(purchase.getOrderId()) && order.status().equals("COMPLETED")
+				)
+		) {
+			purchase.setStatus(PurchaseStatus.PAID);
+			purchaseRepository.save(purchase);
+		}
 
 		return purchase.getStatus();
-
-
 	}
 }
