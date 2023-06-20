@@ -115,6 +115,11 @@ class PaypalPage {
 			.click();
 
 		await this.main.getByRole('link', { name: 'Close and go back' }).click();
+		await expect.soft(this.page).toHaveTitle('Purchase');
+
+		const purchasepage = new PurchasePage(this.page);
+		await expect.soft(purchasepage.status).toHaveText('PAID');
+		return purchasepage;
 	}
 
 	constructor(private page: Page) {
@@ -132,7 +137,9 @@ export class BasketPage extends Layout {
 		await this.main.getByRole('button', { name: 'Make Purchase' }).click();
 		await expect.soft(this.page).toHaveTitle('Purchase');
 		await expect.soft(this.nav.basketQuantity).toHaveText('0');
-		return new PurchasePage(this.page);
+		const purchasepage = new PurchasePage(this.page);
+		await expect.soft(purchasepage.status).toHaveText('MADE');
+		return purchasepage;
 	}
 
 	async next() {

@@ -23,7 +23,11 @@ export const actions: Actions = {
 			})
 		});
 
-		event.cookies.delete(TOKEN_COOKIE);
+		event.cookies.delete(TOKEN_COOKIE, {
+			sameSite: 'lax',
+			path: '/',
+			secure: false
+		});
 
 		throw redirect(303, '/');
 	}

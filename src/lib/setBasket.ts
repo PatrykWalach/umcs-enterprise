@@ -9,7 +9,11 @@ export function setBasket(event: RequestEvent, basket: string | null | undefined
 	});
 
 	if (!basket) {
-		event.cookies.delete(BASKET_COOKIE);
+		event.cookies.delete(BASKET_COOKIE, {
+			sameSite: 'lax',
+			path: '/',
+			secure: false
+		});
 		return;
 	}
 
