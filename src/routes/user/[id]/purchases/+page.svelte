@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>Purchases</title>	
+	<title>Purchases</title>
 </svelte:head>
 
 {#if $PurchasesQuery.data?.node?.__typename === 'User'}
