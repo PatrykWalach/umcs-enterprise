@@ -26,14 +26,14 @@ export const load: ServerLoad = async (event) => {
 	const body = new URLSearchParams({
 		client_id: 'bookstore',
 		client_secret: 'bookstoreSecret',
-		redirect_uri: `http://${PUBLIC_CLIENT_ADDRESS}:5173/login/callback`,
+		redirect_uri: `${PUBLIC_CLIENT_ADDRESS}:5173/login/callback`,
 		grant_type: 'authorization_code',
 		code
 		// client_secret: 'newClientSecret',
 		// scope: 'openid profile read write',
 	});
 
-	const response = await event.fetch(`http://${PUBLIC_SERVER_ADDRESS}:8080/oauth2/token`, {
+	const response = await event.fetch(`${PUBLIC_SERVER_ADDRESS}:8080/oauth2/token`, {
 		body: body,
 		method: 'POST',
 		headers: new Headers({
