@@ -167,7 +167,7 @@ class PurchasesPage extends Layout {
 		super(page);
 	}
 
-	purchase(id: string) {}
+
 }
 export class Navigation {
 	basketQuantity: Locator;
