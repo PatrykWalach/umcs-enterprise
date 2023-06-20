@@ -4,21 +4,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.netflix.graphql.dgs.*;
 import com.umcs.enterprise.ConnectionService;
-import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.basket.BasketService;
 import com.umcs.enterprise.basket.SummableEdge;
 import com.umcs.enterprise.basket.SummableService;
 import com.umcs.enterprise.node.GlobalId;
+import com.umcs.enterprise.purchase.payu.OrderCreateResponse;
+import com.umcs.enterprise.purchase.payu.PayuService;
 import com.umcs.enterprise.types.*;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
 import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
@@ -30,6 +32,9 @@ public class PurchaseDataFetcher {
 
 	@NonNull
 	private final ConnectionService connectionService;
+
+	@NonNull
+	private final PayuService payuService;
 
 	@DgsData(parentType = "Purchase")
 	public CompletableFuture<User> user(DgsDataFetchingEnvironment dfe) {
@@ -72,7 +77,7 @@ public class PurchaseDataFetcher {
 	private final SummableService summableService;
 
 	@DgsData(parentType = "Purchase")
-	public BigDecimal price(DgsDataFetchingEnvironment env) {
+	public Long price(DgsDataFetchingEnvironment env) {
 		Purchase purchase = env.getSource();
 
 		return summableService.sumPrice(purchase.getBooks());
@@ -95,36 +100,52 @@ public class PurchaseDataFetcher {
 	public Connection<? extends SummableEdge> books(DgsDataFetchingEnvironment env) {
 		Purchase purchase = env.getSource();
 
-		return connectionService.getConnection(purchase.getBooks(), env);
+		return connectionService.getConnection(purchase.getBooks().stream().toList(), env);
 	}
 
 	@DgsMutation
 	@Secured("USER")
 	public MakePurchaseResult makePurchase(@InputArgument MakePurchaseInput input)
 		throws JsonProcessingException {
-		Basket basket = basketService.getBasket(input.getBasket().getId());
+		var books = basketService.getBasket(input.getBasket().getId()).getBooks();
 
-		assert basket.getBooks().size() > 0;
+		assert books.size() > 0;
 
 		var purchase = purchaseService.save(Purchase.newBuilder().build());
 
 		purchase.setBooks(
-			bookPurchaseRepository.saveAll(
-				basket
-					.getBooks()
-					.stream()
-					.map(book ->
-						Mappers.getMapper(BookEdgeMapper.class).bookEdgeToBookPurchase(book, purchase)
-					)
-					.toList()
+			new HashSet<>(
+				bookPurchaseRepository.saveAll(
+					books
+						.stream()
+						.map(book ->
+							Mappers.getMapper(BookEdgeMapper.class).bookEdgeToBookPurchase(book, purchase)
+						)
+						.collect(Collectors.toSet())
+				)
 			)
 		);
 
-		return MakePurchaseResult
-			.newBuilder()
-			.purchase(purchase)
-			.basket(basketService.getBasket(null))
-			.build();
+		OrderCreateResponse response = payuService.save(purchase);
+
+		purchase.setPayUrl(response.getRedirectUri());
+
+		purchase.setOrderId((response.getOrderId()));
+
+		purchaseService.save(purchase);
+
+		return (
+			MakePurchaseResult
+				.newBuilder()
+				.purchase(purchase)
+				.basket(basketService.getBasket(null))
+				.build()
+		);
+	}
+
+	@DgsData(parentType = "Purchase")
+	public PurchaseStatus status(DgsDataFetchingEnvironment env) {
+		return payuService.getStatus(env.getSource());
 	}
 
 	@DgsMutation
@@ -140,7 +161,7 @@ public class PurchaseDataFetcher {
 			.<Long, Purchase>getDataLoader(PurchaseDataLoader.class)
 			.load((from.databaseId()))
 			.thenApply(purchase -> {
-				assert Objects.equals(purchase.getStatus(), PurchaseStatus.MADE);
+				assert (payuService.getStatus(purchase).equals(PurchaseStatus.PAID));
 				purchase.setStatus(PurchaseStatus.SENT);
 
 				return purchaseService.save(purchase);

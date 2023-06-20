@@ -5,12 +5,12 @@ import com.umcs.enterprise.basket.Basket;
 import com.umcs.enterprise.basket.BookEdge;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
-import com.umcs.enterprise.types.*;
+import com.umcs.enterprise.types.BasketBookInput;
+import com.umcs.enterprise.types.WhereUniqueBasketInput;
+import com.umcs.enterprise.types.WhereUniqueBookInput;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 import org.springframework.web.context.WebApplicationContext;
@@ -73,8 +71,8 @@ class BasketDataFetcherTest {
 
 		List<Book> books = bookRepository.saveAll(
 			List.of(
-				Book.newBuilder().price(BigDecimal.valueOf(2)).title("Title 1").build(),
-				Book.newBuilder().price(BigDecimal.valueOf(3)).title("Title 2").build()
+				Book.newBuilder().price((2L)).title("Title 1").build(),
+				Book.newBuilder().price((3L)).title("Title 2").build()
 			)
 		);
 
@@ -104,7 +102,7 @@ class BasketDataFetcherTest {
 	void basketBook_anonymous() throws JsonProcessingException {
 		//        given
 
-		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
+		var book = bookRepository.save(Book.newBuilder().price((10L)).build());
 
 		String id = new Basket().getId();
 
@@ -145,7 +143,7 @@ class BasketDataFetcherTest {
 			User.newBuilder().authorities(Collections.singletonList("USER")).username("user").build()
 		);
 
-		var book = bookRepository.save(Book.newBuilder().price(BigDecimal.valueOf(10)).build());
+		var book = bookRepository.save(Book.newBuilder().price((10L)).build());
 
 		String id = new Basket().getId();
 

@@ -77,6 +77,11 @@ class Book {
 }
 
 class PurchasePage extends Layout {
+	async pay() {
+		await this.main.getByRole('link', { name: 'Pay' }).click();
+		return new PaypalPage(this.page);
+	}
+
 	send: Locator;
 	constructor(page: Page) {
 		super(page);
@@ -86,6 +91,40 @@ class PurchasePage extends Layout {
 	}
 	status: Locator;
 	total: Locator;
+}
+
+class PaypalPage {
+	main: Locator;
+
+	async paymentCard() {
+		await this.main
+			.getByRole('link', {
+				name: 'Payment Card'
+			})
+			.click();
+
+		await this.main.getByLabel('Card number').fill('4444 3333 2222 1111');
+		await this.main.getByLabel('Valid thru').fill('12/29');
+		await this.main.getByLabel('CVV').fill('123');
+		await this.main.getByLabel('Name and surname').fill('Foo Bar');
+		await this.main.locator('input[name="email"]').fill('email@example.com');
+		await this.main
+			.getByRole('button', {
+				name: 'Pay PLN'
+			})
+			.click();
+
+		await this.main.getByRole('link', { name: 'Close and go back' }).click();
+		await expect.soft(this.page).toHaveTitle('Purchase');
+
+		const purchasepage = new PurchasePage(this.page);
+		await expect.soft(purchasepage.status).toHaveText('PAID');
+		return purchasepage;
+	}
+
+	constructor(private page: Page) {
+		this.main = page.getByRole('main');
+	}
 }
 
 export class BasketPage extends Layout {
@@ -98,7 +137,9 @@ export class BasketPage extends Layout {
 		await this.main.getByRole('button', { name: 'Make Purchase' }).click();
 		await expect.soft(this.page).toHaveTitle('Purchase');
 		await expect.soft(this.nav.basketQuantity).toHaveText('0');
-		return new PurchasePage(this.page);
+		const purchasepage = new PurchasePage(this.page);
+		await expect.soft(purchasepage.status).toHaveText('MADE');
+		return purchasepage;
 	}
 
 	async next() {

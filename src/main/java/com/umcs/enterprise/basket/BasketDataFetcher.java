@@ -8,13 +8,13 @@ import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.node.GlobalId;
-import com.umcs.enterprise.types.*;
-import com.zaxxer.hikari.HikariDataSource;
+import com.umcs.enterprise.types.BasketBookInput;
+import com.umcs.enterprise.types.BasketBookResult;
+import com.umcs.enterprise.types.UnbasketBookInput;
+import com.umcs.enterprise.types.UnbasketBookResult;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnectionCursor;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -48,7 +48,7 @@ public class BasketDataFetcher {
 	private final SummableService summableService;
 
 	@DgsData(parentType = "Basket")
-	public BigDecimal price(DgsDataFetchingEnvironment env) {
+	public Long price(DgsDataFetchingEnvironment env) {
 		Basket basket = env.getSource();
 
 		return summableService.sumPrice(basket.getBooks());

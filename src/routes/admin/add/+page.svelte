@@ -25,7 +25,7 @@
 
 			<TextField {form} field="title">Title</TextField>
 			<TextField {form} field="author">Author</TextField>
-			<TextField {form} field="price" type="number" step="0.01">Price</TextField>
+			<TextField {form} field="price" type="number" step="1">Price in "grosze"</TextField>
 			<TextField {form} field="releasedAt" type="date">Release date</TextField>
 			<TextField
 				{form}

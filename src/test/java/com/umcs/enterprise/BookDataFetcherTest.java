@@ -1,30 +1,26 @@
 package com.umcs.enterprise;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.cloudinary.Cloudinary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookRepository;
 import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.purchase.*;
-import com.umcs.enterprise.purchase.Purchase;
-import com.umcs.enterprise.types.*;
+import com.umcs.enterprise.types.BookOrderBy;
+import com.umcs.enterprise.types.CreatePriceInput;
+import com.umcs.enterprise.types.PriceOrderBy;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +88,7 @@ class BookDataFetcherTest {
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
 		input.put("cover", (coverInput));
-		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+		input.put("price", (CreatePriceInput.newBuilder().raw(1000).build()));
 
 		Resource file = new ClassPathResource("cover.jpg");
 
@@ -161,7 +157,7 @@ class BookDataFetcherTest {
 		input.put("author", ("The Author"));
 		input.put("releasedAt", (OffsetDateTime.now().toString()));
 		input.put("cover", (coverInput));
-		input.put("price", (CreatePriceInput.newBuilder().raw(100.0).build()));
+		input.put("price", (CreatePriceInput.newBuilder().raw(1000).build()));
 
 		Resource file = new ClassPathResource("cover.jpg");
 
@@ -408,10 +404,10 @@ class BookDataFetcherTest {
 		book1.setReleasedAt(OffsetDateTime.now().plusDays(2));
 		book0.setReleasedAt(OffsetDateTime.now().plusDays(3));
 
-		book3.setPrice(BigDecimal.valueOf(50));
-		book0.setPrice(BigDecimal.valueOf(60));
-		book1.setPrice(BigDecimal.valueOf(75));
-		book2.setPrice(BigDecimal.valueOf(120));
+		book3.setPrice((50L));
+		book0.setPrice((60L));
+		book1.setPrice((75L));
+		book2.setPrice((120L));
 
 		book2.setPopularity(0L);
 		book1.setPopularity(25L);

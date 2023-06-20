@@ -10,7 +10,7 @@ test('can upload cover', async ({ page, admin }) => {
 
 	await addbookpage.form.title.fill('Foo');
 	await addbookpage.form.author.fill('Bar');
-	await addbookpage.form.price.fill('12.5');
+	await addbookpage.form.price.fill('1250');
 	await addbookpage.form.releasedAt.fill('2023-04-24');
 	await addbookpage.form.cover.setInputFiles('src/test/resources/cover.jpg');
 

@@ -1,4 +1,4 @@
-import { PUBLIC_CLIENT_ADDRESS, PUBLIC_SERVER_ADDRESS } from '$env/static/public';
+import { PUBLIC_SERVER_ADDRESS } from '$env/static/public';
 import { setSession } from '$houdini';
 import { BASKET_COOKIE, TOKEN_COOKIE } from '$lib/constants';
 import { redirect, type Actions } from '@sveltejs/kit';
@@ -23,7 +23,11 @@ export const actions: Actions = {
 			})
 		});
 
-		event.cookies.delete(TOKEN_COOKIE);
+		event.cookies.delete(TOKEN_COOKIE, {
+			sameSite: 'lax',
+			path: '/',
+			secure: false
+		});
 
 		throw redirect(303, '/');
 	}

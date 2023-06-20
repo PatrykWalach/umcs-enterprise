@@ -2,12 +2,7 @@ package com.umcs.enterprise.purchase;
 
 import com.umcs.enterprise.types.PurchaseStatus;
 import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.query.JpaQueryMethodFactory;
-import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 

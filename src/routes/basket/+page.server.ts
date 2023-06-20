@@ -9,7 +9,7 @@ import type { Actions } from './$houdini';
 const MakePurchase = graphql(/* GraphQL */ `
 	mutation MakePurchase($input: MakePurchaseInput!) {
 		makePurchase(input: $input) {
-			purchase {
+			purchase @required {
 				id
 			}
 		}
@@ -58,7 +58,7 @@ export const actions: Actions = {
 			{ event }
 		);
 
-		if (response.data?.makePurchase?.purchase?.id) {
+		if (response.data?.makePurchase?.purchase.id) {
 			setBasket(event, undefined);
 			throw redirect(303, '/purchase/' + response.data.makePurchase.purchase.id);
 		}

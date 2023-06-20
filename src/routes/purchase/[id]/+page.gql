@@ -15,6 +15,7 @@ query PurchaseQuery($id: ID!) {
 			}
 			createdAt
 			id
+			payUrl
 			price {
 				formatted
 			}

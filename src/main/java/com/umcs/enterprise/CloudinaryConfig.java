@@ -10,21 +10,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class CloudinaryConfig {
 
-	@Value("${cloudinary.cloud_name}")
-	private String cloud_name;
+	@Value("${cloudinary.cloud-name}")
+	private String cloudName;
 
-	@Value("${cloudinary.api_key}")
-	private String api_key;
+	@Value("${cloudinary.api-key}")
+	private String apiKey;
 
-	@Value("${cloudinary.api_secret}")
-	private String api_secret;
+	@Value("${cloudinary.api-secret}")
+	private String apiSecret;
 
 	@Bean
 	public Cloudinary get() {
 		Map<String, String> config = new HashMap<>();
-		config.put("cloud_name", cloud_name);
-		config.put("api_key", api_key);
-		config.put("api_secret", api_secret);
+		config.put("cloud_name", cloudName);
+		config.put("api_key", apiKey);
+		config.put("api_secret", apiSecret);
 		return new Cloudinary(config);
 	}
 }

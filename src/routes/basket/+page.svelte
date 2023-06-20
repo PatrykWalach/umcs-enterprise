@@ -19,6 +19,7 @@
 	<div class="flex justify-center pt-4">
 		<ul class="steps">
 			<li class="step">Made</li>
+			<li class="step">Paid</li>
 			<li class="step">Sent</li>
 		</ul>
 	</div>

@@ -4,12 +4,10 @@ import com.umcs.enterprise.cover.Cover;
 import com.umcs.enterprise.node.Node;
 import com.umcs.enterprise.purchase.BookPurchase;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,8 +39,8 @@ public class Book implements Node<Long> {
 	@Builder.Default
 	private Cover cover = new Cover();
 
-	@Column(precision = 19, scale = 4)
-	private BigDecimal price;
+	@Column
+	private Long price;
 
 	@CreatedDate
 	@Column(nullable = false)

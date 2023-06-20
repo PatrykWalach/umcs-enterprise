@@ -7,7 +7,6 @@ import com.umcs.enterprise.ConnectionService;
 import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.book.BookDataLoader;
 import graphql.relay.Edge;
-import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +20,10 @@ public class SummableEdgeDataFetcher {
 	private final ConnectionService connectionService;
 
 	@DgsData(parentType = "SummableBookEdge")
-	public CompletableFuture<BigDecimal> price(DgsDataFetchingEnvironment env) {
+	public Long price(DgsDataFetchingEnvironment env) {
 		var edge = env.<Edge<SummableEdge>>getSource();
 
-		DataLoader<Long, Book> dataLoader = env.getDataLoader(BookDataLoader.class);
-		return dataLoader
-			.load(edge.getNode().getBook().getDatabaseId())
-			.thenApply(book -> book.getPrice().multiply(BigDecimal.valueOf(edge.getNode().getQuantity()))
-			);
+		return edge.getNode().getPrice();
 	}
 
 	@DgsData(parentType = "SummableBookEdge")

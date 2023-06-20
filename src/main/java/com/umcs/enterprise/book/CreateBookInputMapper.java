@@ -1,7 +1,6 @@
 package com.umcs.enterprise.book;
 
 import com.umcs.enterprise.types.CreateBookInput;
-import java.math.BigDecimal;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,8 +14,4 @@ public interface CreateBookInputMapper {
 	@Mapping(target = "price", source = "price.raw")
 	@Mapping(target = "cover", ignore = true)
 	com.umcs.enterprise.book.Book createBookInputToBook(CreateBookInput input);
-
-	default BigDecimal map(double value) {
-		return BigDecimal.valueOf(value);
-	}
 }
