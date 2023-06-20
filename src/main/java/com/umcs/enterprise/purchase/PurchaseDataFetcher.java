@@ -15,16 +15,18 @@ import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserDataLoader;
 import graphql.relay.Connection;
 import graphql.schema.DataFetchingEnvironment;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.access.annotation.Secured;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -100,7 +102,7 @@ public class PurchaseDataFetcher {
 	public Connection<? extends SummableEdge> books(DgsDataFetchingEnvironment env) {
 		Purchase purchase = env.getSource();
 
-		return connectionService.getConnection(purchase.getBooks().stream().toList(), env);
+		return connectionService.getConnection(purchase.getBooks().stream().sorted(Comparator.comparing(edge->edge.getBook().getCreatedAt())).toList(), env);
 	}
 
 	@DgsMutation

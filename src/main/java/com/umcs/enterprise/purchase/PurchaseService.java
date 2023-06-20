@@ -13,11 +13,11 @@ public class PurchaseService {
 	private final PurchaseRepository purchaseRepository;
 
 	public List<Purchase> findByUserDatabaseId(Long databaseId) {
-		return purchaseRepository.findAllByUserDatabaseId(databaseId);
+		return purchaseRepository.findAllByUserDatabaseIdOrderByCreatedAtDesc(databaseId);
 	}
 
 	public List<Purchase> findByUserDatabaseId(Long databaseId, PurchaseStatus status) {
-		return purchaseRepository.findAllByUserDatabaseIdAndStatus(databaseId, status);
+		return purchaseRepository.findAllByUserDatabaseIdAndStatusOrderByCreatedAtDesc(databaseId, status);
 	}
 
 	@PostFilter("hasRole('ADMIN') or filterObject.user.username == authentication.name")

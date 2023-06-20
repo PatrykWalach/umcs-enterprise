@@ -3,7 +3,7 @@
 	import { fragment, graphql, type Pagination_pageInfo } from '$houdini';
 
 	export let pageInfo: Pagination_pageInfo | undefined;
-	export let replace: true | undefined;
+	export let replace: true | undefined=undefined;
 
 	$: data = fragment(
 		pageInfo,

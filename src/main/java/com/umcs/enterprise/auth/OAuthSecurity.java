@@ -5,14 +5,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,12 +33,23 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
@@ -66,6 +69,7 @@ public class OAuthSecurity implements WebMvcConfigurer {
 	@Order(1)
 	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
 		throws Exception {
+
 		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 		http
@@ -142,6 +146,10 @@ public class OAuthSecurity implements WebMvcConfigurer {
 			.scope(OidcScopes.PROFILE)
 			.scope("read")
 			.scope("write")
+				.tokenSettings(
+
+						TokenSettings.builder().accessTokenTimeToLive(Duration.ofDays(30)).refreshTokenTimeToLive(Duration.ofDays(365)).build()
+				)
 			.clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
 			.build();
 
@@ -166,6 +174,8 @@ public class OAuthSecurity implements WebMvcConfigurer {
 			.keyID(UUID.randomUUID().toString())
 			.build();
 		JWKSet jwkSet = new JWKSet(rsaKey);
+
+
 
 		return new ImmutableJWKSet<>(jwkSet);
 	}

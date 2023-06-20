@@ -1,12 +1,21 @@
-query PurchasesQuery($id: ID!) {
+query PurchasesQuery($after: String, $before: String, $first: Int, $id: ID!, $last: Int) {
 	node(id: $id) {
 		... on User {
 			id
-			purchases(first: 10) {
+			purchases(after: $after, before: $before, first: $first, last: $last) {
 				edges {
 					node {
+						createdAt
+						databaseId
 						id
+						price {
+							formatted
+						}
+						status
 					}
+				}
+				pageInfo {
+					...Pagination_pageInfo
 				}
 			}
 		}
