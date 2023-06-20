@@ -21,7 +21,7 @@ test('can see purchases', async ({ page, register }) => {
 
 	const purchasepage = await basketpage.makePurchase();
 	// when
-  const purchasespage = await purchasepage.nav.purchases()
+	const purchasespage = await purchasepage.nav.purchases();
 	// then
 	await expect.soft(purchasespage.main.getByText('MADE')).toBeVisible();
 	await expect.soft(purchasespage.main.getByText('6,45 zł')).toBeVisible();
