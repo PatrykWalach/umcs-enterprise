@@ -28,5 +28,5 @@ public class BookPurchase implements SummableEdge {
 
 	@Column(nullable = false)
 	@Builder.Default
-	private Integer quantity=1;
+	private Integer quantity = 1;
 }

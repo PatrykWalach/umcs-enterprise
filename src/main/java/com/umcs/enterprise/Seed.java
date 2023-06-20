@@ -9,16 +9,15 @@ import com.umcs.enterprise.purchase.*;
 import com.umcs.enterprise.types.PurchaseStatus;
 import com.umcs.enterprise.user.User;
 import com.umcs.enterprise.user.UserService;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Stream;
 
 @Configuration
 @RequiredArgsConstructor
@@ -1417,57 +1416,59 @@ public class Seed {
 			repository.saveAll(books);
 
 			var purchases = purchaseRepository.saveAll(
-					Stream.generate(() -> Purchase.newBuilder().build()).limit(20).toList()
+				Stream.generate(() -> Purchase.newBuilder().build()).limit(20).toList()
 			);
 
 			Random random = new Random(0);
 
 			bookPurchaseRepository.saveAll(
-					purchases
+				purchases
+					.stream()
+					.sequential()
+					.flatMap(purchase ->
+						books
 							.stream()
 							.sequential()
-							.flatMap(purchase ->
-									books
-											.stream()
-											.sequential()
-											.skip(random.nextInt(purchases.size()))
-											.limit(random.nextInt(purchases.size()))
-											.map(book -> {
-												book.setPopularity(Optional.ofNullable(book.getPopularity()).orElse(0L) + 1L);
+							.skip(random.nextInt(purchases.size()))
+							.limit(random.nextInt(purchases.size()))
+							.map(book -> {
+								book.setPopularity(Optional.ofNullable(book.getPopularity()).orElse(0L) + 1L);
 
-												return BookPurchase
-														.newBuilder()
-														.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book.getDatabaseId()))
-														.book(repository.save(book))
-														.purchase(purchase)
-														.build();
-											})
-							)
-							.toList()
+								return BookPurchase
+									.newBuilder()
+									.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book.getDatabaseId()))
+									.book(repository.save(book))
+									.purchase(purchase)
+									.build();
+							})
+					)
+					.toList()
 			);
 
-
-			 var adminPurchases = purchaseRepository.saveAll(
-				Stream.generate(() -> Purchase.newBuilder().status(PurchaseStatus.SENT).user(admin).build()).limit(13).toList()
+			var adminPurchases = purchaseRepository.saveAll(
+				Stream
+					.generate(() -> Purchase.newBuilder().status(PurchaseStatus.SENT).user(admin).build())
+					.limit(13)
+					.toList()
 			);
 
 			adminPurchases.addAll(
-					purchaseRepository.saveAll(
-							Stream.generate(() -> Purchase.newBuilder().status(PurchaseStatus.PAID).user(admin).build()).limit(3).toList()
-					)
-			)
-;
+				purchaseRepository.saveAll(
+					Stream
+						.generate(() -> Purchase.newBuilder().status(PurchaseStatus.PAID).user(admin).build())
+						.limit(3)
+						.toList()
+				)
+			);
 
 			adminPurchases.addAll(
-					purchaseRepository.saveAll(
-							Stream.generate(() -> Purchase.newBuilder().status(PurchaseStatus.MADE).user(admin).build()).limit(1).toList()
-					)
-			)
-			;
-
-
-
-
+				purchaseRepository.saveAll(
+					Stream
+						.generate(() -> Purchase.newBuilder().status(PurchaseStatus.MADE).user(admin).build())
+						.limit(1)
+						.toList()
+				)
+			);
 
 			bookPurchaseRepository.saveAll(
 				adminPurchases
@@ -1477,14 +1478,12 @@ public class Seed {
 						books
 							.stream()
 							.sequential()
-								.skip(random.nextInt(adminPurchases.size()-1))
-							.limit(random.nextInt(adminPurchases.size()/4)+1)
+							.skip(random.nextInt(adminPurchases.size() - 1))
+							.limit(random.nextInt(adminPurchases.size() / 4) + 1)
 							.map(book -> {
-
-
 								return BookPurchase
 									.newBuilder()
-										.quantity(random.nextInt(2)+1)
+									.quantity(random.nextInt(2) + 1)
 									.databaseId(new BookPurchaseId(purchase.getDatabaseId(), book.getDatabaseId()))
 									.book(repository.save(book))
 									.purchase(purchase)

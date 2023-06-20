@@ -17,7 +17,10 @@ public class PurchaseService {
 	}
 
 	public List<Purchase> findByUserDatabaseId(Long databaseId, PurchaseStatus status) {
-		return purchaseRepository.findAllByUserDatabaseIdAndStatusOrderByCreatedAtDesc(databaseId, status);
+		return purchaseRepository.findAllByUserDatabaseIdAndStatusOrderByCreatedAtDesc(
+			databaseId,
+			status
+		);
 	}
 
 	@PostFilter("hasRole('ADMIN') or filterObject.user.username == authentication.name")

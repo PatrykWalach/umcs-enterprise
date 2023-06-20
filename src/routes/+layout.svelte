@@ -90,19 +90,19 @@
 								tabindex="-1"
 								class="menu-compact dropdown-content menu rounded-box mt-3 w-52 border border-base-200 bg-base-100 p-2 shadow-xl"
 							>
-							<ul>
-								<li>
-									<a href="/user/{$NavbarQuery.data.viewer.id}/purchases">
-										Purchases <span class="badge badge-neutral">
-											{$NavbarQuery.data.viewer.purchases?.edges?.length ?? 0}
-										</span>
-									</a>
-								</li>
-								<li><a href="/user/{$NavbarQuery.data.viewer.id}">Settings</a></li>
-								<li>
-									<button type="submit" class="px-4 py-2">Logout</button>
-								</li>
-							</ul>
+								<ul>
+									<li>
+										<a href="/user/{$NavbarQuery.data.viewer.id}/purchases">
+											Purchases <span class="badge badge-neutral">
+												{$NavbarQuery.data.viewer.purchases?.edges?.length ?? 0}
+											</span>
+										</a>
+									</li>
+									<li><a href="/user/{$NavbarQuery.data.viewer.id}">Settings</a></li>
+									<li>
+										<button type="submit" class="px-4 py-2">Logout</button>
+									</li>
+								</ul>
 								{#if $NavbarQuery.data.viewer.__typename === 'Admin'}
 									<div class="divider">Admin</div>
 									<ul>
@@ -114,9 +114,8 @@
 										</li>
 										<li>
 											<a href="/admin/purchases">Purchases</a>
-										</li>	
+										</li>
 									</ul>
-
 								{/if}
 							</div>
 						</form>
