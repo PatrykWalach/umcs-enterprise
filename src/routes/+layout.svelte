@@ -124,7 +124,7 @@
 					<a
 						href={`${PUBLIC_SERVER_ADDRESS}/oauth2/authorize?${new URLSearchParams({
 							client_id: 'bookstore',
-							redirect_uri: `${PUBLIC_CLIENT_ADDRESS}:5173/login/callback`,
+							redirect_uri: `${PUBLIC_CLIENT_ADDRESS}/login/callback`,
 							response_type: 'code',
 							scope: 'openid profile read write',
 							state: $page.url.pathname

@@ -26,7 +26,7 @@ export const load: ServerLoad = async (event) => {
 	const body = new URLSearchParams({
 		client_id: 'bookstore',
 		client_secret: 'bookstoreSecret',
-		redirect_uri: `${PUBLIC_CLIENT_ADDRESS}:5173/login/callback`,
+		redirect_uri: `${PUBLIC_CLIENT_ADDRESS}/login/callback`,
 		grant_type: 'authorization_code',
 		code
 		// client_secret: 'newClientSecret',

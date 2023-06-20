@@ -69,7 +69,7 @@ public class PayuService {
 			.purchaseToRequest(
 				purchase,
 				posId,
-				CLIENT_ADDRESS + ":5173/purchase/" + purchase.getId(),
+				CLIENT_ADDRESS + "/purchase/" + purchase.getId(),
 				summableService
 			);
 

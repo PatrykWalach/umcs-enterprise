@@ -12,7 +12,7 @@ const config: PlaywrightTestConfig = {
 		},
 		{
 			command: 'npx turbo preview',
-			url: `${process.env.PUBLIC_CLIENT_ADDRESS}:5173`,
+			url: `${process.env.PUBLIC_CLIENT_ADDRESS}`,
 			timeout: 3 * 60 * 1000,
 			reuseExistingServer: !process.env.CI
 		}
@@ -39,7 +39,7 @@ const config: PlaywrightTestConfig = {
 	use: {
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
-		baseURL: `${process.env.PUBLIC_CLIENT_ADDRESS}:5173`,
+		baseURL: `${process.env.PUBLIC_CLIENT_ADDRESS}`,
 		video: 'retain-on-failure'
 	},
 	testDir: 'tests/e2e',
