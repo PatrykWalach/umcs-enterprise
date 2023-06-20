@@ -3,7 +3,7 @@
 	"globalEnv": ["PUBLIC_CLIENT_ADDRESS", "PUBLIC_SERVER_ADDRESS"],
 	"pipeline": {
 		"build": {
-			"outputs": [".svelte-kit/**", "public/**"],
+			"outputs": [".svelte-kit/**", ".vercel/**"],
 			"inputs": [
 				"src/**",
 				"!src/main/**",
