@@ -9,12 +9,11 @@ import com.umcs.enterprise.book.Book;
 import com.umcs.enterprise.types.Transformation;
 import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetchingEnvironment;
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
-import java.util.Optional;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class CoverDataFetcher {
 
 		return cloudinary
 			.url()
-				.secure(true)
+			.secure(true)
 			.transformation(Mappers.getMapper(TransformationMapper.class).map(transformation))
 			.generate(book.getCover().getUuid());
 	}
