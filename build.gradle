@@ -26,7 +26,7 @@ dependencies {
     implementation 'com.netflix.graphql.dgs:graphql-dgs-pagination'
     implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
-    implementation(platform('com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:7.2.0'))
+    implementation(platform('com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:7.3.2'))
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "org.springframework.boot:spring-boot-starter-oauth2-authorization-server"
     implementation 'org.springframework.boot:spring-boot-starter-web'
