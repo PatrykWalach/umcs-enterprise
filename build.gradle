@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 
-    implementation("com.cloudinary:cloudinary-http44:1.33.0")
+    implementation("com.cloudinary:cloudinary-http44:1.34.0")
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
